@@ -26,14 +26,4 @@ const getPedidosPage = async (req, res) => {
   }
 };
 
-const getColeccion2Page = (req, res) => {
-  // Lógica para obtener datos de la colección 2
-  res.send('Página de la Colección 2');
-};
-
-const getColeccion3Page = (req, res) => {
-  // Lógica para obtener datos de la colección 3
-  res.send('Página de la Colección 3');
-};
-
-module.exports = { getPedidosPage, getColeccion2Page, getColeccion3Page };
+module.exports = { getPedidosPage };

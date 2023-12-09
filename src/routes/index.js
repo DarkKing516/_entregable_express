@@ -1,7 +1,7 @@
 // src/routes/index.js
 const express = require('express');
 const router = express.Router();
-const { getPedidosPage, getColeccion2Page, getColeccion3Page } = require('../controllers/pedidosController');
+const { getPedidosPage } = require('../controllers/pedidosController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
 
 // Rutas
@@ -33,7 +33,38 @@ router.post('/signin', iniciarSesion);
 router.get('/signout', cerrarSesion); // Ruta para cerrar sesión
 
 router.get('/pedidos', getPedidosPage);
-router.get('/coleccion2', getColeccion2Page);
-router.get('/coleccion3', getColeccion3Page);
+
+
+
+
+
+
+
+
+
+
+router.get('/danilo', getPedidosPage);
+
+
+
+
+
+
+
+
+
+
+router.get('/pelos', getPedidosPage);
+
+
+
+
+
+
+
+
+
+
+router.get('/murcia', getPedidosPage);
 
 module.exports = router;
