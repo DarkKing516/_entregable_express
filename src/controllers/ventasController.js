@@ -31,8 +31,6 @@ const getVentasPage = async (req, res) => {
   }
 };
 
-module.exports = { getVentasPage };
-
 const agregarVenta = async (req, res) => {
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -45,34 +43,51 @@ const agregarVenta = async (req, res) => {
     const pedidosCollection = database.collection('pedidos');
     const configuracionCollection = database.collection('configuracion');
 
-    // Obtener datos de pedidos y configuracion
+    // Obtener datos de pedidos y configuración
     const pedidos = await pedidosCollection.find({}, { projection: { servicios: 1, productos: 1 } }).toArray();
     const usuarios = await configuracionCollection.find({}).toArray();
 
-    const { fecha_venta, metodo_pago, total_venta, total_pedido, nombre, telefono, documento, correo, productos } = req.body;
+    const { fecha_venta, metodo_pago, total_venta, nombre, telefono, documento, correo, productos, usuario, pedido } = req.body;
 
-    // Construir el objeto de venta
+    // Obtener datos del usuario seleccionado
+    const usuarioSeleccionado = usuarios.find(user => user._id === usuario);
+    const { nombre: nombreUsuario, telefono: telefonoUsuario, documento: documentoUsuario, correo: correoUsuario } = usuarioSeleccionado;
+
+    // Obtener datos del pedido seleccionado
+    const pedidoSeleccionado = pedidos.find(p => p._id === pedido);
+    const { total_pedido, productos: productosPedido } = pedidoSeleccionado;
+
+    // Construir el objeto de venta con los datos obtenidos
     const nuevaVenta = {
       fecha_venta,
       metodo_pago,
       total_venta,
+      nombre: nombreUsuario,
+      telefono: telefonoUsuario,
+      documento: documentoUsuario,
+      correo: correoUsuario,
       total_pedido,
-      nombre,
-      telefono,
-      documento,
-      correo,
-      productos
-      // Agregar otros campos de la venta según sea necesario
+      productos: productosPedido,
+      // Otros campos de la venta según sea necesario
     };
-    // Renderizar la vista de ventas con los datos necesarios para el formulario
-    res.render('ventas', { ventas, pedidos, usuarios });
+
+    // Guardar la nueva venta en la colección de ventas
+    await ventasCollection.insertOne(nuevaVenta);
+
+    const ventasActualizadas = await ventasCollection.find({}).toArray();
+
+    // Redireccionar a la página de ventas
+    res.render('ventas', { ventas: ventasActualizadas }); // Reemplaza con la ruta correcta
   } catch (error) {
-    console.error('Error al cargar datos para la venta:', error);
-    res.status(500).send('Error interno del servidor al cargar datos para la venta');
+    console.error('Error al agregar la venta:', error);
+    console.error(error); // Imprimir el objeto error completo para detalles adicionales
+    res.status(500).send('Error interno del servidor al agregar la venta');
   } finally {
     await client.close(); // Cerrar la conexión
   }
 };
 
 
-module.exports = { getVentasPage, agregarVenta};
+
+
+module.exports = { getVentasPage, agregarVenta };
