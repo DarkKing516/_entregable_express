@@ -4,6 +4,8 @@ const router = express.Router();
 const { getPedidosPage, agregarPedido, eliminarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
 const { getConfiguracionPage } = require('../controllers/configuracionController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
+const { getReservasPage, agregarReserva, eliminarReserva } = require('../controllers/reservasController');
+
 
 // Rutas
 router.get('/', (req, res) => {
@@ -65,6 +67,8 @@ router.get('/pelos', getPedidosPage);
 
 
 
-router.get('/murcia', getPedidosPage);
+router.get('/reservas', getReservasPage);
+router.post('/agregarReserva', agregarReserva); // Agrega esta línea para manejar las solicitudes POST para agregar reservas
+router.delete('/eliminarReserva/:id', eliminarReserva);
 
 module.exports = router;

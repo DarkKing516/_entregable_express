@@ -1,0 +1,116 @@
+<!-- src/views/reservas.ejs -->
+<link rel="shortcut icon" href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+<%- include('./layouts/nav') %>
+<h1>Gestión de Reservas</h1>
+
+<!-- Formulario para agregar una nueva reserva -->
+<form id="formularioAgregarReserva" action="/agregarReserva" method="POST">
+  <label for="fechaReserva">Fecha de Reserva:</label>
+  <input type="date" id="fechaReserva" name="fechaReserva" required>
+
+  <label for="estadoReserva">Estado de Reserva:</label>
+  <select id="estadoReserva" name="estadoReserva" required>
+    <option value="Agendada">Agendada</option>
+    <option value="Rechazada">Rechazada</option>
+    <option value="Terminada">Terminada</option>
+  </select>
+
+  <label for="nombreCliente">Nombre del Cliente:</label>
+  <select id="nombreCliente" name="nombreCliente" onchange="obtenerConfiguracionCliente()" required>
+    <% configuraciones.forEach(configuracion => { %>
+      <option value="<%= configuracion.nombre %>">
+        <%= configuracion.nombre %>
+      </option>
+    <% }); %>
+  </select>
+
+  <label for="telefonoCliente">Telefono:</label>
+  <input type="text" id="telefonoCliente" name="telefonoCliente" required>
+
+  <!-- Otros campos que ingreses manualmente -->
+
+  <button type="submit">Guardar Reserva</button>
+</form>
+
+<!-- Lista de reservas existentes -->
+<h2>Listado de Reservas</h2>
+<table>
+  <thead>
+    <tr>
+      <td>Fecha de Creación</td>
+      <td>Fecha de Reserva</td>
+      <td>Estado de Reserva</td>
+      <td>Nombre del Cliente</td>
+      <td>Correo del Cliente</td>
+      <td>Telefono Del Cliente</td>
+      <td>Documento del Cliente</td>
+      <td>Contraseña del Cliente</td>
+      <!-- Otros campos que ingreses manualmente -->
+      <td>Acción</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% reservas.forEach(reserva => { %>
+      <tr>
+        <td><%= new Date(reserva.fecha_creacion).toLocaleDateString('es-ES') %></td>
+        <td><%= new Date(reserva.fecha_reserva).toLocaleDateString('es-ES') %></td>
+        <td><%= reserva.estado_reserva %></td>
+        <td><%= reserva.nombre_cliente %></td>
+        <td><%= reserva.correo || reserva.email %></td>
+        <td><%= reserva.telefono_cliente %></td>
+        <td><%= reserva.documento_cliente %></td>
+        <td><%= reserva.contraseña %></td>
+        <!-- Otros campos que ingreses manualmente -->
+        <td>
+          editar &nbsp; 
+          <form id="eliminarReservaForm" onsubmit="eliminarReserva(event, '<%= reserva._id %>')">
+            <input type="hidden" name="_method" value="DELETE">
+            <button onclick="eliminarReserva(event, '<%= reserva._id %>')">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>
+
+<script>
+  function obtenerConfiguracionCliente() {
+    var selectedIndex = document.getElementById('nombreCliente').selectedIndex;
+    var configuracionCliente = configuraciones[selectedIndex] || {};
+    document.getElementById('correoCliente').value = configuracionCliente.correo || '';
+    document.getElementById('contrasenaCliente').value = configuracionCliente.contrasena || '';
+    document.getElementById('documentoCliente').value = configuracionCliente.documento || '';
+  }
+
+  async function eliminarReserva(event, reservaId) {
+    event.preventDefault();
+    const confirmacion = confirm('¿Estás seguro de eliminar esta reserva?');
+    if (confirmacion) {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      try {
+        const response = await fetch(`/eliminarReserva/${reservaId}`, options);
+        if (response.ok) {
+          // Eliminar la fila del DOM
+          const rowToRemove = document.querySelector(`tr[data-id="${reservaId}"]`);
+          rowToRemove.remove();
+
+          // Eliminar la reserva del arreglo
+          const reservaIndex = reservas.findIndex(reserva => reserva._id === reservaId);
+          if (reservaIndex !== -1) {
+            reservas.splice(reservaIndex, 1);
+          }
+        } else {
+          console.error('Error al eliminar la reserva');
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+      }
+    }
+  }
+</script>
