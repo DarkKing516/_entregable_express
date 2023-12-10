@@ -104,6 +104,8 @@ const agregarPedido = async (req, res) => {
 
     // Insertar el nuevo pedido en la base de datos
     await pedidosCollection.insertOne(nuevoPedido);
+    console.log('pedidosCollection:', nuevoPedido);
+    // console.log('pedidosCollection:', pedidosCollection);
 
     res.redirect('/pedidos'); // Redirigir a la página de pedidos después de agregar el pedido
   } catch (error) {
