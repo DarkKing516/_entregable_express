@@ -1,9 +1,81 @@
 <!-- src/views/pedidos.ejs -->
-<link  rel="shortcut icon"  href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon"/>
+<link rel="shortcut icon"
+  href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 <%- include('./layouts/nav') %>
-<h1>Lista de Pedidos</h1>
+<h1>Lista de usuarios</h1>
 <ul>
-  <% pedidos.forEach(pedido => { %>
-  <li><%= pedido.nombre %></li>
-   <% }); %>
+  <% usuarios.forEach(usuario=> { %>
+    <li>
+      <%= usuario.nombre %>
+    </li>
+  <% }); %>
 </ul>
+  <h1>Listado de Pedidos</h1>
+  <button id="agregarPedidoBtn">Agregar</button>
+
+  <!-- Modal -->
+  <div id="agregarPedidoModal" class="modal">
+    <div class="modal-content">
+      <span id="cerrarModal" class="cerrar">&times;</span>
+      <h2>Agregar Pedido</h2>
+      <!-- Aquí colocarías tu formulario para agregar pedidos -->
+      <!-- Por ejemplo, un formulario sencillo con campos para fecha, total, etc. -->
+      <form id="formularioAgregarPedido">
+        <label for="fechaCreacion">Fecha Creación:</label>
+        <input type="text" id="fechaCreacion" name="fechaCreacion" required>
+
+        <!-- Otros campos del formulario -->
+
+        <button type="submit">Guardar Pedido</button>
+      </form>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <td>Fecha Creacion</td>
+        <td>Fecha Pedido</td>
+        <td>Total</td>
+        <td>Estado</td>
+        <td>Usuario</td>
+        <td>Acción</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% pedidos.forEach(pedido => { %>
+        <tr>
+          <td><%= pedido.fecha_creacion %></td>
+          <td><%= pedido.fecha_pedido %></td>
+          <td><%= pedido.total_pedido %></td>
+          <td><%= pedido.estado_pedido %></td>
+          <td><%= pedido.nombre_usuario %></td>
+          <td>editar</td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <script>
+    // JavaScript para mostrar/ocultar el modal
+    const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
+    const agregarPedidoModal = document.getElementById('agregarPedidoModal');
+    const cerrarModal = document.getElementById('cerrarModal');
+    const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
+
+    agregarPedidoBtn.addEventListener('click', () => {
+      agregarPedidoModal.style.display = 'block';
+    });
+
+    cerrarModal.addEventListener('click', () => {
+      agregarPedidoModal.style.display = 'none';
+    });
+
+    formularioAgregarPedido.addEventListener('submit', (event) => {
+      // Aquí puedes agregar la lógica para enviar el formulario o realizar acciones con los datos ingresados
+      event.preventDefault();
+      // Por ejemplo, puedes usar fetch() para enviar los datos al servidor
+      // y después cerrar el modal
+      agregarPedidoModal.style.display = 'none';
+    });
+  </script>

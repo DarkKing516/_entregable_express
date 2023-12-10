@@ -2,8 +2,10 @@
 <%- include('./layouts/nav') %>
 <h1>Registrarse</h1>
 <form action="/signup" method="POST">
-  <input type="email" name="email" placeholder="Email">
-  <input type="password" name="password" placeholder="Password">
+  <input type="text" name="nombre" placeholder="Nombre">
+  <input type="email" name="correo" placeholder="Email">
+  <input type="number" name="documento" placeholder="Documento">
+  <input type="password" name="contraseña" placeholder="Contraseña">
   <button type="submit">SignUp</button>
 </form>
 

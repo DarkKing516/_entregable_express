@@ -8,7 +8,7 @@ const registrarUsuario = async (usuario) => {
   try {
     await client.connect();
     const database = client.db('erikas_homemade');
-    const collection = database.collection('usuarios');
+    const collection = database.collection('configuracion');
     const resultado = await collection.insertOne(usuario);
     return resultado;
   } finally {
@@ -20,7 +20,7 @@ const encontrarUsuarioPorCredenciales = async (email, password) => {
   try {
     await client.connect();
     const database = client.db('erikas_homemade');
-    const collection = database.collection('usuarios');
+    const collection = database.collection('configuracion');
     const usuario = await collection.findOne({ email, password });
     return usuario;
   } finally {
