@@ -10,19 +10,37 @@
     <div class="modal-content">
       <span id="cerrarModal" class="cerrar">&times;</span>
       <h2>Agregar Usuario</h2>
-      <!-- Aquí colocarías tu formulario para agregar Usuarios -->
-      <!-- Por ejemplo, un formulario sencillo con campos para fecha, total, etc. -->
-      <form id="formularioAgregarUsuario">
-        <label for="fechaCreacion">Fecha Creación:</label>
-        <input type="text" id="fechaCreacion" name="fechaCreacion" required>
 
-        <!-- Otros campos del formulario -->
+      <form id="formularioAgregarUsuario" method="POST" action="/registrarUsuario">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="correo">Correo:</label>
+        <input type="email" id="correo" name="correo" required>
+
+        <label for="documento">Documento:</label>
+        <input type="number" id="documento" name="documento" required>
+
+        <label for="contraseña">Contraseña:</label>
+        <input type="password" id="contraseña" name="contraseña" required>
+
+        <!-- Select para elegir el rol -->
+        <label for="rol">Rol:</label>
+        <select id="rol" name="rol" required>
+          <option value="" disabled selected>--Seleccione una opción--</option>
+          <option value="cliente">Cliente</option>
+          <option value="administrador">Administrador</option>
+        </select>
+
+        <!-- Otros campos del formulario si los hay -->
 
         <button type="submit">Guardar Usuario</button>
       </form>
     </div>
   </div>
 
+  </div>
+  <br>
   <table>
     <thead>
       <tr>
@@ -38,60 +56,74 @@
       </tr>
     </thead>
     <tbody>
-      <% usuarios.forEach(usuario => { %>
+      <% usuarios.forEach(usuario=> { %>
         <tr>
-          <td><%= usuario._id.toString() %></td>
-          <td><%= usuario.nombre %></td>
-          <td><%= usuario.correo %></td>
-          <td><%= usuario.documento %></td>
-          <td><%= usuario.estado_usuario ? 'Activo' : 'Inactivo' %></td>
-          <td><%= usuario.contraseña %></td>
           <td>
-            <% if (usuario.rol && usuario.rol.length > 0) { %>
-              <% usuario.rol.forEach(rol => { %>
-                <div><%= rol.nombre_rol %></div>
-              <% }); %>
-            <% } else { %>
-              <div>No hay roles asignados</div>
-            <% } %>
+            <%= usuario._id.toString() %>
           </td>
           <td>
-            <% if (usuario.permisos && usuario.permisos.length > 0) { %>
-              <% usuario.permisos.forEach(permiso => { %>
-                <div><%= permiso.nombre_permiso %>: <%= permiso.estado_permiso ? 'Habilitado' : 'Deshabilitado' %></div>
-              <% }); %>
-            <% } else { %>
-              <div>No hay permisos asignados</div>
-            <% } %>
+            <%= usuario.nombre %>
+          </td>
+          <td>
+            <%= usuario.correo %>
+          </td>
+          <td>
+            <%= usuario.documento %>
+          </td>
+          <td>
+            <%= usuario.estado_usuario ? 'Activo' : 'Inactivo' %>
+          </td>
+          <td>
+            <%= usuario.contraseña %>
+          </td>
+          <td>
+            <% if (usuario.rol && usuario.rol.length> 0) { %>
+              <% usuario.rol.forEach(rol=> { %>
+                <div>
+                  <%= rol.nombre_rol %>
+                </div>
+                <% }); %>
+                  <% } else { %>
+                    <div>No hay roles asignados</div>
+                    <% } %>
+          </td>
+          <td>
+            <% if (usuario.permisos && usuario.permisos.length> 0) { %>
+              <% usuario.permisos.forEach(permiso=> { %>
+                <div>
+                  <%= permiso.nombre_permiso %>: <%= permiso.estado_permiso ? 'Habilitado' : 'Deshabilitado' %>
+                </div>
+                <% }); %>
+                  <% } else { %>
+                    <div>No hay permisos asignados</div>
+                    <% } %>
           </td>
           <td>
             <button class="editarUsuarioBtn" data-id="<%= usuario._id.toString() %>">Editar</button>
           </td>
         </tr>
-      <% }); %>
+        <% }); %>
     </tbody>
   </table>
 
   <script>
     // JavaScript para mostrar/ocultar el modal
-    const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
-    const agregarPedidoModal = document.getElementById('agregarPedidoModal');
+    const agregarUsuarioBtn = document.getElementById('agregarUsuarioBtn');
+    const agregarUsuarioModal = document.getElementById('agregarUsuarioModal');
     const cerrarModal = document.getElementById('cerrarModal');
-    const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
+    const formularioAgregarUsuario = document.getElementById('formularioAgregarUsuario');
 
-    agregarPedidoBtn.addEventListener('click', () => {
-      agregarPedidoModal.style.display = 'block';
+    agregarUsuarioBtn.addEventListener('click', () => {
+      agregarUsuarioModal.style.display = 'block';
     });
 
     cerrarModal.addEventListener('click', () => {
-      agregarPedidoModal.style.display = 'none';
+      agregarUsuarioModal.style.display = 'none';
     });
 
-    formularioAgregarPedido.addEventListener('submit', (event) => {
-      // Aquí puedes agregar la lógica para enviar el formulario o realizar acciones con los datos ingresados
+    formularioAgregarUsuario.addEventListener('submit', (event) => {
       event.preventDefault();
-      // Por ejemplo, puedes usar fetch() para enviar los datos al servidor
-      // y después cerrar el modal
-      agregarPedidoModal.style.display = 'none';
+      // Lógica para enviar el formulario o realizar acciones con los datos ingresados
+      agregarUsuarioModal.style.display = 'none';
     });
   </script>

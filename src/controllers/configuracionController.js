@@ -1,5 +1,6 @@
 // src/controllers/pedidosController.js
 const { MongoClient } = require('mongodb');
+const usuarioModel = require('../models/usuarioModel'); 
 
 // Función para obtener datos de la colección de pedidos
 const getConfiguracionPage = async (req, res) => {
@@ -25,4 +26,17 @@ const getConfiguracionPage = async (req, res) => {
   }
 };
 
-module.exports = { getConfiguracionPage };
+const registrarUsuario = async (req, res) => {
+  const nuevoUsuario = req.body; // Asegúrate de tener las propiedades correctas en el body de la solicitud
+  try {
+    const resultado = await usuarioModel.registrarUsuario(nuevoUsuario);
+    res.status(201).json({ mensaje: 'Usuario registrado exitosamente', resultado });
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+};
+
+module.exports = { getConfiguracionPage, registrarUsuario, usuarioModel };
+
+

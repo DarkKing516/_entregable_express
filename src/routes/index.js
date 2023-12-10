@@ -2,13 +2,25 @@
 const express = require('express');
 const router = express.Router();
 const { getPedidosPage } = require('../controllers/pedidosController');
-const { getConfiguracionPage } = require('../controllers/configuracionController');
-const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
+const { getConfiguracionPage, registrarUsuario, usuarioModel } = require('../controllers/configuracionController');
+const { iniciarSesion, cerrarSesion } = require('../controllers/authController');
 
 // Rutas
 router.get('/', (req, res) => {
   res.render('index');
 });
+
+router.post('/configuracion', async (req, res) => {
+  const nuevoUsuario = req.body;
+  try {
+    const resultado = await usuarioModel.registrarUsuario(nuevoUsuario);
+    res.status(201).json({ mensaje: 'Usuario registrado exitosamente', resultado });
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+});
+
 
 router.get('/signin', (req, res) => {
   // Si el usuario ya ha iniciado sesión, redirige a la página principal
@@ -45,6 +57,7 @@ router.get('/pedidos', getPedidosPage);
 
 
 router.get('/configuracion', getConfiguracionPage);
+router.post('/configuracion', registrarUsuario);
 
 
 

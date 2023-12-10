@@ -1,5 +1,5 @@
 // src/models/usuarioModel.js
-const { MongoClient, ObjectID } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -9,6 +9,11 @@ const registrarUsuario = async (usuario) => {
     await client.connect();
     const database = client.db('erikas_homemade');
     const collection = database.collection('configuracion');
+
+    // Por defecto, asignar permisos al rol "administrador"
+    const rolAdmin = await collection.findOne({ 'rol.nombre_rol': 'administrador' });
+    usuario.permisos = rolAdmin.permisos;
+
     const resultado = await collection.insertOne(usuario);
     return resultado;
   } finally {
