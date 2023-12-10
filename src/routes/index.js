@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { getPedidosPage, agregarPedido, eliminarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
+const { getVentasPage, agregarVenta } = require('../controllers/ventasController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
 
 // Rutas
@@ -53,7 +54,8 @@ router.get('/danilo', getPedidosPage);
 
 
 
-router.get('/pelos', getPedidosPage);
+router.get('/pelos', getVentasPage);
+router.post('/agregarVenta', agregarVenta)
 
 
 
