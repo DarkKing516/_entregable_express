@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { getPedidosPage, agregarPedido, eliminarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
+const { getVentasPage, agregarVenta } = require('../controllers/ventasController');
 const { getConfiguracionPage } = require('../controllers/configuracionController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
 const { getReservasPage, agregarReserva, eliminarReserva } = require('../controllers/reservasController');
@@ -56,7 +57,8 @@ router.get('/configuracion', getConfiguracionPage);
 
 
 
-router.get('/pelos', getPedidosPage);
+router.get('/pelos', getVentasPage);
+router.post('/agregarVenta', agregarVenta)
 
 
 

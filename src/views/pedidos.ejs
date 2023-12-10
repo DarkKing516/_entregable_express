@@ -30,13 +30,26 @@
             <option value="tipo2">Tipo 2</option>
             <option value="tipo3">Tipo 3</option>
           </select>
+          <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
+          <select id="estadoTipoServicio" name="estadoTipoServicio" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
 
-          <!-- Otros campos del servicio -->
           <label for="nombreServicio">Nombre Servicio:</label>
           <input type="text" id="nombreServicio" name="nombreServicio" required>
 
-          <!-- Otros campos del servicio -->
-          <!-- ... (agrega aquí los campos que faltan) -->
+          <label for="estadoServicio">Estado Servicio:</label>
+          <select id="estadoServicio" name="estadoServicio" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+
+          <label for="cantidadServicio">Cantidadad Servicio:</label>
+          <input type="number" id="cantidadServicio" name="cantidadServicio" required>
+
+          <label for="precioServicio">Precio Servicio:</label>
+          <input type="number" id="precioServicio" name="precioServicio" required>
 
           <button type="button" onclick="agregarServicio()">Agregar Servicio</button>
         </div>
@@ -53,12 +66,25 @@
             <option value="tipo3">Tipo 3</option>
           </select>
 
-          <!-- Otros campos del producto -->
+          <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
+          <select id="estadoTipoProducto" name="estadoTipoProducto" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+
           <label for="nombreProducto">Nombre Producto:</label>
           <input type="text" id="nombreProducto" name="nombreProducto" required>
 
-          <!-- Otros campos del producto -->
-          <!-- ... (agrega aquí los campos que faltan) -->
+          <label for="estadoProducto">Estado Producto:</label>
+          <select id="estadoProducto" name="estadoProducto" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+          <label for="cantidadProducto">Cantidadad Producto:</label>
+          <input type="number" id="cantidadProducto" name="cantidadProducto" required>
+
+          <label for="precioProducto">Precio Producto:</label>
+          <input type="number" id="precioProducto" name="precioProducto" required>
 
           <button type="button" onclick="agregarProducto()">Agregar Producto</button>
         </div>
@@ -112,8 +138,6 @@
   const cerrarModal = document.getElementById('cerrarModal');
   const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
   const fechaPedidoInput = document.getElementById('fechaPedido');
-  let servicioCount = 1; // Contador para servicios
-  let productoCount = 1; // Contador para productos
 
   agregarPedidoBtn.addEventListener('click', () => {
     agregarPedidoModal.style.display = 'block';
@@ -136,51 +160,84 @@
     }
   });
 
-  // Función para agregar dinámicamente campos de servicio
-  const agregarServicio = () => {
-    servicioCount++;
-    const serviciosContainer = document.getElementById('serviciosContainer');
-    const nuevoServicio = document.createElement('div');
-    nuevoServicio.classList.add('servicio');
-    nuevoServicio.innerHTML = `
-      <label for="tipoServicio${servicioCount}">Tipo de Servicio:</label>
-      <select id="tipoServicio${servicioCount}" name="tipoServicio" required>
-        <option value="tipo1">Tipo 1</option>
-        <option value="tipo2">Tipo 2</option>
-        <option value="tipo3">Tipo 3</option>
-      </select>
+let servicioCount = 1; // Contador para servicios
+let productoCount = 1; // Contador para productos
 
-      <!-- Otros campos del servicio -->
-      <label for="nombreServicio${servicioCount}">Nombre Servicio:</label>
-      <input type="text" id="nombreServicio${servicioCount}" name="nombreServicio" required>
+// Función para agregar dinámicamente campos de servicio
+const agregarServicio = () => {
+  servicioCount++;
+  const serviciosContainer = document.getElementById('serviciosContainer');
+  const nuevoServicio = document.createElement('div');
+  nuevoServicio.classList.add('servicio');
+  nuevoServicio.id = `servicio${servicioCount}`;
+  nuevoServicio.innerHTML = `
+    <label for="tipoServicio${servicioCount}">Tipo de Servicio:</label>
+    <select id="tipoServicio${servicioCount}" name="tipoServicio${servicioCount}" required>
+      <option value="tipo1">Tipo 1</option>
+      <option value="tipo2">Tipo 2</option>
+      <option value="tipo3">Tipo 3</option>
+    </select>
 
-      <!-- Otros campos del servicio -->
-      <!-- ... (agrega aquí los campos que faltan) -->
-    `;
-    serviciosContainer.appendChild(nuevoServicio);
-  };
+    <label for="estadoTipoServicio${servicioCount}">Estado Tipo de Servicio:</label>
+    <select id="estadoTipoServicio${servicioCount}" name="estadoTipoServicio${servicioCount}" required>
+      <option value="activo">Activo</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
 
-  // Función para agregar dinámicamente campos de producto
-  const agregarProducto = () => {
-    productoCount++;
-    const productosContainer = document.getElementById('productosContainer');
-    const nuevoProducto = document.createElement('div');
-    nuevoProducto.classList.add('producto');
-    nuevoProducto.innerHTML = `
-      <label for="tipoProducto${productoCount}">Tipo de Producto:</label>
-      <select id="tipoProducto${productoCount}" name="tipoProducto" required>
-        <option value="tipo1">Tipo 1</option>
-        <option value="tipo2">Tipo 2</option>
-        <option value="tipo3">Tipo 3</option>
-      </select>
+    <label for="nombreServicio${servicioCount}">Nombre Servicio:</label>
+    <input type="text" id="nombreServicio${servicioCount}" name="nombreServicio${servicioCount}" required>
 
-      <!-- Otros campos del producto -->
-      <label for="nombreProducto${productoCount}">Nombre Producto:</label>
-      <input type="text" id="nombreProducto${productoCount}" name="nombreProducto" required>
+    <label for="estadoServicio${servicioCount}">Estado Servicio:</label>
+    <select id="estadoServicio${servicioCount}" name="estadoServicio${servicioCount}" required>
+      <option value="activo">Activo</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
 
-      <!-- Otros campos del producto -->
-      <!-- ... (agrega aquí los campos que faltan) -->
-    `;
-    productosContainer.appendChild(nuevoProducto);
-  };
+    <label for="cantidadServicio${servicioCount}">Cantidadad Servicio:</label>
+    <input type="number" id="cantidadServicio${servicioCount}" name="cantidadServicio${servicioCount}" required>
+
+    <label for="precioServicio${servicioCount}">Precio Servicio:</label>
+    <input type="number" id="precioServicio${servicioCount}" name="precioServicio${servicioCount}" required>
+  `;
+  serviciosContainer.appendChild(nuevoServicio);
+};
+
+// Función para agregar dinámicamente campos de producto
+const agregarProducto = () => {
+  productoCount++;
+  const productosContainer = document.getElementById('productosContainer');
+  const nuevoProducto = document.createElement('div');
+  nuevoProducto.classList.add('producto');
+  nuevoProducto.id = `producto${productoCount}`;
+  nuevoProducto.innerHTML = `
+    <label for="tipoProducto${productoCount}">Tipo de Producto:</label>
+    <select id="tipoProducto${productoCount}" name="tipoProducto${productoCount}" required>
+      <option value="tipo1">Tipo 1</option>
+      <option value="tipo2">Tipo 2</option>
+      <option value="tipo3">Tipo 3</option>
+    </select>
+
+    <label for="estadoTipoProducto${productoCount}">Estado Tipo de Producto:</label>
+    <select id="estadoTipoProducto${productoCount}" name="estadoTipoProducto${productoCount}" required>
+      <option value="activo">Activo</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
+
+    <label for="nombreProducto${productoCount}">Nombre Producto:</label>
+    <input type="text" id="nombreProducto${productoCount}" name="nombreProducto${productoCount}" required>
+
+    <label for="estadoProducto${productoCount}">Estado Producto:</label>
+    <select id="estadoProducto${productoCount}" name="estadoProducto${productoCount}" required>
+      <option value="activo">Activo</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
+
+    <label for="cantidadProducto${productoCount}">Cantidadad Producto:</label>
+    <input type="number" id="cantidadProducto${productoCount}" name="cantidadProducto${productoCount}" required>
+
+    <label for="precioProducto${productoCount}">Precio Producto:</label>
+    <input type="number" id="precioProducto${productoCount}" name="precioProducto${productoCount}" required>
+  `;
+  productosContainer.appendChild(nuevoProducto);
+};
 </script>
