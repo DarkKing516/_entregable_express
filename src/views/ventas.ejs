@@ -9,18 +9,26 @@
   <div class="modal-content">
     <span id="cerrarModal" class="cerrar">&times;</span>
     <h2>Agregar Venta</h2>
-    <!-- Aquí colocarías tu formulario para agregar ventas -->
-    <!-- Por ejemplo, un formulario sencillo con campos para fecha, total, etc. -->
-    <form id="formularioAgregarVenta">
+
+    <!-- Formulario para agregar venta -->
+    <form id="formularioAgregarVenta" action="/agregarVentas" method="POST">
       <label for="fechaVenta">Fecha Venta:</label>
-      <input type="text" id="fechaVenta" name="fechaVenta" required>
+      <input type="text" id="fechaVenta" name="fecha_venta" required>
 
       <!-- Otros campos del formulario -->
+      <label for="metodoPago">Método de Pago:</label>
+      <input type="text" id="metodoPago" name="metodo_pago" required>
+
+      <label for="totalVenta">Total Venta:</label>
+      <input type="number" id="totalVenta" name="total_venta" required>
+
+      <!-- Agregar otros campos según la estructura de tu venta -->
 
       <button type="submit">Guardar Venta</button>
     </form>
   </div>
 </div>
+
 
 <table>
   <thead>
@@ -72,5 +80,27 @@
   
       alert(detalleProductos);
     }
+  </script>
+  
+  <script>
+    // JavaScript para mostrar/ocultar el modal y cerrar el modal
+    const agregarVentaBtn = document.getElementById('agregarVentaBtn');
+    const agregarVentaModal = document.getElementById('agregarVentaModal');
+    const cerrarModal = document.getElementById('cerrarModal');
+    const formularioAgregarVenta = document.getElementById('formularioAgregarVenta');
+  
+    agregarVentaBtn.addEventListener('click', () => {
+      agregarVentaModal.style.display = 'block';
+    });
+  
+    cerrarModal.addEventListener('click', () => {
+      agregarVentaModal.style.display = 'none';
+    });
+  
+    formularioAgregarVenta.addEventListener('submit', (event) => {
+      event.preventDefault();
+      agregarVentaModal.style.display = 'none';
+      // Aquí podrías enviar los datos del formulario a través de fetch() u otra lógica necesaria
+    });
   </script>
   
