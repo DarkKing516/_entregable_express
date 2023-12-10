@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { getPedidosPage } = require('../controllers/pedidosController');
+const { getConfiguracionPage } = require('../controllers/configuracionController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
 
 // Rutas
@@ -43,7 +44,7 @@ router.get('/pedidos', getPedidosPage);
 
 
 
-router.get('/danilo', getPedidosPage);
+router.get('/configuracion', getConfiguracionPage);
 
 
 

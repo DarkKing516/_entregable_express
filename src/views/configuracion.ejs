@@ -1,0 +1,97 @@
+<!-- src/views/pedidos.ejs -->
+<link rel="shortcut icon"
+  href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+<%- include('./layouts/nav') %>
+  <h1>Listado de Usuarios</h1>
+  <button id="agregarUsuarioBtn">Agregar</button>
+
+  <!-- Modal -->
+  <div id="agregarUsuarioModal" class="modal">
+    <div class="modal-content">
+      <span id="cerrarModal" class="cerrar">&times;</span>
+      <h2>Agregar Usuario</h2>
+      <!-- Aquí colocarías tu formulario para agregar Usuarios -->
+      <!-- Por ejemplo, un formulario sencillo con campos para fecha, total, etc. -->
+      <form id="formularioAgregarUsuario">
+        <label for="fechaCreacion">Fecha Creación:</label>
+        <input type="text" id="fechaCreacion" name="fechaCreacion" required>
+
+        <!-- Otros campos del formulario -->
+
+        <button type="submit">Guardar Usuario</button>
+      </form>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <td>Id</td>
+        <td>Nombre</td>
+        <td>Correo</td>
+        <td>Documento</td>
+        <td>Estado Usuario</td>
+        <td>Contraseña</td>
+        <td>Rol</td>
+        <td>Permisos</td>
+        <td>Acción</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% usuarios.forEach(usuario => { %>
+        <tr>
+          <td><%= usuario._id.toString() %></td>
+          <td><%= usuario.nombre %></td>
+          <td><%= usuario.correo %></td>
+          <td><%= usuario.documento %></td>
+          <td><%= usuario.estado_usuario ? 'Activo' : 'Inactivo' %></td>
+          <td><%= usuario.contraseña %></td>
+          <td>
+            <% if (usuario.rol && usuario.rol.length > 0) { %>
+              <% usuario.rol.forEach(rol => { %>
+                <div><%= rol.nombre_rol %></div>
+              <% }); %>
+            <% } else { %>
+              <div>No hay roles asignados</div>
+            <% } %>
+          </td>
+          <td>
+            <% if (usuario.permisos && usuario.permisos.length > 0) { %>
+              <% usuario.permisos.forEach(permiso => { %>
+                <div><%= permiso.nombre_permiso %>: <%= permiso.estado_permiso ? 'Habilitado' : 'Deshabilitado' %></div>
+              <% }); %>
+            <% } else { %>
+              <div>No hay permisos asignados</div>
+            <% } %>
+          </td>
+          <td>
+            <button class="editarUsuarioBtn" data-id="<%= usuario._id.toString() %>">Editar</button>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <script>
+    // JavaScript para mostrar/ocultar el modal
+    const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
+    const agregarPedidoModal = document.getElementById('agregarPedidoModal');
+    const cerrarModal = document.getElementById('cerrarModal');
+    const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
+
+    agregarPedidoBtn.addEventListener('click', () => {
+      agregarPedidoModal.style.display = 'block';
+    });
+
+    cerrarModal.addEventListener('click', () => {
+      agregarPedidoModal.style.display = 'none';
+    });
+
+    formularioAgregarPedido.addEventListener('submit', (event) => {
+      // Aquí puedes agregar la lógica para enviar el formulario o realizar acciones con los datos ingresados
+      event.preventDefault();
+      // Por ejemplo, puedes usar fetch() para enviar los datos al servidor
+      // y después cerrar el modal
+      agregarPedidoModal.style.display = 'none';
+    });
+  </script>
