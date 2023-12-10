@@ -11,7 +11,7 @@
     <h2>Agregar Venta</h2>
 
     <!-- Formulario para agregar venta -->
-    <form id="formularioAgregarVenta" action="/agregarVentas" method="POST">
+    <form id="formularioAgregarVenta" action="/agregarVenta" method="POST">
       <label for="fechaVenta">Fecha Venta:</label>
       <input type="text" id="fechaVenta" name="fecha_venta" required>
 
@@ -97,10 +97,5 @@
       agregarVentaModal.style.display = 'none';
     });
   
-    formularioAgregarVenta.addEventListener('submit', (event) => {
-      event.preventDefault();
-      agregarVentaModal.style.display = 'none';
-      // Aquí podrías enviar los datos del formulario a través de fetch() u otra lógica necesaria
-    });
   </script>
   

@@ -56,7 +56,7 @@ router.get('/danilo', getPedidosPage);
 
 
 router.get('/pelos', getVentasPage);
-router.post('/agregarVentas', agregarVenta)
+router.post('/agregarVenta', agregarVenta)
 
 
 

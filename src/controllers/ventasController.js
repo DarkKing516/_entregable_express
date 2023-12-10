@@ -53,9 +53,11 @@ const agregarVenta = async (req, res) => {
 
     // Agregar la nueva venta a la colección de ventas en la base de datos
     await ventasCollection.insertOne(nuevaVenta);
+    
+    const ventas = await ventasCollection.find({}).toArray();
 
     // Redireccionar a la página de ventas después de agregar la venta
-    res.redirect('./views/ventas.js'); // Reemplazar con la ruta correcta
+    res.render('ventas', { ventas }); // Reemplazar con la ruta correcta
   } catch (error) {
     console.error('Error al agregar la venta:', error);
     res.status(500).send('Error interno del servidor al agregar la venta');
