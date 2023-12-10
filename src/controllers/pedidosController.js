@@ -37,6 +37,64 @@ const obtenerFechaActual = () => {
 };
 
 const agregarPedido = async (req, res) => {
+  console.log('req.body:', req.body);
+  const {
+    fechaPedido,
+    nombreUsuario,
+  } = req.body;
+
+  // Obtener el número de servicios y productos
+  const numServicios = req.body.numServicios || 0;
+  const numProductos = req.body.numProductos || 0;
+
+  const servicios = [];
+  const productos = [];
+
+  // Iterar sobre los campos de servicios
+  for (let i = 1; i <= numServicios; i++) {
+    servicios.push({
+      tipo_servicio: {
+        nombre_tipo_servicio: req.body[`tipoServicio${i}`],
+        estado_tipo_servicio: req.body[`estadoTipoServicio${i}`],
+      },
+      nombre_servicio: req.body[`nombreServicio${i}`],
+      estado_servicio: req.body[`estadoServicio${i}`],
+      cantidad_servicio: req.body[`cantidadServicio${i}`],
+      precio_servicio: req.body[`precioServicio${i}`],
+      subtotal: req.body[`cantidadServicio${i}`] * req.body[`precioServicio${i}`],
+    });
+  }
+
+  // Iterar sobre los campos de productos
+  for (let i = 1; i <= numProductos; i++) {
+    productos.push({
+      tipo_producto: {
+        nombre_tipo_producto: req.body[`tipoProducto${i}`],
+        estado_tipo_producto: req.body[`estadoTipoProducto${i}`],
+      },
+      nombre_producto: req.body[`nombreProducto${i}`],
+      estado_producto: req.body[`estadoProducto${i}`],
+      cantidad_producto: req.body[`cantidadProducto${i}`],
+      precio_producto: req.body[`precioProducto${i}`],
+      subtotal: req.body[`cantidadProducto${i}`] * req.body[`precioProducto${i}`],
+    });
+  }
+
+  // Calcular total
+  const totalPedido = servicios.reduce((total, servicio) => total + servicio.subtotal, 0)
+    + productos.reduce((total, producto) => total + producto.subtotal, 0);
+
+  // Crear el nuevo pedido
+  const nuevoPedido = {
+    servicios,
+    productos,
+    fecha_creacion: obtenerFechaActual(),
+    fecha_pedido: fechaPedido,
+    total_pedido: totalPedido,
+    estado_pedido: 'por hacer',
+    nombre_usuario: nombreUsuario,
+  };
+
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -45,62 +103,6 @@ const agregarPedido = async (req, res) => {
 
     const database = client.db('erikas_homemade');
     const pedidosCollection = database.collection('pedidos');
-
-    // Obtener datos del formulario
-    const {
-      fechaPedido,
-      tipoServicio,
-      nombreServicio,
-      estadoServicio,
-      cantidadServicio,
-      precioServicio,
-      tipoProducto,
-      nombreProducto,
-      estadoProducto,
-      cantidadProducto,
-      precioProducto,
-      nombreUsuario,
-    } = req.body;
-
-    // Validaciones adicionales si es necesario
-
-    // Calcular subtotales y total
-    const subtotalServicio = cantidadServicio * precioServicio;
-    const subtotalProducto = cantidadProducto * precioProducto;
-    const totalPedido = subtotalServicio + subtotalProducto;
-
-    // Crear el nuevo pedido
-    const nuevoPedido = {
-      servicios: [{
-        tipo_servicio: {
-          nombre_tipo_servicio: tipoServicio,
-          estado_tipo_servicio: estadoServicio,
-        },
-        nombre_servicio: nombreServicio,
-        estado_servicio: estadoServicio,
-        cantidad_servicio: cantidadServicio,
-        precio_servicio: precioServicio,
-        estado_servicio_catalogo: estadoServicio,
-        subtotal: subtotalServicio,
-      }],
-      productos: [{
-        tipo_producto: {
-          nombre_tipo_producto: tipoProducto,
-          estado_tipo_producto: estadoProducto,
-        },
-        nombre_producto: nombreProducto,
-        estado_producto: estadoProducto,
-        cantidad_producto: cantidadProducto,
-        precio_producto: precioProducto,
-        estado_producto_catalogo: estadoProducto,
-        subtotal: subtotalProducto,
-      }],
-      fecha_creacion: obtenerFechaActual(),
-      fecha_pedido: fechaPedido,
-      total_pedido: totalPedido,
-      estado_pedido: 'por hacer',
-      nombre_usuario: nombreUsuario,
-    };
 
     // Insertar el nuevo pedido en la base de datos
     await pedidosCollection.insertOne(nuevoPedido);
@@ -113,6 +115,7 @@ const agregarPedido = async (req, res) => {
     await client.close(); // Cerrar la conexión
   }
 };
+
 
 const eliminarPedido = async (req, res) => {
   const { id } = req.params;

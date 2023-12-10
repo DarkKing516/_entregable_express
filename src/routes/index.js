@@ -34,7 +34,6 @@ router.get('/signout', cerrarSesion); // Ruta para cerrar sesión
 
 router.get('/pedidos', getPedidosPage);
 router.post('/agregarPedido', agregarPedido); // Agrega esta línea para manejar las solicitudes POST para agregar pedidos
-// Agrega esta línea al archivo index.js
 router.get('/eliminarPedido/:id', eliminarPedido);
 
 
