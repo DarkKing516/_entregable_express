@@ -9,43 +9,43 @@
     <div class="modal-content">
       <span id="cerrarModal" class="cerrar">&times;</span>
       <h2>Agregar Venta</h2>
-  
+
       <!-- Formulario para agregar venta -->
       <form id="formularioAgregarVenta" action="/agregarVenta" method="POST">
         <label for="fechaVenta">Fecha Venta:</label>
         <input type="text" id="fechaVenta" name="fecha_venta" required>
-  
+
         <label for="metodoPago">Método de Pago:</label>
         <input type="text" id="metodoPago" name="metodo_pago" required>
-  
+
         <label for="totalVenta">Total Venta:</label>
         <input type="number" id="totalVenta" name="total_venta" required>
-  
+
         <label for="pedido">Pedido:</label>
         <select id="pedido" name="pedido">
-          <% pedidos.forEach(pedido => { %>
+          <% pedidos.forEach(pedido=> { %>
             <option value="<%= pedido._id %>">
-              <%= pedido._id %>
+              <%= pedido.nombre_usuario %>
             </option>
-          <% }); %>
+            <% }); %>
         </select>
-  
+
         <label for="usuario">Usuario:</label>
         <select id="usuario" name="usuario">
-          <% usuarios.forEach(usuario => { %>
+          <% usuarios.forEach(usuario=> { %>
             <option value="<%= usuario._id %>">
-              <%= usuario.nombre %> - <%= usuario.email %>
+              <%= usuario.nombre%>
             </option>
-          <% }); %>
+            <% }); %>
         </select>
-  
+
         <!-- Otros campos según la estructura de tu venta -->
-  
+
         <button type="submit">Guardar Venta</button>
       </form>
     </div>
   </div>
-  
+
 
 
 
@@ -91,30 +91,73 @@
             <%= venta.correo %>
           </td>
           <td>
-            <button onclick="mostrarDetalle('<%= JSON.stringify(venta.productos) %>')">Ver Detalle</button>
+            <button
+              onclick="mostrarDetalle('<%= JSON.stringify(venta.productos) %>', '<%= JSON.stringify(venta.servicios) %>')">Ver
+              Detalle</button>
           </td>
-          <td>editar</td>
+          <td>
+            <button class="editarBtn">Editar</button>
+          </td>          
+          <td>
+            <form action="/eliminarVenta/<%= venta._id %>" method="POST">
+              <button type="submit">Eliminar</button>
+            </form>
+          </td>
         </tr>
         <% }); %>
     </tbody>
   </table>
 
+  <div id="editarVentaModal" class="modal">
+    <div class="modal-content">
+      <span id="cerrarEditarModal" class="cerrar">&times;</span>
+      <h2>Editar Venta</h2>
+
+      <!-- Formulario para editar venta -->
+      <form id="formularioEditarVenta" action="/editarVenta/<%= venta._id %>" method="POST">
+        <!-- Aquí mostrar los campos de la venta para editar -->
+        <label for="fechaVentaEdit">Fecha Venta:</label>
+        <input type="text" id="fechaVentaEdit" name="fecha_venta" value="<%= venta.fecha_venta %>" required>
+
+        <label for="metodoPagoEdit">Método de Pago:</label>
+        <input type="text" id="metodoPagoEdit" name="metodo_pago" value="<%= venta.metodo_pago %>" required>
+
+        <label for="totalVentaEdit">Total Venta:</label>
+        <input type="number" id="totalVentaEdit" name="total_venta" value="<%= venta.total_venta %>" required>
+
+        <!-- Resto de campos de la venta para editar -->
+
+        <button type="submit">Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Resto del código HTML anterior -->
 
   <script>
-    function mostrarDetalle(productosJSON) {
+    function mostrarDetalle(productosJSON, serviciosJSON) {
       const productos = JSON.parse(productosJSON);
+      const servicios = JSON.parse(serviciosJSON);
 
       let detalleProductos = 'Productos: ';
       productos.forEach((producto, index) => {
-        detalleProductos += `${producto.nombre}: Precio: ${producto.precio}`;
+        detalleProductos += `${producto.nombreProducto}: Precio: ${producto.precioProducto}`;
         if (index !== productos.length - 1) {
           detalleProductos += ', ';
         }
       });
 
-      alert(detalleProductos);
+      let detalleServicios = 'Servicios: ';
+      servicios.forEach((servicio, index) => {
+        detalleServicios += `${servicio.nombreServicio}: Precio: ${servicio.precioServicio}`;
+        if (index !== servicios.length - 1) {
+          detalleServicios += ', ';
+        }
+      });
+
+      alert(detalleProductos + '\n' + detalleServicios);
     }
+
   </script>
 
   <script>
@@ -130,6 +173,26 @@
 
     cerrarModal.addEventListener('click', () => {
       agregarVentaModal.style.display = 'none';
+    });
+
+  </script>
+
+  <script>
+    // JavaScript para mostrar/ocultar el modal de edición y cerrar el modal
+    const editarVentaModal = document.getElementById('editarVentaModal');
+    const cerrarEditarModal = document.getElementById('cerrarEditarModal');
+    const formularioEditarVenta = document.getElementById('formularioEditarVenta');
+
+    // Agregar un evento al botón de editar en cada fila de la tabla
+    const botonesEditar = document.querySelectorAll('.editarBtn');
+    botonesEditar.forEach(boton => {
+      boton.addEventListener('click', () => {
+        editarVentaModal.style.display = 'block';
+      });
+    });
+
+    cerrarEditarModal.addEventListener('click', () => {
+      editarVentaModal.style.display = 'none';
     });
 
   </script>
