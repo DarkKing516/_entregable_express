@@ -1,0 +1,39 @@
+<!-- src/views/detallePedido.ejs -->
+<h1>Detalle del Pedido</h1>
+<p>Fecha Creación: <%= pedido.fecha_creacion %></p>
+<p>Fecha Pedido: <%= pedido.fecha_pedido %></p>
+<p>Total Pedido: <%= pedido.total_pedido %></p>
+<p>Estado Pedido: <%= pedido.estado_pedido %></p>
+<p>Usuario Pedido: <%= pedido.nombre_usuario %></p>
+
+<h2>Servicios</h2>
+<ul>
+  <% pedido.servicios.forEach(servicio => { %>
+    <li>
+      <strong>Tipo de Servicio:</strong> <%= servicio.tipoServicio.tipoServicio %><br>
+      <strong>Estado Tipo de Servicio:</strong> <%= servicio.tipoServicio.estadoTipoServicio %><br>
+      <strong>Estado del Servicio:</strong> <%= servicio.estadoServicio %><br>
+      <strong>Nombre del Servicio:</strong> <%= servicio.nombreServicio %><br>
+      <strong>Cantidad:</strong> <%= servicio.cantidadServicio %><br>
+      <strong>Precio:</strong> <%= servicio.precioServicio %><br>
+      <strong>Subtotal:</strong> <%= servicio.subtotal %><br>
+    </li>
+  <% }); %>
+</ul>
+
+<h2>Productos</h2>
+<ul>
+  <% pedido.productos.forEach(producto => { %>
+    <li>
+      <strong>Tipo de Producto:</strong> <%= producto.tipoProducto.tipoProducto %><br>
+      <strong>Estado Tipo de Producto:</strong> <%= producto.tipoProducto.estadoTipoProducto %><br>
+      <strong>Estado del Producto:</strong> <%= producto.estadoProducto %><br>
+      <strong>Nombre del Producto:</strong> <%= producto.nombreProducto %><br>
+      <strong>Cantidad:</strong> <%= producto.cantidadProducto %><br>
+      <strong>Precio:</strong> <%= producto.precioProducto %><br>
+      <strong>Subtotal:</strong> <%= producto.subtotal %><br>
+    </li>
+  <% }); %>
+</ul>
+
+<a href="/pedidos">Volver a la lista de pedidos</a>

@@ -2,34 +2,115 @@
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 <%- include('./layouts/nav') %>
-<h1>Lista de usuarios</h1>
-<ul>
-  <% usuarios.forEach(usuario=> { %>
-    <li>
-      <%= usuario.nombre %>
-    </li>
-  <% }); %>
-</ul>
-  <h1>Listado de Pedidos</h1>
-  <button id="agregarPedidoBtn">Agregar</button>
+  <h1>Lista de usuarios</h1>
+  <ul>
+    <% usuarios.forEach(usuario=> { %>
+      <li>
+        <%= usuario.nombre %>
+      </li>
+      <% }); %>
+  </ul>
 
-  <!-- Modal -->
-  <div id="agregarPedidoModal" class="modal">
+  <div id="agregarPedidoModal" class="modal" style="display: none;">
     <div class="modal-content">
       <span id="cerrarModal" class="cerrar">&times;</span>
       <h2>Agregar Pedido</h2>
-      <!-- Aquí colocarías tu formulario para agregar pedidos -->
-      <!-- Por ejemplo, un formulario sencillo con campos para fecha, total, etc. -->
-      <form id="formularioAgregarPedido">
-        <label for="fechaCreacion">Fecha Creación:</label>
-        <input type="text" id="fechaCreacion" name="fechaCreacion" required>
+      <!-- Tu formulario para agregar pedidos aquí -->
+      <form id="formularioAgregarPedido" action="/agregarPedido" method="POST">
+        <label for="fechaPedido">Fecha pedido:</label>
+        <input type="date" id="fechaPedido" name="fechaPedido" min="<%= fechaActual %>" required>
 
-        <!-- Otros campos del formulario -->
+        <!-- Botones para agregar servicios y productos -->
+        <button type="button" id="agregarServicioBtn">Agregar Servicio</button>
+        <button type="button" id="agregarProductoBtn">Agregar Producto</button>
+
+        <!-- Campos para agregar servicios -->
+        <div id="serviciosContainer">
+          <h3>Servicios</h3>
+          <div class="servicio">
+            <label for="tipoServicio">Tipo de Servicio:</label>
+            <select id="tipoServicio" name="tipoServicio" required>
+              <option value="tipo1">Tipo 1</option>
+              <option value="tipo2">Tipo 2</option>
+              <option value="tipo3">Tipo 3</option>
+            </select>
+            <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
+            <select id="estadoTipoServicio" name="estadoTipoServicio" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+
+            <label for="nombreServicio">Nombre Servicio:</label>
+            <input type="text" id="nombreServicio" name="nombreServicio" required>
+
+            <label for="estadoServicio">Estado Servicio:</label>
+            <select id="estadoServicio" name="estadoServicio" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+
+            <label for="cantidadServicio">Cantidadad Servicio:</label>
+            <input type="number" id="cantidadServicio" name="cantidadServicio" required>
+
+            <label for="precioServicio">Precio Servicio:</label>
+            <input type="number" id="precioServicio" name="precioServicio" required>
+          </div>
+          <input type="hidden" name="servicios" id="serviciosInput" />
+        </div>
+
+        <!-- Campos para agregar productos -->
+        <div id="productosContainer">
+          <h3>Productos</h3>
+          <div class="producto">
+            <label for="tipoProducto">Tipo de Producto:</label>
+            <select id="tipoProducto" name="tipoProducto" required>
+              <option value="tipo1">Tipo 1</option>
+              <option value="tipo2">Tipo 2</option>
+              <option value="tipo3">Tipo 3</option>
+            </select>
+
+            <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
+            <select id="estadoTipoProducto" name="estadoTipoProducto" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+
+            <label for="nombreProducto">Nombre Producto:</label>
+            <input type="text" id="nombreProducto" name="nombreProducto" required>
+
+            <label for="estadoProducto">Estado Producto:</label>
+            <select id="estadoProducto" name="estadoProducto" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+            <label for="cantidadProducto">Cantidadad Producto:</label>
+            <input type="number" id="cantidadProducto" name="cantidadProducto" required>
+
+            <label for="precioProducto">Precio Producto:</label>
+            <input type="number" id="precioProducto" name="precioProducto" required>
+          </div>
+          <input type="hidden" name="productos" id="productosInput" />
+        </div>
+
+        <label for="nombreUsuario">Nombre Usuario:</label>
+        <select id="nombreUsuario" name="nombreUsuario" required>
+          <% usuarios.forEach(usuario=> { %>
+            <option value="<%= usuario.nombre %>">
+              <%= usuario.nombre %>
+            </option>
+            <% }); %>
+        </select>
+
+        <input type="hidden" name="totalPedido" id="totalPedidoInput" />
 
         <button type="submit">Guardar Pedido</button>
       </form>
     </div>
   </div>
+  <h1>Listado de Pedidos</h1>
+  <button id="agregarPedidoBtn">Agregar</button>
+
+  <!-- Modal -->
 
   <table>
     <thead>
@@ -43,25 +124,34 @@
       </tr>
     </thead>
     <tbody>
-      <% pedidos.forEach(pedido => { %>
+      <% pedidos.forEach(pedido=> { %>
         <tr>
-          <td><%= pedido.fecha_creacion %></td>
-          <td><%= pedido.fecha_pedido %></td>
-          <td><%= pedido.total_pedido %></td>
-          <td><%= pedido.estado_pedido %></td>
-          <td><%= pedido.nombre_usuario %></td>
-          <td>editar</td>
+          <td>
+            <%= pedido.fecha_creacion %>
+          </td>
+          <td>
+            <%= pedido.fecha_pedido %>
+          </td>
+          <td>
+            <%= pedido.total_pedido %>
+          </td>
+          <td>
+            <%= pedido.estado_pedido %>
+          </td>
+          <td>
+            <%= pedido.nombre_usuario %>
+          </td>
+          <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
         </tr>
-      <% }); %>
+        <% }); %>
     </tbody>
   </table>
 
   <script>
-    // JavaScript para mostrar/ocultar el modal
+    // JavaScript para mostrar/ocultar el modal y validar fechas
     const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
     const agregarPedidoModal = document.getElementById('agregarPedidoModal');
     const cerrarModal = document.getElementById('cerrarModal');
-    const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
 
     agregarPedidoBtn.addEventListener('click', () => {
       agregarPedidoModal.style.display = 'block';
@@ -71,11 +161,86 @@
       agregarPedidoModal.style.display = 'none';
     });
 
-    formularioAgregarPedido.addEventListener('submit', (event) => {
-      // Aquí puedes agregar la lógica para enviar el formulario o realizar acciones con los datos ingresados
-      event.preventDefault();
-      // Por ejemplo, puedes usar fetch() para enviar los datos al servidor
-      // y después cerrar el modal
-      agregarPedidoModal.style.display = 'none';
+    const agregarServicioBtn = document.getElementById('agregarServicioBtn');
+    const agregarProductoBtn = document.getElementById('agregarProductoBtn');
+    const serviciosContainer = document.getElementById('serviciosContainer');
+    const productosContainer = document.getElementById('productosContainer');
+
+    agregarServicioBtn.addEventListener('click', agregarCampoServicio);
+    agregarProductoBtn.addEventListener('click', agregarCampoProducto);
+
+    function agregarCampoServicio() {
+      const nuevoServicio = document.querySelector('.servicio').cloneNode(true);
+      serviciosContainer.appendChild(nuevoServicio);
+    }
+
+    function agregarCampoProducto() {
+      const nuevoProducto = document.querySelector('.producto').cloneNode(true);
+      productosContainer.appendChild(nuevoProducto);
+    }
+
+    const fechaPedidoInput = document.getElementById('fechaPedido');
+    const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
+
+    // Función para obtener datos de un servicio desde su contenedor HTML
+    function obtenerDatosServicio(servicio) {
+      return {
+        tipoServicio: servicio.querySelector('#tipoServicio').value,
+        estadoTipoServicio: servicio.querySelector('#estadoTipoServicio').value,
+        nombreServicio: servicio.querySelector('#nombreServicio').value,
+        estadoServicio: servicio.querySelector('#estadoServicio').value,
+        cantidadServicio: parseFloat(servicio.querySelector('#cantidadServicio').value), // Parsear como número
+        precioServicio: parseFloat(servicio.querySelector('#precioServicio').value), // Parsear como número
+      };
+    }
+
+    // Función para obtener datos de un producto desde su contenedor HTML
+    function obtenerDatosProducto(producto) {
+      return {
+        tipoProducto: producto.querySelector('#tipoProducto').value,
+        estadoTipoProducto: producto.querySelector('#estadoTipoProducto').value,
+        nombreProducto: producto.querySelector('#nombreProducto').value,
+        estadoProducto: producto.querySelector('#estadoProducto').value,
+        cantidadProducto: parseFloat(producto.querySelector('#cantidadProducto').value), // Parsear como número
+        precioProducto: parseFloat(producto.querySelector('#precioProducto').value), // Parsear como número
+      };
+    }
+
+    formularioAgregarPedido.addEventListener('submit', function (event) {
+      const fechaCreacion = new Date(); // Obtener la fecha actual
+      const fechaPedido = new Date(fechaPedidoInput.value);
+
+      // Validar que la fecha de pedido sea al menos 5 días después de la fecha de creación
+      if (fechaPedido - fechaCreacion < 5 * 24 * 60 * 60 * 1000) {
+        alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
+        event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
+      }
+
+      // Obtener servicios y productos del contenedor y actualizar los campos ocultos
+      const servicios = Array.from(serviciosContainer.querySelectorAll('.servicio'));
+      const productos = Array.from(productosContainer.querySelectorAll('.producto'));
+
+      const serviciosData = servicios.map(obtenerDatosServicio);
+      const productosData = productos.map(obtenerDatosProducto);
+
+      // Calcular subtotales y total
+      let totalPedido = 0;
+
+      const serviciosConSubtotales = serviciosData.map(servicio => {
+        const subtotal = servicio.cantidadServicio * servicio.precioServicio;
+        totalPedido += subtotal;
+        return { ...servicio, subtotal };
+      });
+
+      const productosConSubtotales = productosData.map(producto => {
+        const subtotal = producto.cantidadProducto * producto.precioProducto;
+        totalPedido += subtotal;
+        return { ...producto, subtotal };
+      });
+
+      document.getElementById('serviciosInput').value = JSON.stringify(serviciosConSubtotales);
+      document.getElementById('productosInput').value = JSON.stringify(productosConSubtotales);
+      document.getElementById('totalPedidoInput').value = totalPedido;
+
     });
   </script>
