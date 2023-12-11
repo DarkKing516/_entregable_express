@@ -123,18 +123,49 @@ const eliminarVenta = async (req, res) => {
     await client.close();
   }
 };
+const obtenerDatosVenta = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri);
 
-const editarVenta = async (req, res) => {
   try {
-    const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
-    const client = new MongoClient(uri);
-
     await client.connect();
 
     const database = client.db('erikas_homemade');
     const ventasCollection = database.collection('ventas');
 
-    const ventaId = req.params.id; // ID de la venta que deseas editar desde los parámetros de la solicitud
+    const ventaId = req.params.id; // ID de la venta que se desea editar
+
+    // Obtener los datos de la venta específica
+    const venta = await ventasCollection.findOne({ _id: new ObjectId(ventaId) });
+
+    if (!venta) {
+      console.log('Venta no encontrada');
+      res.status(404).send('Venta no encontrada');
+      return;
+    }
+
+    // Redirigir a la página de edición con los datos de la venta
+    
+    res.render('formularioEditarVenta', { venta }); // 'formularioEditarVenta' es el nombre de tu vista
+  } catch (error) {
+    console.error('Error al obtener los datos de la venta:', error);
+    res.status(500).send('Error interno del servidor al obtener los datos de la venta');
+  } finally {
+    await client.close();
+  }
+};
+
+const actualizarVentas = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const ventasCollection = database.collection('ventas');
+
+    const ventaId = req.params.id; // ID de la venta que se desea editar
     const { fecha_venta, metodo_pago, total_venta, nombre, telefono, documento, correo, total_pedido, productos, servicios } = req.body; // Datos actualizados de la venta desde el cuerpo de la solicitud
 
     const result = await ventasCollection.updateOne(
@@ -164,7 +195,6 @@ const editarVenta = async (req, res) => {
 
     res.redirect('/pelos'); // Redirigir a la página deseada después de editar
     console.log('Venta actualizada correctamente');
-    res.status(200).send('Venta actualizada correctamente');
   } catch (error) {
     console.error('Error al editar la venta:', error);
     res.status(500).send('Error interno del servidor al editar la venta');
@@ -173,5 +203,4 @@ const editarVenta = async (req, res) => {
   }
 };
 
-
-module.exports = { getVentasPage, agregarVenta, eliminarVenta, editarVenta};
+module.exports = { getVentasPage, agregarVenta, eliminarVenta, actualizarVentas, obtenerDatosVenta };

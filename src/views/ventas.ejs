@@ -25,7 +25,7 @@
         <select id="pedido" name="pedido">
           <% pedidos.forEach(pedido=> { %>
             <option value="<%= pedido._id %>">
-              <%= pedido.nombre_usuario %>
+              <%= pedido.nombre_usuario %>, total= <%= pedido.total_pedido %> 
             </option>
             <% }); %>
         </select>
@@ -120,7 +120,7 @@
 
       let detalleProductos = 'Productos: ';
       productos.forEach((producto, index) => {
-        detalleProductos += `${producto.nombreProducto}: Precio: ${producto.precioProducto}`;
+        detalleProductos += `${producto.nombre}: Precio: ${producto.precio}`;
         if (index !== productos.length - 1) {
           detalleProductos += ', ';
         }
@@ -128,7 +128,7 @@
 
       let detalleServicios = 'Servicios: ';
       servicios.forEach((servicio, index) => {
-        detalleServicios += `${servicio.nombreServicio}: Precio: ${servicio.precioServicio}`;
+        detalleServicios += `${servicio.nombre}: Precio: ${servicio.precio}`;
         if (index !== servicios.length - 1) {
           detalleServicios += ', ';
         }

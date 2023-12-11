@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { getPedidosPage, agregarPedido, eliminarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
-const { getVentasPage, agregarVenta, eliminarVenta, editarVenta } = require('../controllers/ventasController');
+const { getVentasPage, agregarVenta, eliminarVenta, actualizarVentas, obtenerDatosVenta} = require('../controllers/ventasController');
 const { getConfiguracionPage } = require('../controllers/configuracionController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
 const { getReservasPage, agregarReserva, eliminarReserva } = require('../controllers/reservasController');
@@ -60,8 +60,8 @@ router.get('/configuracion', getConfiguracionPage);
 router.get('/pelos', getVentasPage);
 router.post('/agregarVenta', agregarVenta)
 router.post('/eliminarVenta/:id', eliminarVenta);
-router.get('/editarVenta/:id', editarVenta);
-
+router.get('/editarVenta/:id', obtenerDatosVenta);
+router.post('/actualizarVenta/:id', actualizarVentas);
 
 
 
