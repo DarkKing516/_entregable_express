@@ -140,4 +140,28 @@ const verDetallePedido = async (req, res) => {
   }
 };
 
-module.exports = { getPedidosPage, agregarPedido, verDetallePedido };
+const eliminarPedido = async (req, res) => {
+  const pedidoId = req.params.id;
+
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Eliminar el pedido por ID
+    await pedidosCollection.deleteOne({ _id: new ObjectId(pedidoId) });
+
+    res.redirect('/pedidos'); // Redirigir a la página de pedidos después de eliminar
+  } catch (error) {
+    console.error('Error al eliminar el pedido:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido };
