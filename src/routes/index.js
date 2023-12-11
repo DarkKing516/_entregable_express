@@ -3,9 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 const usuarioModel = require('../models/usuarioModel'); 
-const { getPedidosPage } = require('../controllers/pedidosController');
+const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido } = require('../controllers/pedidosController');
 const { getConfiguracionPage, registrarUsuario, eliminarUsuario} = require('../controllers/configuracionController');
 const { iniciarSesion, cerrarSesion } = require('../controllers/authController');
+const { getVentasPage, agregarVenta } = require('../controllers/ventasController');
 const { getReservasPage, agregarReserva, eliminarReserva } = require('../controllers/reservasController');
 
 // Rutas
@@ -56,8 +57,8 @@ router.get('/eliminarPedido/:id', eliminarPedido);
 
 
 router.get('/configuracion', getConfiguracionPage);
-router.post('/configuracion', registrarUsuario);
-router.delete('/configuracion/:_id', eliminarUsuario);
+router.post('/registrarUsuario', registrarUsuario);
+router.delete('/eliminarUsuario/:id', eliminarUsuario);
 
 
 

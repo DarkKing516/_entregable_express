@@ -1,6 +1,8 @@
 // src/controllers/configuracionController.js
 const { MongoClient } = require('mongodb');
 const usuarioModel = require('../models/usuarioModel');
+const { obtenerPermisosSegunRol } = require('../models/usuarioModel'); // Agrega esta línea para importar la función
+
 
 // Función para obtener datos de la colección de configuracion
 const getConfiguracionPage = async (req, res) => {
@@ -31,12 +33,14 @@ const registrarUsuario = async (req, res) => {
   try {
     const nuevoUsuario = req.body;
 
-    // Asignar rol "cliente" y permisos asociados
-    nuevoUsuario.rol = [{ nombre_rol: 'cliente' }];
-    nuevoUsuario.permisos = [
-      { nombre_permiso: 'ver mi perfil', estado_permiso: true },
-      // Otros permisos asociados al rol "cliente"
-    ];
+    // Verificar si se seleccionó un rol específico
+    if (!nuevoUsuario.rol) {
+      // Si no se seleccionó un rol, asignar automáticamente el rol "cliente"
+      nuevoUsuario.rol = 'cliente';
+    }
+
+    // Asignar los permisos correspondientes al rol (puedes adaptar esta lógica según tus necesidades)
+    nuevoUsuario.permisos = obtenerPermisosSegunRol(nuevoUsuario.rol);
 
     await usuarioModel.registrarUsuario(nuevoUsuario);
 
@@ -44,20 +48,33 @@ const registrarUsuario = async (req, res) => {
     res.redirect('/');
   } catch (error) {
     console.error('Error al registrar usuario:', error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send(`Error interno del servidor: ${error.message}`);
   }
 };
 
 
+
 const eliminarUsuario = async (req, res) => {
-  const userId = req.params.id;
+  const usuarioId = req.params.id;
+
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
   try {
-    const resultado = await usuarioModel.eliminarUsuario(userId);
-    res.json({ success: true, resultado });
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const configuracionCollection = database.collection('configuracion');
+
+    // Eliminar el usuario por ID
+    await configuracionCollection.deleteOne({ _id: new ObjectId(usuarioId) });
+
+    res.redirect('/configuracion');
   } catch (error) {
     console.error('Error al eliminar el usuario:', error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
   }
 };
 
