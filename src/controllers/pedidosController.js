@@ -1,5 +1,5 @@
 // src/controllers/pedidosController.js
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 // Función para obtener datos de la colección de pedidos
 const getPedidosPage = async (req, res) => {
@@ -37,109 +37,132 @@ const obtenerFechaActual = () => {
 };
 
 const agregarPedido = async (req, res) => {
-  console.log('req.body:', req.body);
-  const {
-    fechaPedido,
-    nombreUsuario,
-  } = req.body;
+  // Obtener servicios y productos del cuerpo de la solicitud
+  const servicios = req.body.servicios ? JSON.parse(req.body.servicios) : [];
+  const productos = req.body.productos ? JSON.parse(req.body.productos) : [];
 
-  // Obtener el número de servicios y productos
-  const numServicios = req.body.numServicios || 0;
-  const numProductos = req.body.numProductos || 0;
+  // Calcular total y subtotales
+  let totalPedido = 0;
 
-  const servicios = [];
-  const productos = [];
+  const serviciosConSubtotales = servicios.map(servicio => {
+    const cantidad = parseInt(servicio.cantidadServicio);
+    const precio = parseFloat(servicio.precioServicio);
+    const subtotal = cantidad * precio;
 
-  // Iterar sobre los campos de servicios
-  for (let i = 1; i <= numServicios; i++) {
-    servicios.push({
-      tipo_servicio: {
-        nombre_tipo_servicio: req.body[`tipoServicio${i}`],
-        estado_tipo_servicio: req.body[`estadoTipoServicio${i}`],
-      },
-      nombre_servicio: req.body[`nombreServicio${i}`],
-      estado_servicio: req.body[`estadoServicio${i}`],
-      cantidad_servicio: req.body[`cantidadServicio${i}`],
-      precio_servicio: req.body[`precioServicio${i}`],
-      subtotal: req.body[`cantidadServicio${i}`] * req.body[`precioServicio${i}`],
-    });
-  }
+    // Update tipoServicio field to include tipoServicio and estadoTipoServicio
+    const tipoServicio = {
+      tipoServicio: servicio.tipoServicio,
+      estadoTipoServicio: servicio.estadoTipoServicio,
+    };
 
-  // Iterar sobre los campos de productos
-  for (let i = 1; i <= numProductos; i++) {
-    productos.push({
-      tipo_producto: {
-        nombre_tipo_producto: req.body[`tipoProducto${i}`],
-        estado_tipo_producto: req.body[`estadoTipoProducto${i}`],
-      },
-      nombre_producto: req.body[`nombreProducto${i}`],
-      estado_producto: req.body[`estadoProducto${i}`],
-      cantidad_producto: req.body[`cantidadProducto${i}`],
-      precio_producto: req.body[`precioProducto${i}`],
-      subtotal: req.body[`cantidadProducto${i}`] * req.body[`precioProducto${i}`],
-    });
-  }
+    totalPedido += subtotal;
 
-  // Calcular total
-  const totalPedido = servicios.reduce((total, servicio) => total + servicio.subtotal, 0)
-    + productos.reduce((total, producto) => total + producto.subtotal, 0);
+    return { ...servicio, tipoServicio, subtotal };
+  });
 
-  // Crear el nuevo pedido
-  const nuevoPedido = {
-    servicios,
-    productos,
+  const productosConSubtotales = productos.map(producto => {
+    const cantidad = parseInt(producto.cantidadProducto);
+    const precio = parseFloat(producto.precioProducto);
+    const subtotal = cantidad * precio;
+
+    // Update tipoProducto field to include tipoProducto and estadoTipoProducto
+    const tipoProducto = {
+      tipoProducto: producto.tipoProducto,
+      estadoTipoProducto: producto.estadoTipoProducto,
+    };
+
+    totalPedido += subtotal;
+
+    return { ...producto, tipoProducto, subtotal };
+  });
+
+  // Crear el objeto del pedido con servicios y productos
+  const pedido = {
+    servicios: serviciosConSubtotales,
+    productos: productosConSubtotales,
     fecha_creacion: obtenerFechaActual(),
-    fecha_pedido: fechaPedido,
+    fecha_pedido: req.body.fechaPedido,
     total_pedido: totalPedido,
     estado_pedido: 'por hacer',
-    nombre_usuario: nombreUsuario,
+    nombre_usuario: req.body.nombreUsuario,
   };
 
+  // Insertar el pedido en la base de datos
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
   try {
-    await client.connect(); // Conectar a la base de datos
-
-    const database = client.db('erikas_homemade');
-    const pedidosCollection = database.collection('pedidos');
-
-    // Insertar el nuevo pedido en la base de datos
-    await pedidosCollection.insertOne(nuevoPedido);
-
-    res.redirect('/pedidos'); // Redirigir a la página de pedidos después de agregar el pedido
-  } catch (error) {
-    console.error('Error al agregar pedido:', error);
-    res.status(500).send('Error interno del servidor');
-  } finally {
-    await client.close(); // Cerrar la conexión
-  }
-};
-
-
-const eliminarPedido = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
 
     const database = client.db('erikas_homemade');
     const pedidosCollection = database.collection('pedidos');
 
-    // Cambia esta línea en la función eliminarPedido
-    await pedidosCollection.deleteOne({ _id: new MongoClient.ObjectID(id) });
+    await pedidosCollection.insertOne(pedido);
 
-    res.redirect('/pedidos');
+    res.redirect('/pedidos'); // Redirigir a la página de pedidos o donde sea necesario
   } catch (error) {
-    console.error('Error al eliminar pedido:', error);
+    console.error('Error al insertar el pedido en la base de datos:', error);
     res.status(500).send('Error interno del servidor');
   } finally {
-    if (client) {
-      await client.close();
-    }
+    await client.close();
   }
 };
 
-module.exports = { getPedidosPage, agregarPedido, eliminarPedido /* otras funciones */ };
+
+const verDetallePedido = async (req, res) => {
+  const pedidoId = req.params.id;
+
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Obtener el pedido por ID
+    const pedido = await pedidosCollection.findOne({ _id: new ObjectId(pedidoId) });
+
+    if (!pedido) {
+      // Manejar el caso en el que el pedido no se encuentre
+      res.status(404).send('Pedido no encontrado');
+      return;
+    }
+
+    // Renderizar la vista con detalles del pedido
+    res.render('detallePedido', { pedido });
+  } catch (error) {
+    console.error('Error al obtener el detalle del pedido:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+
+const eliminarPedido = async (req, res) => {
+  const pedidoId = req.params.id;
+
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Eliminar el pedido por ID
+    await pedidosCollection.deleteOne({ _id: new ObjectId(pedidoId) });
+
+    res.redirect('/pedidos'); // Redirigir a la página de pedidos después de eliminar
+  } catch (error) {
+    console.error('Error al eliminar el pedido:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido };
