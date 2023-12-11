@@ -2,242 +2,245 @@
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 <%- include('./layouts/nav') %>
-<h1>Lista de usuarios</h1>
-<ul>
-  <% usuarios.forEach(usuario=> { %>
-    <li>
-      <%= usuario.nombre %>
-    </li>
-  <% }); %>
-</ul>
+  <h1>Lista de usuarios</h1>
+  <ul>
+    <% usuarios.forEach(usuario=> { %>
+      <li>
+        <%= usuario.nombre %>
+      </li>
+      <% }); %>
+  </ul>
 
-<div id="agregarPedidoModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span id="cerrarModal" class="cerrar">&times;</span>
-    <h2>Agregar Pedido</h2>
-    <!-- Tu formulario para agregar pedidos aquí -->
-    <form id="formularioAgregarPedido" action="/agregarPedido" method="POST">
-      <label for="fechaPedido">Fecha pedido:</label>
-      <input type="date" id="fechaPedido" name="fechaPedido" min="<%= fechaActual %>" required>
+  <div id="agregarPedidoModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="cerrarModal" class="cerrar">&times;</span>
+      <h2>Agregar Pedido</h2>
+      <!-- Tu formulario para agregar pedidos aquí -->
+      <form id="formularioAgregarPedido" action="/agregarPedido" method="POST">
+        <label for="fechaPedido">Fecha pedido:</label>
+        <input type="date" id="fechaPedido" name="fechaPedido" min="<%= fechaActual %>" required>
 
-      <!-- Campos para agregar servicios -->
-      <div id="serviciosContainer">
-        <h3>Servicios</h3>
-        <div class="servicio">
-          <label for="tipoServicio">Tipo de Servicio:</label>
-          <select id="tipoServicio" name="tipoServicio" required>
-            <option value="tipo1">Tipo 1</option>
-            <option value="tipo2">Tipo 2</option>
-            <option value="tipo3">Tipo 3</option>
-          </select>
-          <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
-          <select id="estadoTipoServicio" name="estadoTipoServicio" required>
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
-          </select>
+        <!-- Botones para agregar servicios y productos -->
+        <button type="button" id="agregarServicioBtn">Agregar Servicio</button>
+        <button type="button" id="agregarProductoBtn">Agregar Producto</button>
 
-          <label for="nombreServicio">Nombre Servicio:</label>
-          <input type="text" id="nombreServicio" name="nombreServicio" required>
+        <!-- Campos para agregar servicios -->
+        <div id="serviciosContainer">
+          <h3>Servicios</h3>
+          <div class="servicio">
+            <label for="tipoServicio">Tipo de Servicio:</label>
+            <select id="tipoServicio" name="tipoServicio" required>
+              <option value="tipo1">Tipo 1</option>
+              <option value="tipo2">Tipo 2</option>
+              <option value="tipo3">Tipo 3</option>
+            </select>
+            <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
+            <select id="estadoTipoServicio" name="estadoTipoServicio" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
 
-          <label for="estadoServicio">Estado Servicio:</label>
-          <select id="estadoServicio" name="estadoServicio" required>
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
-          </select>
+            <label for="nombreServicio">Nombre Servicio:</label>
+            <input type="text" id="nombreServicio" name="nombreServicio" required>
 
-          <label for="cantidadServicio">Cantidadad Servicio:</label>
-          <input type="number" id="cantidadServicio" name="cantidadServicio" required>
+            <label for="estadoServicio">Estado Servicio:</label>
+            <select id="estadoServicio" name="estadoServicio" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
 
-          <label for="precioServicio">Precio Servicio:</label>
-          <input type="number" id="precioServicio" name="precioServicio" required>
+            <label for="cantidadServicio">Cantidadad Servicio:</label>
+            <input type="number" id="cantidadServicio" name="cantidadServicio" required>
 
-          <button type="button" onclick="agregarServicio()">Agregar Servicio</button>
+            <label for="precioServicio">Precio Servicio:</label>
+            <input type="number" id="precioServicio" name="precioServicio" required>
+          </div>
+          <input type="hidden" name="servicios" id="serviciosInput" />
         </div>
-      </div>
 
-      <!-- Campos para agregar productos -->
-      <div id="productosContainer">
-        <h3>Productos</h3>
-        <div class="producto">
-          <label for="tipoProducto">Tipo de Producto:</label>
-          <select id="tipoProducto" name="tipoProducto" required>
-            <option value="tipo1">Tipo 1</option>
-            <option value="tipo2">Tipo 2</option>
-            <option value="tipo3">Tipo 3</option>
-          </select>
+        <!-- Campos para agregar productos -->
+        <div id="productosContainer">
+          <h3>Productos</h3>
+          <div class="producto">
+            <label for="tipoProducto">Tipo de Producto:</label>
+            <select id="tipoProducto" name="tipoProducto" required>
+              <option value="tipo1">Tipo 1</option>
+              <option value="tipo2">Tipo 2</option>
+              <option value="tipo3">Tipo 3</option>
+            </select>
 
-          <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
-          <select id="estadoTipoProducto" name="estadoTipoProducto" required>
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
-          </select>
+            <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
+            <select id="estadoTipoProducto" name="estadoTipoProducto" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
 
-          <label for="nombreProducto">Nombre Producto:</label>
-          <input type="text" id="nombreProducto" name="nombreProducto" required>
+            <label for="nombreProducto">Nombre Producto:</label>
+            <input type="text" id="nombreProducto" name="nombreProducto" required>
 
-          <label for="estadoProducto">Estado Producto:</label>
-          <select id="estadoProducto" name="estadoProducto" required>
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
-          </select>
-          <label for="cantidadProducto">Cantidadad Producto:</label>
-          <input type="number" id="cantidadProducto" name="cantidadProducto" required>
+            <label for="estadoProducto">Estado Producto:</label>
+            <select id="estadoProducto" name="estadoProducto" required>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+            <label for="cantidadProducto">Cantidadad Producto:</label>
+            <input type="number" id="cantidadProducto" name="cantidadProducto" required>
 
-          <label for="precioProducto">Precio Producto:</label>
-          <input type="number" id="precioProducto" name="precioProducto" required>
-
-          <button type="button" onclick="agregarProducto()">Agregar Producto</button>
+            <label for="precioProducto">Precio Producto:</label>
+            <input type="number" id="precioProducto" name="precioProducto" required>
+          </div>
+          <input type="hidden" name="productos" id="productosInput" />
         </div>
-      </div>
 
-      <label for="nombreUsuario">Nombre Usuario:</label>
-      <select id="nombreUsuario" name="nombreUsuario" required>
-        <% usuarios.forEach(usuario => { %>
-          <option value="<%= usuario.nombre %>"><%= usuario.nombre %></option>
-        <% }); %>
-      </select>
+        <label for="nombreUsuario">Nombre Usuario:</label>
+        <select id="nombreUsuario" name="nombreUsuario" required>
+          <% usuarios.forEach(usuario=> { %>
+            <option value="<%= usuario.nombre %>">
+              <%= usuario.nombre %>
+            </option>
+            <% }); %>
+        </select>
 
-      <button type="submit">Guardar Pedido</button>
-    </form>
+        <input type="hidden" name="totalPedido" id="totalPedidoInput" />
+
+        <button type="submit">Guardar Pedido</button>
+      </form>
+    </div>
   </div>
-</div>
-<h1>Listado de Pedidos</h1>
-<button id="agregarPedidoBtn">Agregar</button>
+  <h1>Listado de Pedidos</h1>
+  <button id="agregarPedidoBtn">Agregar</button>
 
-<!-- Modal -->
+  <!-- Modal -->
 
-<table>
-  <thead>
-    <tr>
-      <td>Fecha Creacion</td>
-      <td>Fecha Pedido</td>
-      <td>Total</td>
-      <td>Estado</td>
-      <td>Usuario</td>
-      <td>Acción</td>
-    </tr>
-  </thead>
-  <tbody>
-    <% pedidos.forEach(pedido => { %>
+  <table>
+    <thead>
       <tr>
-        <td><%= pedido.fecha_creacion %></td>
-        <td><%= pedido.fecha_pedido %></td>
-        <td><%= pedido.total_pedido %></td>
-        <td><%= pedido.estado_pedido %></td>
-        <td><%= pedido.nombre_usuario %></td>
-        <td>editar &nbsp; <a href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
+        <td>Fecha Creacion</td>
+        <td>Fecha Pedido</td>
+        <td>Total</td>
+        <td>Estado</td>
+        <td>Usuario</td>
+        <td>Acción</td>
       </tr>
-    <% }); %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% pedidos.forEach(pedido=> { %>
+        <tr>
+          <td>
+            <%= pedido.fecha_creacion %>
+          </td>
+          <td>
+            <%= pedido.fecha_pedido %>
+          </td>
+          <td>
+            <%= pedido.total_pedido %>
+          </td>
+          <td>
+            <%= pedido.estado_pedido %>
+          </td>
+          <td>
+            <%= pedido.nombre_usuario %>
+          </td>
+          <td>editar &nbsp; <a href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
 
-<script>
-  // JavaScript para mostrar/ocultar el modal y validar fechas
-  const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
-  const agregarPedidoModal = document.getElementById('agregarPedidoModal');
-  const cerrarModal = document.getElementById('cerrarModal');
-  const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
-  const fechaPedidoInput = document.getElementById('fechaPedido');
+  <script>
+    // JavaScript para mostrar/ocultar el modal y validar fechas
+    const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
+    const agregarPedidoModal = document.getElementById('agregarPedidoModal');
+    const cerrarModal = document.getElementById('cerrarModal');
 
-  agregarPedidoBtn.addEventListener('click', () => {
-    agregarPedidoModal.style.display = 'block';
-  });
+    agregarPedidoBtn.addEventListener('click', () => {
+      agregarPedidoModal.style.display = 'block';
+    });
 
-  cerrarModal.addEventListener('click', () => {
-    agregarPedidoModal.style.display = 'none';
-  });
-
-  formularioAgregarPedido.addEventListener('submit', (event) => {
-    const fechaCreacion = "<%= fechaActual %>"; // Obtén la fecha de creación del servidor
-    const fechaPedido = fechaPedidoInput.value;
-
-    if (fechaPedido < fechaCreacion) {
-      alert('La fecha de pedido no puede ser anterior a la fecha de creación.');
-      event.preventDefault(); // Evita el envío del formulario si la fecha es incorrecta
-    } else {
+    cerrarModal.addEventListener('click', () => {
       agregarPedidoModal.style.display = 'none';
-      // Aquí puedes agregar la lógica para enviar el formulario o realizar acciones con los datos ingresados
+    });
+
+    const agregarServicioBtn = document.getElementById('agregarServicioBtn');
+    const agregarProductoBtn = document.getElementById('agregarProductoBtn');
+    const serviciosContainer = document.getElementById('serviciosContainer');
+    const productosContainer = document.getElementById('productosContainer');
+
+    agregarServicioBtn.addEventListener('click', agregarCampoServicio);
+    agregarProductoBtn.addEventListener('click', agregarCampoProducto);
+
+    function agregarCampoServicio() {
+      const nuevoServicio = document.querySelector('.servicio').cloneNode(true);
+      serviciosContainer.appendChild(nuevoServicio);
     }
-  });
 
-let servicioCount = 1; // Contador para servicios
-let productoCount = 1; // Contador para productos
+    function agregarCampoProducto() {
+      const nuevoProducto = document.querySelector('.producto').cloneNode(true);
+      productosContainer.appendChild(nuevoProducto);
+    }
 
-// Función para agregar dinámicamente campos de servicio
-const agregarServicio = () => {
-  servicioCount++;
-  const serviciosContainer = document.getElementById('serviciosContainer');
-  const nuevoServicio = document.createElement('div');
-  nuevoServicio.classList.add('servicio');
-  nuevoServicio.id = `servicio${servicioCount}`;
-  nuevoServicio.innerHTML = `
-    <label for="tipoServicio${servicioCount}">Tipo de Servicio:</label>
-    <select id="tipoServicio${servicioCount}" name="tipoServicio${servicioCount}" required>
-      <option value="tipo1">Tipo 1</option>
-      <option value="tipo2">Tipo 2</option>
-      <option value="tipo3">Tipo 3</option>
-    </select>
+    const fechaPedidoInput = document.getElementById('fechaPedido');
+    const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
 
-    <label for="estadoTipoServicio${servicioCount}">Estado Tipo de Servicio:</label>
-    <select id="estadoTipoServicio${servicioCount}" name="estadoTipoServicio${servicioCount}" required>
-      <option value="activo">Activo</option>
-      <option value="inactivo">Inactivo</option>
-    </select>
+    // Función para obtener datos de un servicio desde su contenedor HTML
+    function obtenerDatosServicio(servicio) {
+      return {
+        tipoServicio: servicio.querySelector('#tipoServicio').value,
+        estadoTipoServicio: servicio.querySelector('#estadoTipoServicio').value,
+        nombreServicio: servicio.querySelector('#nombreServicio').value,
+        estadoServicio: servicio.querySelector('#estadoServicio').value,
+        cantidadServicio: parseFloat(servicio.querySelector('#cantidadServicio').value), // Parsear como número
+        precioServicio: parseFloat(servicio.querySelector('#precioServicio').value), // Parsear como número
+      };
+    }
 
-    <label for="nombreServicio${servicioCount}">Nombre Servicio:</label>
-    <input type="text" id="nombreServicio${servicioCount}" name="nombreServicio${servicioCount}" required>
+    // Función para obtener datos de un producto desde su contenedor HTML
+    function obtenerDatosProducto(producto) {
+      return {
+        tipoProducto: producto.querySelector('#tipoProducto').value,
+        estadoTipoProducto: producto.querySelector('#estadoTipoProducto').value,
+        nombreProducto: producto.querySelector('#nombreProducto').value,
+        estadoProducto: producto.querySelector('#estadoProducto').value,
+        cantidadProducto: parseFloat(producto.querySelector('#cantidadProducto').value), // Parsear como número
+        precioProducto: parseFloat(producto.querySelector('#precioProducto').value), // Parsear como número
+      };
+    }
 
-    <label for="estadoServicio${servicioCount}">Estado Servicio:</label>
-    <select id="estadoServicio${servicioCount}" name="estadoServicio${servicioCount}" required>
-      <option value="activo">Activo</option>
-      <option value="inactivo">Inactivo</option>
-    </select>
+    formularioAgregarPedido.addEventListener('submit', function (event) {
+      const fechaCreacion = new Date(); // Obtener la fecha actual
+      const fechaPedido = new Date(fechaPedidoInput.value);
 
-    <label for="cantidadServicio${servicioCount}">Cantidadad Servicio:</label>
-    <input type="number" id="cantidadServicio${servicioCount}" name="cantidadServicio${servicioCount}" required>
+      // Validar que la fecha de pedido sea al menos 5 días después de la fecha de creación
+      if (fechaPedido - fechaCreacion < 5 * 24 * 60 * 60 * 1000) {
+        alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
+        event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
+      }
 
-    <label for="precioServicio${servicioCount}">Precio Servicio:</label>
-    <input type="number" id="precioServicio${servicioCount}" name="precioServicio${servicioCount}" required>
-  `;
-  serviciosContainer.appendChild(nuevoServicio);
-};
+      // Obtener servicios y productos del contenedor y actualizar los campos ocultos
+      const servicios = Array.from(serviciosContainer.querySelectorAll('.servicio'));
+      const productos = Array.from(productosContainer.querySelectorAll('.producto'));
 
-// Función para agregar dinámicamente campos de producto
-const agregarProducto = () => {
-  productoCount++;
-  const productosContainer = document.getElementById('productosContainer');
-  const nuevoProducto = document.createElement('div');
-  nuevoProducto.classList.add('producto');
-  nuevoProducto.id = `producto${productoCount}`;
-  nuevoProducto.innerHTML = `
-    <label for="tipoProducto${productoCount}">Tipo de Producto:</label>
-    <select id="tipoProducto${productoCount}" name="tipoProducto${productoCount}" required>
-      <option value="tipo1">Tipo 1</option>
-      <option value="tipo2">Tipo 2</option>
-      <option value="tipo3">Tipo 3</option>
-    </select>
+      const serviciosData = servicios.map(obtenerDatosServicio);
+      const productosData = productos.map(obtenerDatosProducto);
 
-    <label for="estadoTipoProducto${productoCount}">Estado Tipo de Producto:</label>
-    <select id="estadoTipoProducto${productoCount}" name="estadoTipoProducto${productoCount}" required>
-      <option value="activo">Activo</option>
-      <option value="inactivo">Inactivo</option>
-    </select>
+      // Calcular subtotales y total
+      let totalPedido = 0;
 
-    <label for="nombreProducto${productoCount}">Nombre Producto:</label>
-    <input type="text" id="nombreProducto${productoCount}" name="nombreProducto${productoCount}" required>
+      const serviciosConSubtotales = serviciosData.map(servicio => {
+        const subtotal = servicio.cantidadServicio * servicio.precioServicio;
+        totalPedido += subtotal;
+        return { ...servicio, subtotal };
+      });
 
-    <label for="estadoProducto${productoCount}">Estado Producto:</label>
-    <select id="estadoProducto${productoCount}" name="estadoProducto${productoCount}" required>
-      <option value="activo">Activo</option>
-      <option value="inactivo">Inactivo</option>
-    </select>
+      const productosConSubtotales = productosData.map(producto => {
+        const subtotal = producto.cantidadProducto * producto.precioProducto;
+        totalPedido += subtotal;
+        return { ...producto, subtotal };
+      });
 
-    <label for="cantidadProducto${productoCount}">Cantidadad Producto:</label>
-    <input type="number" id="cantidadProducto${productoCount}" name="cantidadProducto${productoCount}" required>
+      document.getElementById('serviciosInput').value = JSON.stringify(serviciosConSubtotales);
+      document.getElementById('productosInput').value = JSON.stringify(productosConSubtotales);
+      document.getElementById('totalPedidoInput').value = totalPedido;
 
-    <label for="precioProducto${productoCount}">Precio Producto:</label>
-    <input type="number" id="precioProducto${productoCount}" name="precioProducto${productoCount}" required>
-  `;
-  productosContainer.appendChild(nuevoProducto);
-};
-</script>
+    });
+  </script>
