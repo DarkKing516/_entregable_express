@@ -1,5 +1,5 @@
 // src/controllers/pedidosController.js
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 // Función para obtener datos de la colección de pedidos
 const getPedidosPage = async (req, res) => {
@@ -43,20 +43,37 @@ const agregarPedido = async (req, res) => {
 
   // Calcular total y subtotales
   let totalPedido = 0;
+
   const serviciosConSubtotales = servicios.map(servicio => {
     const cantidad = parseInt(servicio.cantidadServicio);
     const precio = parseFloat(servicio.precioServicio);
     const subtotal = cantidad * precio;
+
+    // Update tipoServicio field to include tipoServicio and estadoTipoServicio
+    const tipoServicio = {
+      tipoServicio: servicio.tipoServicio,
+      estadoTipoServicio: servicio.estadoTipoServicio,
+    };
+
     totalPedido += subtotal;
-    return { ...servicio, subtotal };
+
+    return { ...servicio, tipoServicio, subtotal };
   });
 
   const productosConSubtotales = productos.map(producto => {
     const cantidad = parseInt(producto.cantidadProducto);
     const precio = parseFloat(producto.precioProducto);
     const subtotal = cantidad * precio;
+
+    // Update tipoProducto field to include tipoProducto and estadoTipoProducto
+    const tipoProducto = {
+      tipoProducto: producto.tipoProducto,
+      estadoTipoProducto: producto.estadoTipoProducto,
+    };
+
     totalPedido += subtotal;
-    return { ...producto, subtotal };
+
+    return { ...producto, tipoProducto, subtotal };
   });
 
   // Crear el objeto del pedido con servicios y productos
@@ -67,7 +84,7 @@ const agregarPedido = async (req, res) => {
     fecha_pedido: req.body.fechaPedido,
     total_pedido: totalPedido,
     estado_pedido: 'por hacer',
-    nombre_usuario: req.body.nombreUsuario
+    nombre_usuario: req.body.nombreUsuario,
   };
 
   // Insertar el pedido en la base de datos
@@ -92,4 +109,35 @@ const agregarPedido = async (req, res) => {
 };
 
 
-module.exports = { getPedidosPage, agregarPedido };
+const verDetallePedido = async (req, res) => {
+  const pedidoId = req.params.id;
+
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Obtener el pedido por ID
+    const pedido = await pedidosCollection.findOne({ _id: new ObjectId(pedidoId) });
+
+    if (!pedido) {
+      // Manejar el caso en el que el pedido no se encuentre
+      res.status(404).send('Pedido no encontrado');
+      return;
+    }
+
+    // Renderizar la vista con detalles del pedido
+    res.render('detallePedido', { pedido });
+  } catch (error) {
+    console.error('Error al obtener el detalle del pedido:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+module.exports = { getPedidosPage, agregarPedido, verDetallePedido };

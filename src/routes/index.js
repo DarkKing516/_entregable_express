@@ -1,7 +1,7 @@
 // src/routes/index.js
 const express = require('express');
 const router = express.Router();
-const { getPedidosPage, agregarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
+const { getPedidosPage, agregarPedido, verDetallePedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
 
 // Rutas
@@ -34,7 +34,7 @@ router.get('/signout', cerrarSesion); // Ruta para cerrar sesión
 
 router.get('/pedidos', getPedidosPage);
 router.post('/agregarPedido', agregarPedido);
-
+router.get('/pedido/:id', verDetallePedido);
 
 
 
