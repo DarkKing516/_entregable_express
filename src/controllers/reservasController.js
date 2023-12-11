@@ -188,7 +188,7 @@ const actualizarReserva = async (req, res) => {
     res.json(updatedReserva.value);
   } catch (error) {
     console.error('Error al actualizar reserva:', error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send('Error interno del servido');
   } finally {
     await client.close();
   }
