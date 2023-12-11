@@ -1,4 +1,4 @@
-<!-- src/views/pedidos.ejs -->
+<!-- src/views/configuracion.ejs -->
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 <%- include('./layouts/nav') %>
@@ -12,6 +12,13 @@
       <h2>Agregar Usuario</h2>
 
       <form id="formularioAgregarUsuario" method="POST" action="/registrarUsuario">
+        <label for="rol">Rol:</label>
+        <select id="rol" name="rol" required>
+          <option value="" disabled selected>--Seleccione una opción--</option>
+          <option value="cliente">Cliente</option>
+          <option value="administrador">Administrador</option>
+        </select>
+        <input type="hidden" name="permisos">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
 
@@ -23,16 +30,6 @@
 
         <label for="contraseña">Contraseña:</label>
         <input type="password" id="contraseña" name="contraseña" required>
-
-        <!-- Select para elegir el rol -->
-        <label for="rol">Rol:</label>
-        <select id="rol" name="rol" required>
-          <option value="" disabled selected>--Seleccione una opción--</option>
-          <option value="cliente">Cliente</option>
-          <option value="administrador">Administrador</option>
-        </select>
-
-        <!-- Otros campos del formulario si los hay -->
 
         <button type="submit">Guardar Usuario</button>
       </form>
@@ -77,7 +74,7 @@
             <%= usuario.contraseña %>
           </td>
           <td>
-            <% if (usuario.rol && usuario.rol.length> 0) { %>
+            <% if (usuario.rol && Array.isArray(usuario.rol) && usuario.rol.length> 0) { %>
               <% usuario.rol.forEach(rol=> { %>
                 <div>
                   <%= rol.nombre_rol %>
@@ -100,6 +97,7 @@
           </td>
           <td>
             <button class="editarUsuarioBtn" data-id="<%= usuario._id.toString() %>">Editar</button>
+            <button class="eliminarUsuarioBtn" data-id="<%= usuario._id.toString() %>">Eliminar</button>
           </td>
         </tr>
         <% }); %>
@@ -112,6 +110,38 @@
     const agregarUsuarioModal = document.getElementById('agregarUsuarioModal');
     const cerrarModal = document.getElementById('cerrarModal');
     const formularioAgregarUsuario = document.getElementById('formularioAgregarUsuario');
+
+
+    // Nueva lógica para el botón de eliminar
+    const eliminarUsuarioBtns = document.querySelectorAll('.eliminarUsuarioBtn');
+
+    eliminarUsuarioBtns.forEach(btn => {
+      btn.addEventListener('click', (event) => {
+        const userId = event.currentTarget.dataset.id;
+
+        // Puedes enviar una solicitud al servidor para eliminar el usuario con el id correspondiente
+        if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+          console.log('userId:', userId);
+
+          fetch(`/configuracion/${userId}`, {
+            method: 'DELETE',
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert('Usuario eliminado exitosamente');
+                location.reload();
+              } else {
+                alert(`Error al eliminar el usuario: ${data.error}`);
+              }
+            })
+            .catch(error => {
+              console.error('Error al eliminar el usuario:', error);
+              alert('Error al eliminar el usuario');
+            });
+        }
+      });
+    });
 
     agregarUsuarioBtn.addEventListener('click', () => {
       agregarUsuarioModal.style.display = 'block';
@@ -126,4 +156,5 @@
       // Lógica para enviar el formulario o realizar acciones con los datos ingresados
       agregarUsuarioModal.style.display = 'none';
     });
+
   </script>
