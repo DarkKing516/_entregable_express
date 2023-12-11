@@ -115,6 +115,92 @@ const eliminarReserva = async (req, res) => {
       await client.close(); // Cerrar la conexión
     }
 };
+
+const obtenerDetallesReserva = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect(); // Conectar a la base de datos
+
+    const database = client.db('erikas_homemade');
+    const reservasCollection = database.collection('gestion_reservas');
+
+    const reservaId = req.params.id;
+
+    // Obtener los detalles de la reserva con el ID proporcionado
+    const reserva = await reservasCollection.findOne({ _id: new ObjectId(reservaId) });
+
+    // Enviar la información como respuesta JSON
+    res.json(reserva);
+  } catch (error) {
+    console.error('Error al obtener detalles de la reserva:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close(); // Cerrar la conexión
+  }
+};
+
+const actualizarReserva = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const reservasCollection = database.collection('gestion_reservas');
+
+    const {
+      fechaReservaEdicion,
+      estadoReservaEdicion,
+      nombreCliente,
+      telefonoCliente,
+      documentoCliente,
+      contraseñaCliente,
+      correoCliente,
+      // Agrega otros campos según sea necesario
+    } = req.body;
+
+    const reservaId = req.params.id;
+
+    console.log('Recibida solicitud PUT para actualizar reserva:', req.body); // Nuevo log
+
+    const updatedReserva = await reservasCollection.findOneAndUpdate(
+      { _id: new ObjectId(reservaId) },
+      {
+        $set: {
+          fecha_reserva: fechaReservaEdicion,
+          estado_reserva: estadoReservaEdicion,
+          nombre_cliente: nombreCliente,
+          telefono_cliente: telefonoCliente,
+          documento_cliente: documentoCliente,
+          contraseña: contraseñaCliente,
+          correo: correoCliente,
+          // Agrega otros campos según sea necesario
+        },
+      },
+      { returnDocument: 'after' }
+    );
+
+    console.log('Reserva actualizada con éxito:', updatedReserva); // Nuevo log
+
+    res.json(updatedReserva.value);
+  } catch (error) {
+    console.error('Error al actualizar reserva:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
 // Otras funciones necesarias...
 
-module.exports = { getReservasPage, agregarReserva, eliminarReserva /* otras funciones */ };
+module.exports = {
+  getReservasPage,
+  agregarReserva,
+  eliminarReserva,
+  obtenerDetallesReserva,
+  actualizarReserva,
+  /* otras funciones */
+};

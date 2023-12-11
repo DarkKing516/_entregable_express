@@ -29,7 +29,7 @@
 
   <!-- Otros campos que ingreses manualmente -->
 
-  <button type="submit">Guardar Reserva</button>
+  <button type="submit">Guardar Cambios</button>
 </form>
 
 <!-- Lista de reservas existentes -->
@@ -62,16 +62,39 @@
         <td><%= reserva.contraseña %></td>
         <!-- Otros campos que ingreses manualmente -->
         <td>
-          editar &nbsp; 
+          &nbsp; 
           <form id="eliminarReservaForm" onsubmit="eliminarReserva(event, '<%= reserva._id %>')">
             <input type="hidden" name="_method" value="DELETE">
             <button onclick="eliminarReserva(event, '<%= reserva._id %>')">Eliminar</button>
           </form>
         </td>
+        <td>
+          <button onclick="abrirEdicionReserva('<%= reserva._id %>')">Editar</button>
+        </td>
       </tr>
     <% }); %>
   </tbody>
 </table>
+
+<!-- Sección de Edición -->
+<div id="edicionReserva" style="display:none;">
+  <h2>Edición de Reserva</h2>
+  <form id="formularioEdicionReserva" action="/actualizarReserva" method="POST" onsubmit="actualizarReservaDesdeEdicion(event)">
+    <input type="hidden" id="reservaIdEdicion" name="reservaIdEdicion">
+    <label for="fechaReservaEdicion">Fecha de Reserva:</label>
+    <input type="date" id="fechaReservaEdicion" name="fechaReservaEdicion" required>
+
+    <label for="estadoReservaEdicion">Estado de Reserva:</label>
+    <select id="estadoReservaEdicion" name="estadoReservaEdicion" required>
+      <option value="Agendada">Agendada</option>
+      <option value="Rechazada">Rechazada</option>
+      <option value="Terminada">Terminada</option>
+    </select>
+
+    <button type="submit">Guardar Cambios</button>
+    <button type="button" onclick="cerrarEdicionReserva()">Cancelar</button>
+  </form>
+</div>
 
 <script>
   function obtenerConfiguracionCliente() {
@@ -113,4 +136,83 @@
       }
     }
   }
+
+  function abrirEdicionReserva(id) {
+  fetch(`/obtenerDetallesReserva/${id}`)
+    .then(response => response.json())
+    .then(reserva => {
+      document.getElementById('reservaIdEdicion').value = reserva._id;
+      document.getElementById('fechaReservaEdicion').value = reserva.fecha_reserva;
+      document.getElementById('estadoReservaEdicion').value = reserva.estado_reserva;
+
+      // Mostrar la sección de edición
+      document.getElementById('edicionReserva').style.display = 'block';
+    })
+    .catch(error => console.error('Error al obtener detalles de la reserva:', error));
+}
+
+  function cerrarEdicionReserva() {
+    // Ocultar la sección de edición
+    document.getElementById('edicionReserva').style.display = 'none';
+  }
+
+  async function actualizarReservaDesdeEdicion(event) {
+    console.log('Submit del formulario de edición');
+  event.preventDefault();
+
+  const reservaId = document.getElementById('reservaIdEdicion').value;
+  const fechaReserva = document.getElementById('fechaReservaEdicion').value;
+  const estadoReserva = document.getElementById('estadoReservaEdicion').value;
+  const telefonoCliente = document.getElementById('telefonoClienteEdicion').value;
+  const documentoCliente = document.getElementById('documentoClienteEdicion').value; // Agrega otros campos según sea necesario
+  const contraseñaCliente = document.getElementById('contraseñaClienteEdicion').value;
+  const correoCliente = document.getElementById('correoClienteEdicion').value;
+
+  console.log('Datos a enviar:', {
+    reservaId,
+    fechaReserva,
+    estadoReserva,
+    telefonoCliente,
+    documentoCliente,
+    contraseñaCliente,
+    correoCliente,
+  });
+
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      fechaReserva,
+      estadoReserva,
+      telefonoCliente,
+      documentoCliente,
+      contraseñaCliente,
+      correoCliente,
+    }),
+  };
+
+  try {
+    const response = await fetch(`/actualizarReserva/${reservaId}`, options);
+    if (response.ok) {
+      console.log('Reserva actualizada con éxito:', await response.json());
+    } else {
+      console.error('Error al actualizar la reserva:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error de red:', error);
+  }
+  return false;
+}
+
+
+
+function actualizarFilaEnDOM(reservaId, updatedReserva) {
+  // Encuentra la fila correspondiente y actualiza sus celdas
+  const fila = document.querySelector(`tr[data-id="${reservaId}"]`);
+  fila.querySelector('td:nth-child(2)').textContent = new Date(updatedReserva.fecha_reserva).toLocaleDateString('es-ES');
+  fila.querySelector('td:nth-child(3)').textContent = updatedReserva.estado_reserva;
+  // Actualiza otras celdas según sea necesario
+}
 </script>
