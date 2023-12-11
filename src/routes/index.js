@@ -1,7 +1,8 @@
 // src/routes/index.js
 const express = require('express');
 const router = express.Router();
-const { getPedidosPage, agregarPedido, eliminarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
+const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
+const { getVentasPage, agregarVenta } = require('../controllers/ventasController');
 const { getConfiguracionPage } = require('../controllers/configuracionController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
 const { getReservasPage, agregarReserva, eliminarReserva, actualizarReserva, obtenerDetallesReserva } = require('../controllers/reservasController');
@@ -36,12 +37,9 @@ router.post('/signin', iniciarSesion);
 router.get('/signout', cerrarSesion); // Ruta para cerrar sesión
 
 router.get('/pedidos', getPedidosPage);
-router.post('/agregarPedido', agregarPedido); // Agrega esta línea para manejar las solicitudes POST para agregar pedidos
+router.post('/agregarPedido', agregarPedido);
+router.get('/pedido/:id', verDetallePedido);
 router.get('/eliminarPedido/:id', eliminarPedido);
-
-
-
-
 
 
 
@@ -56,7 +54,8 @@ router.get('/configuracion', getConfiguracionPage);
 
 
 
-router.get('/pelos', getPedidosPage);
+router.get('/pelos', getVentasPage);
+router.post('/agregarVenta', agregarVenta)
 
 
 

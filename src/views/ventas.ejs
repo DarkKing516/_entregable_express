@@ -1,0 +1,136 @@
+<link rel="shortcut icon"
+  href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+<%- include('./layouts/nav') %>
+  <h1>Listado de Ventas</h1>
+  <button id="agregarVentaBtn">Agregar</button>
+
+  <!-- Modal -->
+  <div id="agregarVentaModal" class="modal">
+    <div class="modal-content">
+      <span id="cerrarModal" class="cerrar">&times;</span>
+      <h2>Agregar Venta</h2>
+
+      <!-- Formulario para agregar venta -->
+      <form id="formularioAgregarVenta" action="/agregarVenta" method="POST">
+        <label for="fechaVenta">Fecha Venta:</label>
+        <input type="text" id="fechaVenta" name="fecha_venta" required>
+
+        <label for="metodoPago">Método de Pago:</label>
+        <input type="text" id="metodoPago" name="metodo_pago" required>
+
+        <label for="totalVenta">Total Venta:</label>
+        <input type="number" id="totalVenta" name="total_venta" required>
+
+        <label for="pedido">Pedido:</label>
+        <select id="pedido" name="pedido">
+          <% pedidos.forEach(pedido=> { %>
+            <option value="<%= pedido._id %>">
+              <%= pedido._id %>
+            </option>
+            <% }); %>
+        </select>
+
+
+
+        <label for="usuario">Usuario:</label>
+        <select id="usuario" name="usuario">
+          <% usuarios.forEach(usuario=> { %>
+            <option value="<%= usuario._id %>">
+              <%= usuario.nombre %> - <%= usuario.email %>
+            </option>
+            <% }); %>
+        </select>
+
+        <!-- Otros campos según la estructura de tu venta -->
+
+        <button type="submit">Guardar Venta</button>
+      </form>
+    </div>
+  </div>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <td>Fecha Venta</td>
+        <td>Método Pago</td>
+        <td>Total Venta</td>
+        <td>Total Pedido</td>
+        <td>Nombre</td>
+        <td>Teléfono</td>
+        <td>Documento</td>
+        <td>Correo</td>
+        <td>Acción</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% ventas.forEach(venta=> { %>
+        <tr>
+          <td>
+            <%= venta.fecha_venta %>
+          </td>
+          <td>
+            <%= venta.metodo_pago %>
+          </td>
+          <td>
+            <%= venta.total_venta %>
+          </td>
+          <td>
+            <%= venta.total_pedido %>
+          </td>
+          <td>
+            <%= venta.nombre %>
+          </td>
+          <td>
+            <%= venta.telefono %>
+          </td>
+          <td>
+            <%= venta.documento %>
+          </td>
+          <td>
+            <%= venta.correo %>
+          </td>
+          <td>
+            <button onclick="mostrarDetalle('<%= JSON.stringify(venta.productos) %>')">Ver Detalle</button>
+          </td>
+          <td>editar</td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+
+  <!-- Resto del código HTML anterior -->
+
+  <script>
+    function mostrarDetalle(productosJSON) {
+      const productos = JSON.parse(productosJSON);
+
+      let detalleProductos = 'Productos: ';
+      productos.forEach((producto, index) => {
+        detalleProductos += `${producto.nombre}: Precio: ${producto.precio}`;
+        if (index !== productos.length - 1) {
+          detalleProductos += ', ';
+        }
+      });
+
+      alert(detalleProductos);
+    }
+  </script>
+
+  <script>
+    // JavaScript para mostrar/ocultar el modal y cerrar el modal
+    const agregarVentaBtn = document.getElementById('agregarVentaBtn');
+    const agregarVentaModal = document.getElementById('agregarVentaModal');
+    const cerrarModal = document.getElementById('cerrarModal');
+    const formularioAgregarVenta = document.getElementById('formularioAgregarVenta');
+
+    agregarVentaBtn.addEventListener('click', () => {
+      agregarVentaModal.style.display = 'block';
+    });
+
+    cerrarModal.addEventListener('click', () => {
+      agregarVentaModal.style.display = 'none';
+    });
+
+  </script>
