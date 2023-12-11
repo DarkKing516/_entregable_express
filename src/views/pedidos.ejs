@@ -2,14 +2,14 @@
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 <%- include('./layouts/nav') %>
-<h1>Lista de usuarios</h1>
-<ul>
-  <% usuarios.forEach(usuario=> { %>
-    <li>
-      <%= usuario.nombre %>
-    </li>
-  <% }); %>
-</ul>
+  <h1>Lista de usuarios</h1>
+  <ul>
+    <% usuarios.forEach(usuario=> { %>
+      <li>
+        <%= usuario.nombre %>
+      </li>
+      <% }); %>
+  </ul>
 
   <div id="agregarPedidoModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -58,16 +58,16 @@
           <input type="hidden" name="servicios" id="serviciosInput" />
         </div>
 
-      <!-- Campos para agregar productos -->
-      <div id="productosContainer">
-        <h3>Productos</h3>
-        <div class="producto">
-          <label for="tipoProducto">Tipo de Producto:</label>
-          <select id="tipoProducto" name="tipoProducto" required>
-            <option value="tipo1">Tipo 1</option>
-            <option value="tipo2">Tipo 2</option>
-            <option value="tipo3">Tipo 3</option>
-          </select>
+        <!-- Campos para agregar productos -->
+        <div id="productosContainer">
+          <h3>Productos</h3>
+          <div class="producto">
+            <label for="tipoProducto">Tipo de Producto:</label>
+            <select id="tipoProducto" name="tipoProducto" required>
+              <option value="tipo1">Tipo 1</option>
+              <option value="tipo2">Tipo 2</option>
+              <option value="tipo3">Tipo 3</option>
+            </select>
 
             <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
             <select id="estadoTipoProducto" name="estadoTipoProducto" required>
@@ -92,46 +92,60 @@
           <input type="hidden" name="productos" id="productosInput" />
         </div>
 
-      <label for="nombreUsuario">Nombre Usuario:</label>
-      <select id="nombreUsuario" name="nombreUsuario" required>
-        <% usuarios.forEach(usuario => { %>
-          <option value="<%= usuario.nombre %>"><%= usuario.nombre %></option>
-        <% }); %>
-      </select>
+        <label for="nombreUsuario">Nombre Usuario:</label>
+        <select id="nombreUsuario" name="nombreUsuario" required>
+          <% usuarios.forEach(usuario=> { %>
+            <option value="<%= usuario.nombre %>">
+              <%= usuario.nombre %>
+            </option>
+            <% }); %>
+        </select>
 
-      <button type="submit">Guardar Pedido</button>
-    </form>
+        <input type="hidden" name="totalPedido" id="totalPedidoInput" />
+
+        <button type="submit">Guardar Pedido</button>
+      </form>
+    </div>
   </div>
-</div>
-<h1>Listado de Pedidos</h1>
-<button id="agregarPedidoBtn">Agregar</button>
+  <h1>Listado de Pedidos</h1>
+  <button id="agregarPedidoBtn">Agregar</button>
 
-<!-- Modal -->
+  <!-- Modal -->
 
-<table>
-  <thead>
-    <tr>
-      <td>Fecha Creacion</td>
-      <td>Fecha Pedido</td>
-      <td>Total</td>
-      <td>Estado</td>
-      <td>Usuario</td>
-      <td>Acción</td>
-    </tr>
-  </thead>
-  <tbody>
-    <% pedidos.forEach(pedido => { %>
+  <table>
+    <thead>
       <tr>
-        <td><%= pedido.fecha_creacion %></td>
-        <td><%= pedido.fecha_pedido %></td>
-        <td><%= pedido.total_pedido %></td>
-        <td><%= pedido.estado_pedido %></td>
-        <td><%= pedido.nombre_usuario %></td>
-        <td>editar &nbsp; <a href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
+        <td>Fecha Creacion</td>
+        <td>Fecha Pedido</td>
+        <td>Total</td>
+        <td>Estado</td>
+        <td>Usuario</td>
+        <td>Acción</td>
       </tr>
-    <% }); %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% pedidos.forEach(pedido=> { %>
+        <tr>
+          <td>
+            <%= pedido.fecha_creacion %>
+          </td>
+          <td>
+            <%= pedido.fecha_pedido %>
+          </td>
+          <td>
+            <%= pedido.total_pedido %>
+          </td>
+          <td>
+            <%= pedido.estado_pedido %>
+          </td>
+          <td>
+            <%= pedido.nombre_usuario %>
+          </td>
+          <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
 
   <script>
     // JavaScript para mostrar/ocultar el modal y validar fechas
@@ -139,13 +153,13 @@
     const agregarPedidoModal = document.getElementById('agregarPedidoModal');
     const cerrarModal = document.getElementById('cerrarModal');
 
-  agregarPedidoBtn.addEventListener('click', () => {
-    agregarPedidoModal.style.display = 'block';
-  });
+    agregarPedidoBtn.addEventListener('click', () => {
+      agregarPedidoModal.style.display = 'block';
+    });
 
-  cerrarModal.addEventListener('click', () => {
-    agregarPedidoModal.style.display = 'none';
-  });
+    cerrarModal.addEventListener('click', () => {
+      agregarPedidoModal.style.display = 'none';
+    });
 
     const agregarServicioBtn = document.getElementById('agregarServicioBtn');
     const agregarProductoBtn = document.getElementById('agregarProductoBtn');
