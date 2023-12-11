@@ -11,7 +11,7 @@
       <span id="cerrarModal" class="cerrar">&times;</span>
       <h2>Agregar Usuario</h2>
 
-      <form method="POST" action="/signup" id="formularioAgregarUsuario">
+      <form method="POST" action="/signup">
         <label for="rol">Rol:</label>
         <select id="rol" name="rol" required>
           <option value="" disabled selected>--Seleccione una opción--</option>
@@ -21,7 +21,15 @@
         <input type="hidden" name="permisos">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
-        <!-- Otros campos del formulario -->
+        <label for="correo">Correo:</label>
+        <input type="email" id="correo" name="correo" required>
+        <label for="telefono">Teléfono:</label>
+        <input type="number" id="telefono" name="telefono" required>
+        <label for="documento">Documento:</label>
+        <input type="number" id="documento" name="documento" required>
+        <label for="contraseña">Contraseña:</label>
+        <input type="password" id="contraseña" name="contraseña" required>
+
 
         <button type="submit">Guardar Usuario</button>
       </form>
@@ -90,32 +98,28 @@
 
   <script>
     // JavaScript para mostrar/ocultar el modal
+    
     const agregarUsuarioBtn = document.getElementById('agregarUsuarioBtn');
     const agregarUsuarioModal = document.getElementById('agregarUsuarioModal');
     const cerrarModal = document.getElementById('cerrarModal');
     const eliminarUsuarioBtns = document.querySelectorAll('.eliminarUsuarioBtn');
-    const formularioAgregarUsuario = document.getElementById('formularioAgregarUsuario');
-
-    formularioAgregarUsuario.addEventListener('submit', (event) => {
-      event.preventDefault();
-
-      const rolSeleccionado = document.getElementById('rol').value;
-      document.querySelector('input[name="permisos"]').value = JSON.stringify(obtenerPermisosSegunRol(rolSeleccionado));
-    });
-
 
     eliminarUsuarioBtns.forEach(btn => {
       btn.addEventListener('click', (event) => {
         const userId = event.currentTarget.dataset.id;
-
-        // Puedes enviar una solicitud al servidor para eliminar el usuario con el id correspondiente
+        console.log('userId:', userId);
+    
         if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-          console.log('userId:', userId);
-
           fetch(`/configuracion/${userId}`, {
             method: 'DELETE',
           })
-            .then(response => response.json())
+            .then(response => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error(`Error en la solicitud: ${response.statusText}`);
+              }
+            })
             .then(data => {
               if (data.success) {
                 alert('Usuario eliminado exitosamente');
@@ -131,7 +135,7 @@
         }
       });
     });
-
+    
     agregarUsuarioBtn.addEventListener('click', () => {
       agregarUsuarioModal.style.display = 'block';
     });
@@ -139,11 +143,4 @@
     cerrarModal.addEventListener('click', () => {
       agregarUsuarioModal.style.display = 'none';
     });
-
-    formularioAgregarUsuario.addEventListener('submit', (event) => {
-      event.preventDefault();
-      // Lógica para enviar el formulario o realizar acciones con los datos ingresados
-      agregarUsuarioModal.style.display = 'none';
-    });
-
   </script>

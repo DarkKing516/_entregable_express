@@ -1,7 +1,7 @@
 // src/controllers/configuracionController.js
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const usuarioModel = require('../models/usuarioModel');
-const { obtenerPermisosSegunRol } = require('../models/usuarioModel'); // Agrega esta línea para importar la función
+const { obtenerPermisosSegunRol } = require('../models/usuarioModel');
 
 
 // Función para obtener datos de la colección de configuracion
@@ -57,6 +57,8 @@ const registrarUsuario = async (req, res) => {
 const eliminarUsuario = async (req, res) => {
   const usuarioId = req.params.id;
 
+  console.log(`Intentando eliminar usuario con ID: ${usuarioId}`);
+
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -67,21 +69,25 @@ const eliminarUsuario = async (req, res) => {
     const configuracionCollection = database.collection('configuracion');
 
     // Eliminar el usuario por ID
-    await configuracionCollection.deleteOne({ _id: new ObjectId(usuarioId) });
+    const result = await configuracionCollection.deleteOne({ _id: new ObjectId(usuarioId) });
 
-    res.redirect('/configuracion');
+    if (result.deletedCount === 1) {
+      console.log(`Usuario con ID ${usuarioId} eliminado exitosamente.`);
+      res.redirect('/configuracion');
+    } else {
+      console.log(`No se encontró el usuario con ID ${usuarioId}.`);
+      res.status(404).send('Usuario no encontrado');
+    }
   } catch (error) {
     console.error('Error al eliminar el usuario:', error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send(`Error interno del servidor: ${error.message}`);
   } finally {
     await client.close();
   }
 };
 
 
-
-
-
 module.exports = { getConfiguracionPage, registrarUsuario, eliminarUsuario };
+
 
 
