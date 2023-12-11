@@ -108,6 +108,7 @@
     </div>
   </div>
   <h1>Listado de Pedidos</h1>
+  <input type="text" id="buscarPedidos" placeholder="Buscar pedidos..." oninput="filtrarPedidos()">
   <button id="agregarPedidoBtn">Agregar</button>
 
   <!-- Modal -->
@@ -141,13 +142,42 @@
           <td>
             <%= pedido.nombre_usuario %>
           </td>
-          <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
+          <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a
+              href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
         </tr>
         <% }); %>
     </tbody>
   </table>
 
   <script>
+    function filtrarPedidos() {
+      // Obtener el valor del input de búsqueda
+      var input = document.getElementById("buscarPedidos");
+      var filtro = input.value.toUpperCase();
+
+      // Obtener todas las filas del cuerpo de la tabla
+      var filas = document.querySelector("tbody").getElementsByTagName("tr");
+
+      // Recorrer las filas y mostrar u ocultar aquellas que coincidan con el filtro
+      for (var i = 0; i < filas.length; i++) {
+        var celdas = filas[i].getElementsByTagName("td");
+        var mostrarFila = false;
+
+        for (var j = 0; j < celdas.length; j++) {
+          if (celdas[j]) {
+            var textoCelda = celdas[j].innerText || celdas[j].textContent;
+            if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
+              mostrarFila = true;
+              break;
+            }
+          }
+        }
+
+        // Mostrar u ocultar la fila según el resultado de la búsqueda
+        filas[i].style.display = mostrarFila ? "" : "none";
+      }
+    }
+
     // JavaScript para mostrar/ocultar el modal y validar fechas
     const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
     const agregarPedidoModal = document.getElementById('agregarPedidoModal');
