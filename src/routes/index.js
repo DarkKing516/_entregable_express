@@ -60,7 +60,8 @@ router.get('/configuracion', getConfiguracionPage);
 router.get('/pelos', getVentasPage);
 router.post('/agregarVenta', agregarVenta)
 router.post('/eliminarVenta/:id', eliminarVenta);
-router.post('/editarVenta/:id', editarVenta);
+router.get('/editarVenta/:id', editarVenta);
+
 
 
 

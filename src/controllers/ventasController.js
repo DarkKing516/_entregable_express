@@ -161,9 +161,8 @@ const editarVenta = async (req, res) => {
       res.status(404).send('La venta no fue encontrada o no se actualizó');
       return;
     }
-    // En tu controlador o en donde renderizas la vista
-    res.render('ventas', { ventas: listaDeVentas, venta: ventaEspecifica });
 
+    res.redirect('/pelos'); // Redirigir a la página deseada después de editar
     console.log('Venta actualizada correctamente');
     res.status(200).send('Venta actualizada correctamente');
   } catch (error) {

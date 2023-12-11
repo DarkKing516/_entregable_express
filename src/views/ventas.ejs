@@ -96,7 +96,9 @@
               Detalle</button>
           </td>
           <td>
-            <button class="editarBtn">Editar</button>
+            <a href="/editarVenta/<%= venta._id %>">
+              <button>Editar</button>
+            </a>
           </td>          
           <td>
             <form action="/eliminarVenta/<%= venta._id %>" method="POST">
@@ -108,29 +110,6 @@
     </tbody>
   </table>
 
-  <div id="editarVentaModal" class="modal">
-    <div class="modal-content">
-      <span id="cerrarEditarModal" class="cerrar">&times;</span>
-      <h2>Editar Venta</h2>
-
-      <!-- Formulario para editar venta -->
-      <form id="formularioEditarVenta" action="/editarVenta/<%= venta._id %>" method="POST">
-        <!-- Aquí mostrar los campos de la venta para editar -->
-        <label for="fechaVentaEdit">Fecha Venta:</label>
-        <input type="text" id="fechaVentaEdit" name="fecha_venta" value="<%= venta.fecha_venta %>" required>
-
-        <label for="metodoPagoEdit">Método de Pago:</label>
-        <input type="text" id="metodoPagoEdit" name="metodo_pago" value="<%= venta.metodo_pago %>" required>
-
-        <label for="totalVentaEdit">Total Venta:</label>
-        <input type="number" id="totalVentaEdit" name="total_venta" value="<%= venta.total_venta %>" required>
-
-        <!-- Resto de campos de la venta para editar -->
-
-        <button type="submit">Guardar Cambios</button>
-      </form>
-    </div>
-  </div>
 
   <!-- Resto del código HTML anterior -->
 
@@ -173,26 +152,6 @@
 
     cerrarModal.addEventListener('click', () => {
       agregarVentaModal.style.display = 'none';
-    });
-
-  </script>
-
-  <script>
-    // JavaScript para mostrar/ocultar el modal de edición y cerrar el modal
-    const editarVentaModal = document.getElementById('editarVentaModal');
-    const cerrarEditarModal = document.getElementById('cerrarEditarModal');
-    const formularioEditarVenta = document.getElementById('formularioEditarVenta');
-
-    // Agregar un evento al botón de editar en cada fila de la tabla
-    const botonesEditar = document.querySelectorAll('.editarBtn');
-    botonesEditar.forEach(boton => {
-      boton.addEventListener('click', () => {
-        editarVentaModal.style.display = 'block';
-      });
-    });
-
-    cerrarEditarModal.addEventListener('click', () => {
-      editarVentaModal.style.display = 'none';
     });
 
   </script>

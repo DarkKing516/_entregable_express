@@ -1,0 +1,11 @@
+<!-- editarVenta.ejs -->
+<form id="formularioEditarVenta" action="/editarVenta/<%= venta._id %>" method="POST">
+    <!-- Campos para editar la venta -->
+    <label for="fecha_venta">Fecha Venta:</label>
+    <input type="text" id="fecha_venta" name="fecha_venta" value="<%= venta.fecha_venta %>" required>
+  
+    <!-- Otros campos de la venta para editar -->
+  
+    <button type="submit">Guardar Cambios</button>
+  </form>
+  
