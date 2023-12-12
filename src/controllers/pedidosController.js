@@ -120,6 +120,9 @@ const verDetallePedido = async (req, res) => {
 
     const database = client.db('erikas_homemade');
     const pedidosCollection = database.collection('pedidos');
+    const usuariosCollection = database.collection('configuracion');
+    const usuarios = await usuariosCollection.find({}).toArray();
+
 
     // Obtener el pedido por ID
     const pedido = await pedidosCollection.findOne({ _id: new ObjectId(pedidoId) });
@@ -131,7 +134,7 @@ const verDetallePedido = async (req, res) => {
     }
 
     // Renderizar la vista con detalles del pedido
-    res.render('detallePedido', { pedido });
+    res.render('detallePedido', { pedido, usuarios });
   } catch (error) {
     console.error('Error al obtener el detalle del pedido:', error);
     res.status(500).send('Error interno del servidor');
@@ -164,4 +167,70 @@ const eliminarPedido = async (req, res) => {
   }
 };
 
-module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido };
+const actualizarPedido = async (req, res) => {
+  const pedidoId = req.params.pedidoId;
+
+  // Extraer servicios y productos del cuerpo de la solicitud
+  const servicios = req.body.servicios.map(servicio => ({
+    tipoServicio: servicio.tipoServicio,
+    estadoTipoServicio: servicio.estadoTipoServicio,
+    nombreServicio: servicio.nombreServicio,
+    estadoServicio: servicio.estadoServicio,
+    cantidadServicio: parseInt(servicio.cantidadServicio),
+    precioServicio: parseFloat(servicio.precioServicio),
+    subtotalServicio: parseFloat(servicio.subtotalServicio),
+  }));
+
+  const productos = req.body.productos.map(producto => ({
+    tipoProducto: producto.tipoProducto,
+    estadoTipoProducto: producto.estadoTipoProducto,
+    nombreProducto: producto.nombreProducto,
+    estadoProducto: producto.estadoProducto,
+    cantidadProducto: parseInt(producto.cantidadProducto),
+    precioProducto: parseFloat(producto.precioProducto),
+    subtotalProducto: parseFloat(producto.subtotalProducto),
+  }));
+
+  // Calcular total del pedido
+  let totalPedido = 0;
+  servicios.forEach(servicio => {
+    totalPedido += servicio.subtotalServicio;
+  });
+  productos.forEach(producto => {
+    totalPedido += producto.subtotalProducto;
+  });
+
+  // Crear objeto de pedido actualizado
+  const pedidoActualizado = {
+    servicios: servicios,
+    productos: productos,
+    fecha_pedido: req.body.fechaPedido,
+    total_pedido: totalPedido,
+    estado_pedido: req.body.estadoPedido,
+    nombre_usuario: req.body.nombreUsuario,
+  };
+
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Corrige la creación de ObjectId aquí
+    await pedidosCollection.updateOne({ _id: new ObjectId(pedidoId) }, { $set: pedidoActualizado });
+
+    res.redirect('/pedidos'); // Redirigir a la página de pedidos o donde sea necesario
+  } catch (error) {
+    console.error('Error al actualizar el pedido en la base de datos:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+
+
+module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, actualizarPedido };

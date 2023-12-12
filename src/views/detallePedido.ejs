@@ -11,7 +11,7 @@
   <input type="date" id="fechaPedido" name="fechaPedido" value="<%= pedido.fecha_pedido %>">
 
   <label for="totalPedido">Total Pedido:</label>
-  <input type="number" id="totalPedido" name="totalPedido" value="<%= pedido.total_pedido %>">
+  <input type="number" id="totalPedido" name="totalPedido" value="<%= pedido.total_pedido %>" readonly>
 
   <label for="estadoPedido">Estado Pedido:</label>
   <select id="estadoPedido" name="estadoPedido">
@@ -22,25 +22,33 @@
   </select>
 
   <label for="nombreUsuario">Nombre Usuario:</label>
-  <input type="text" id="nombreUsuario" name="nombreUsuario" value="<%= pedido.nombre_usuario %>" readonly>
+  <input type="text" id="nombreUsuario" name="nombreUsuario" value="<%= pedido.nombre_usuario %>">
+  <!-- <select id="nombreUsuario" name="nombreUsuario" required>
+    <% usuarios.forEach(usuario=> { %>
+      <option value="<%= usuario.nombre %>">
+        <%= usuario.nombre %>
+      </option>
+      <% }); %>
+  </select> -->
 
   <h2>Servicios</h2>
   <!-- Lista de servicios con campos editables -->
   <ul id="serviciosLista">
     <% pedido.servicios.forEach((servicio, index)=> { %>
       <li>
+        <!-- <strong>Índice del Servicio:</strong> -->
+        <input type="hidden" name="servicios[<%= index %>][indice]" value="<%= index %>">
         <strong>Tipo de Servicio:</strong>
-        <select id="tipoServicio<%= index %>" name="tipoServicio<%= index %>">
-          <option value="tipo1" <%=servicio.tipoServicio.tipoServicio==='tipo1' ? 'selected' : '' %>>Tipo 1</option>
-          <option value="tipo2" <%=servicio.tipoServicio.tipoServicio==='tipo2' ? 'selected' : '' %>>Tipo 2</option>
-          <option value="tipo3" <%=servicio.tipoServicio.tipoServicio==='tipo3' ? 'selected' : '' %>>Tipo 3</option>
+        <strong>Tipo de Servicio:</strong>
+        <select id="tipoServicio<%= index %>" name="servicios[<%= index %>][tipoServicio]">
+          <option value="tipo1" <%=servicio.tipoServicio==='tipo1' ? 'selected' : '' %>>Tipo 1</option>
+          <option value="tipo2" <%=servicio.tipoServicio==='tipo2' ? 'selected' : '' %>>Tipo 2</option>
+          <option value="tipo3" <%=servicio.tipoServicio==='tipo3' ? 'selected' : '' %>>Tipo 3</option>
         </select><br>
         <strong>Estado Tipo de Servicio:</strong>
-        <select id="estadoTipoServicio<%= index %>" name="estadoTipoServicio<%= index %>">
-          <option value="activo" <%=servicio.tipoServicio.estadoTipoServicio==='activo' ? 'selected' : '' %>>Activo
-          </option>
-          <option value="inactivo" <%=servicio.tipoServicio.estadoTipoServicio==='inactivo' ? 'selected' : '' %>
-            >Inactivo</option>
+        <select id="estadoTipoServicio<%= index %>" name="servicios[<%= index %>][estadoTipoServicio]">
+          <option value="activo" <%=servicio.estadoTipoServicio==='activo' ? 'selected' : '' %>>Activo</option>
+          <option value="inactivo" <%=servicio.estadoTipoServicio==='inactivo' ? 'selected' : '' %>>Inactivo</option>
         </select><br>
         <strong>Estado del Servicio:</strong>
         <!-- <input type="text" name="estadoServicio<%= index %>" value="<%= servicio.estadoServicio %>"><br> -->
@@ -59,6 +67,7 @@
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalServicio<%= index %>" name="subtotalServicio<%= index %>"
           value="<%= servicio.subtotal %>" readonly><br>
+        <input type="hidden" name="servicios[][indice]" value="<%= index %>">
       </li>
       <% }); %>
   </ul>
@@ -75,7 +84,9 @@
 
       // Actualizar el valor del subtotal
       subtotalInput.value = subtotal.toFixed(2);
+      recalcularTotalPedido();
     }
+
   </script>
 
   <h2>Productos</h2>
@@ -83,6 +94,8 @@
   <ul id="productosLista">
     <% pedido.productos.forEach((producto, index)=> { %>
       <li>
+        <!-- <strong>Índice del Producto:</strong> -->
+        <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
         <strong>Tipo de Producto:</strong>
         <!-- <input type="text" name="tipoProducto<%= index %>" value="<%= producto.tipoProducto.tipoProducto %>" readonly><br> -->
         <select id="tipoProducto<%= index %>" name="tipoProducto<%= index %>">
@@ -115,6 +128,7 @@
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalProducto<%= index %>" name="subtotalProducto<%= index %>"
           value="<%= producto.subtotal %>" readonly><br>
+        <input type="hidden" name="productos[][indice]" value="<%= index %>">
       </li>
       <% }); %>
   </ul>
@@ -131,6 +145,9 @@
 
       // Actualizar el valor del subtotal
       subtotalInput.value = subtotal.toFixed(2);
+
+      recalcularTotalPedido();
+
     }
   </script>
 
@@ -189,4 +206,41 @@
   // Event listeners para agregar nuevos campos
   document.getElementById('agregarNuevoServicioBtn').addEventListener('click', agregarCampoServicio);
   document.getElementById('agregarNuevoProductoBtn').addEventListener('click', agregarCampoProducto);
+</script>
+
+<script>
+  // Función para recalcular el total del pedido
+  function recalcularTotalPedido() {
+    let totalPedido = 0;
+
+    // Recorrer subtotales de servicios
+    document.querySelectorAll('[id^="subtotalServicio"]').forEach((subtotalInput) => {
+      totalPedido += parseFloat(subtotalInput.value);
+    });
+
+    // Recorrer subtotales de productos
+    document.querySelectorAll('[id^="subtotalProducto"]').forEach((subtotalInput) => {
+      totalPedido += parseFloat(subtotalInput.value);
+    });
+
+    // Actualizar el valor del total del pedido
+    document.getElementById('totalPedido').value = totalPedido.toFixed(2);
+  }
+
+</script>
+
+<script>
+  const fechaPedidoInput = document.getElementById('fechaPedido');
+  const editarPedidoForm = document.getElementById('editarPedidoForm');
+  editarPedidoForm.addEventListener('submit', function (event) {
+    const fechaCreacion = new Date(); // Obtener la fecha actual
+    const fechaPedido = new Date(fechaPedidoInput.value);
+
+    // Validar que la fecha de pedido sea al menos 5 días después de la fecha de creación
+    if (fechaPedido - fechaCreacion < 5 * 24 * 60 * 60 * 1000) {
+      alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
+      event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
+    }
+
+  });
 </script>
