@@ -16,12 +16,12 @@ const registrarUsuario = async (usuario) => {
   }
 };
 
-const encontrarUsuarioPorCredenciales = async (email, password) => {
+const encontrarUsuarioPorCredenciales = async (correo, contraseña) => {
   try {
     await client.connect();
     const database = client.db('erikas_homemade');
     const collection = database.collection('configuracion');
-    const usuario = await collection.findOne({ email, password });
+    const usuario = await collection.findOne({ correo, contraseña });
     return usuario;
   } finally {
     await client.close();

@@ -14,8 +14,8 @@ const registrarUsuario = async (req, res) => {
 
 const iniciarSesion = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const usuario = await usuarioModel.encontrarUsuarioPorCredenciales(email, password);
+    const { correo, contraseña } = req.body;
+    const usuario = await usuarioModel.encontrarUsuarioPorCredenciales(correo, contraseña);
     if (usuario) {
       // Almacena información de usuario en la sesión
       req.session.usuario = usuario;
