@@ -3,6 +3,7 @@
 
 <!-- Formulario para editar el pedido -->
 <form id="editarPedidoForm" action="/editarPedido/<%= pedido._id %>" method="POST">
+  <input type="hidden" name="_id" value="<%= pedido._id %>">
 
   <label for="fechaCreacion">Fecha Creación:</label>
   <input type="date" id="fechaCreacion" name="fechaCreacion" value="<%= pedido.fecha_creacion %>" readonly>
@@ -30,15 +31,11 @@
       </option>
       <% }); %>
   </select> -->
-
   <h2>Servicios</h2>
-  <!-- Lista de servicios con campos editables -->
   <ul id="serviciosLista">
     <% pedido.servicios.forEach((servicio, index)=> { %>
       <li>
-        <!-- <strong>Índice del Servicio:</strong> -->
         <input type="hidden" name="servicios[<%= index %>][indice]" value="<%= index %>">
-        <strong>Tipo de Servicio:</strong>
         <strong>Tipo de Servicio:</strong>
         <select id="tipoServicio<%= index %>" name="servicios[<%= index %>][tipoServicio]">
           <option value="tipo1" <%=servicio.tipoServicio==='tipo1' ? 'selected' : '' %>>Tipo 1</option>
@@ -52,18 +49,17 @@
         </select><br>
         <strong>Estado del Servicio:</strong>
         <!-- <input type="text" name="estadoServicio<%= index %>" value="<%= servicio.estadoServicio %>"><br> -->
-        <select id="estadoServicio<%= index %>" name="estadoServicio<%= index %>">
+        <select id="estadoServicio<%= index %>" name="servicios[<%= index %>][estadoServicio]">
           <option value="activo" <%=servicio.estadoServicio==='activo' ? 'selected' : '' %>>Activo</option>
           <option value="inactivo" <%=servicio.estadoServicio==='inactivo' ? 'selected' : '' %>>Inactivo</option>
         </select><br>
         <strong>Nombre del Servicio:</strong>
-        <input type="text" name="nombreServicio<%= index %>" value="<%= servicio.nombreServicio %>"><br>
+        <input type="text" name="servicios[<%= index %>][nombreServicio]" value="<%= servicio.nombreServicio %>"><br>
         <strong>Cantidad:</strong>
-        <input type="number" name="cantidadServicio<%= index %>" value="<%= servicio.cantidadServicio %>"
-          onchange="calcularSubtotal(<%= index %>)"><br>
+        <input type="number" name="servicios[<%= index %>][cantidadServicio]" value="<%= servicio.cantidadServicio %>" oninput="calcularSubtotal(<%= index %>)"><br>
+        
         <strong>Precio:</strong>
-        <input type="number" name="precioServicio<%= index %>" value="<%= servicio.precioServicio %>"
-          onchange="calcularSubtotal(<%= index %>)"><br>
+        <input type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio %>" oninput="calcularSubtotal(<%= index %>)"><br>
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalServicio<%= index %>" name="subtotalServicio<%= index %>"
           value="<%= servicio.subtotal %>" readonly><br>
@@ -72,37 +68,33 @@
       <% }); %>
   </ul>
   <script>
-    // Función para calcular el subtotal
-    function calcularSubtotal(index) {
-      const cantidadInput = document.querySelector(`[name="cantidadServicio${index}"]`);
-      const precioInput = document.querySelector(`[name="precioServicio${index}"]`);
-      const subtotalInput = document.querySelector(`#subtotalServicio${index}`);
+function calcularSubtotal(index) {
+  const cantidadInput = document.querySelector(`[name="servicios[${index}][cantidadServicio]"]`);
+  const precioInput = document.querySelector(`[name="servicios[${index}][precioServicio]"]`);
+  const subtotalInput = document.querySelector(`#subtotalServicio${index}`);
 
-      const cantidad = parseInt(cantidadInput.value, 10);
-      const precio = parseFloat(precioInput.value);
-      const subtotal = cantidad * precio;
+  const cantidad = parseInt(cantidadInput.value, 10);
+  const precio = parseFloat(precioInput.value);
+  const subtotal = cantidad * precio;
 
-      // Actualizar el valor del subtotal
-      subtotalInput.value = subtotal.toFixed(2);
-      recalcularTotalPedido();
-    }
+  // Actualizar el valor del subtotal
+  subtotalInput.value = subtotal.toFixed(2);
+  recalcularTotalPedido();
+}
 
   </script>
 
-  <h2>Productos</h2>
-  <!-- Lista de productos con campos editables -->
-  <ul id="productosLista">
-    <% pedido.productos.forEach((producto, index)=> { %>
-      <li>
-        <!-- <strong>Índice del Producto:</strong> -->
-        <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
-        <strong>Tipo de Producto:</strong>
-        <!-- <input type="text" name="tipoProducto<%= index %>" value="<%= producto.tipoProducto.tipoProducto %>" readonly><br> -->
-        <select id="tipoProducto<%= index %>" name="tipoProducto<%= index %>">
-          <option value="tipo1" <%=producto.tipoProducto.tipoProducto==='tipo1' ? 'selected' : '' %>>Tipo 1</option>
-          <option value="tipo2" <%=producto.tipoProducto.tipoProducto==='tipo2' ? 'selected' : '' %>>Tipo 2</option>
-          <option value="tipo3" <%=producto.tipoProducto.tipoProducto==='tipo3' ? 'selected' : '' %>>Tipo 3</option>
-        </select><br>
+<h2>Productos</h2>
+<ul id="productosLista">
+  <% pedido.productos.forEach((producto, index) => { %>
+    <li>
+      <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
+      <strong>Tipo de Producto:</strong>
+      <select id="tipoProducto<%= index %>" name="productos[<%= index %>][tipoProducto]">
+        <option value="tipo1" <%= producto.tipoProducto === 'tipo1' ? 'selected' : '' %>>Tipo 1</option>
+        <option value="tipo2" <%= producto.tipoProducto === 'tipo2' ? 'selected' : '' %>>Tipo 2</option>
+        <option value="tipo3" <%= producto.tipoProducto === 'tipo3' ? 'selected' : '' %>>Tipo 3</option>
+      </select><br>
         <strong>Estado Tipo de Producto:</strong>
         <!-- <input type="text" name="estadoTipoProducto<%= index %>" value="<%= producto.tipoProducto.estadoTipoProducto %>" readonly><br> -->
         <select id="estadoTipoProducto<%= index %>" name="estadoTipoProducto<%= index %>">
@@ -113,42 +105,39 @@
         </select><br>
         <strong>Estado del Producto:</strong>
         <!-- <input type="text" name="estadoProducto<%= index %>" value="<%= producto.estadoProducto %>"><br> -->
-        <select id="estadoProducto<%= index %>" name="estadoProducto<%= index %>">
+        <select id="estadoProducto<%= index %>" name="productos[<%= index %>][estadoProducto]">
           <option value="activo" <%=producto.estadoProducto==='activo' ? 'selected' : '' %>>Activo</option>
           <option value="inactivo" <%=producto.estadoProducto==='inactivo' ? 'selected' : '' %>>Inactivo</option>
         </select><br>
         <strong>Nombre del Producto:</strong>
-        <input type="text" name="nombreProducto<%= index %>" value="<%= producto.nombreProducto %>"><br>
+        <input type="text" name="productos[<%= index %>][nombreProducto]" value="<%= producto.nombreProducto %>"><br>
         <strong>Cantidad:</strong>
-        <input type="number" name="cantidadProducto<%= index %>" value="<%= producto.cantidadProducto %>"
-          onchange="calcularSubtotalProducto(<%= index %>)"><br>
+        <input type="number" name="productos[<%= index %>][cantidadProducto]" value="<%= producto.cantidadProducto %>" oninput="calcularSubtotalProducto(<%= index %>)"><br>
+        
         <strong>Precio:</strong>
-        <input type="number" name="precioProducto<%= index %>" value="<%= producto.precioProducto %>"
-          onchange="calcularSubtotalProducto(<%= index %>)"><br>
+        <input type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto %>" oninput="calcularSubtotalProducto(<%= index %>)"><br>
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalProducto<%= index %>" name="subtotalProducto<%= index %>"
           value="<%= producto.subtotal %>" readonly><br>
-        <input type="hidden" name="productos[][indice]" value="<%= index %>">
-      </li>
+          <input type="hidden" name="productos[][indice]" value="<%= index %>">
+        </li>
       <% }); %>
   </ul>
   <script>
     // Función para calcular el subtotal de productos
-    function calcularSubtotalProducto(index) {
-      const cantidadInput = document.querySelector(`[name="cantidadProducto${index}"]`);
-      const precioInput = document.querySelector(`[name="precioProducto${index}"]`);
-      const subtotalInput = document.querySelector(`#subtotalProducto${index}`);
+function calcularSubtotalProducto(index) {
+  const cantidadInput = document.querySelector(`[name="productos[${index}][cantidadProducto]"]`);
+  const precioInput = document.querySelector(`[name="productos[${index}][precioProducto]"]`);
+  const subtotalInput = document.querySelector(`#subtotalProducto${index}`);
 
-      const cantidad = parseInt(cantidadInput.value, 10);
-      const precio = parseFloat(precioInput.value);
-      const subtotal = cantidad * precio;
+  const cantidad = parseInt(cantidadInput.value, 10);
+  const precio = parseFloat(precioInput.value);
+  const subtotal = cantidad * precio;
 
-      // Actualizar el valor del subtotal
-      subtotalInput.value = subtotal.toFixed(2);
-
-      recalcularTotalPedido();
-
-    }
+  // Actualizar el valor del subtotal
+  subtotalInput.value = subtotal.toFixed(2);
+  recalcularTotalPedido();
+}
   </script>
 
   <button type="submit">Guardar Cambios</button>
@@ -157,76 +146,22 @@
 <a href="/pedidos">Volver a la lista de pedidos</a>
 
 <script>
-  // JavaScript para manejar la adición de nuevos servicios y productos
-  const serviciosContainer = document.getElementById('serviciosLista');
-  const productosContainer = document.getElementById('productosLista');
+function recalcularTotalPedido() {
+  let totalPedido = 0;
 
-  function agregarCampoServicio() {
-    const nuevoServicio = document.createElement('li');
-    nuevoServicio.innerHTML = `
-      <strong>Tipo de Servicio:</strong>
-      <input type="text" name="nuevoTipoServicio" readonly><br>
-      <strong>Estado Tipo de Servicio:</strong>
-      <input type="text" name="nuevoEstadoTipoServicio" readonly><br>
-      <strong>Estado del Servicio:</strong>
-      <input type="text" name="nuevoEstadoServicio"><br>
-      <strong>Nombre del Servicio:</strong>
-      <input type="text" name="nuevoNombreServicio"><br>
-      <strong>Cantidad:</strong>
-      <input type="number" name="nuevoCantidadServicio"><br>
-      <strong>Precio:</strong>
-      <input type="number" name="nuevoPrecioServicio"><br>
-      <strong>Subtotal:</strong>
-      <input type="number" name="nuevoSubtotalServicio"><br>
-    `;
-    serviciosContainer.appendChild(nuevoServicio);
-  }
+  // Recorrer subtotales de servicios
+  document.querySelectorAll('[id^="subtotalServicio"]').forEach((subtotalInput) => {
+    totalPedido += parseFloat(subtotalInput.value);
+  });
 
-  function agregarCampoProducto() {
-    const nuevoProducto = document.createElement('li');
-    nuevoProducto.innerHTML = `
-      <strong>Tipo de Producto:</strong>
-      <input type="text" name="nuevoTipoProducto" readonly><br>
-      <strong>Estado Tipo de Producto:</strong>
-      <input type="text" name="nuevoEstadoTipoProducto" readonly><br>
-      <strong>Estado del Producto:</strong>
-      <input type="text" name="nuevoEstadoProducto"><br>
-      <strong>Nombre del Producto:</strong>
-      <input type="text" name="nuevoNombreProducto"><br>
-      <strong>Cantidad:</strong>
-      <input type="number" name="nuevoCantidadProducto"><br>
-      <strong>Precio:</strong>
-      <input type="number" name="nuevoPrecioProducto"><br>
-      <strong>Subtotal:</strong>
-      <input type="number" name="nuevoSubtotalProducto"><br>
-    `;
-    productosContainer.appendChild(nuevoProducto);
-  }
+  // Recorrer subtotales de productos
+  document.querySelectorAll('[id^="subtotalProducto"]').forEach((subtotalInput) => {
+    totalPedido += parseFloat(subtotalInput.value);
+  });
 
-  // Event listeners para agregar nuevos campos
-  document.getElementById('agregarNuevoServicioBtn').addEventListener('click', agregarCampoServicio);
-  document.getElementById('agregarNuevoProductoBtn').addEventListener('click', agregarCampoProducto);
-</script>
-
-<script>
-  // Función para recalcular el total del pedido
-  function recalcularTotalPedido() {
-    let totalPedido = 0;
-
-    // Recorrer subtotales de servicios
-    document.querySelectorAll('[id^="subtotalServicio"]').forEach((subtotalInput) => {
-      totalPedido += parseFloat(subtotalInput.value);
-    });
-
-    // Recorrer subtotales de productos
-    document.querySelectorAll('[id^="subtotalProducto"]').forEach((subtotalInput) => {
-      totalPedido += parseFloat(subtotalInput.value);
-    });
-
-    // Actualizar el valor del total del pedido
-    document.getElementById('totalPedido').value = totalPedido.toFixed(2);
-  }
-
+  // Actualizar el valor del total del pedido
+  document.getElementById('totalPedido').value = totalPedido.toFixed(2);
+}
 </script>
 
 <script>
@@ -241,6 +176,5 @@
       alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
       event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
     }
-
   });
 </script>

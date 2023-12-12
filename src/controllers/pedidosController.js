@@ -38,6 +38,8 @@ const obtenerFechaActual = () => {
 
 const agregarPedido = async (req, res) => {
   // Obtener servicios y productos del cuerpo de la solicitud
+  console.log('Datos de servicios:', req.body.servicios);
+  
   const servicios = req.body.servicios ? JSON.parse(req.body.servicios) : [];
   const productos = req.body.productos ? JSON.parse(req.body.productos) : [];
 
@@ -167,48 +169,13 @@ const eliminarPedido = async (req, res) => {
   }
 };
 
-const actualizarPedido = async (req, res) => {
-  const pedidoId = req.params.pedidoId;
+const editarPedido = async (req, res) => {
+  const pedidoId = req.params.id;
 
-  // Extraer servicios y productos del cuerpo de la solicitud
-  const servicios = req.body.servicios.map(servicio => ({
-    tipoServicio: servicio.tipoServicio,
-    estadoTipoServicio: servicio.estadoTipoServicio,
-    nombreServicio: servicio.nombreServicio,
-    estadoServicio: servicio.estadoServicio,
-    cantidadServicio: parseInt(servicio.cantidadServicio),
-    precioServicio: parseFloat(servicio.precioServicio),
-    subtotalServicio: parseFloat(servicio.subtotalServicio),
-  }));
+  // Obtener los datos actualizados del formulario de edición
+  const { fechaPedido, estadoPedido, nombreUsuario, servicios, productos } = req.body;
 
-  const productos = req.body.productos.map(producto => ({
-    tipoProducto: producto.tipoProducto,
-    estadoTipoProducto: producto.estadoTipoProducto,
-    nombreProducto: producto.nombreProducto,
-    estadoProducto: producto.estadoProducto,
-    cantidadProducto: parseInt(producto.cantidadProducto),
-    precioProducto: parseFloat(producto.precioProducto),
-    subtotalProducto: parseFloat(producto.subtotalProducto),
-  }));
-
-  // Calcular total del pedido
-  let totalPedido = 0;
-  servicios.forEach(servicio => {
-    totalPedido += servicio.subtotalServicio;
-  });
-  productos.forEach(producto => {
-    totalPedido += producto.subtotalProducto;
-  });
-
-  // Crear objeto de pedido actualizado
-  const pedidoActualizado = {
-    servicios: servicios,
-    productos: productos,
-    fecha_pedido: req.body.fechaPedido,
-    total_pedido: totalPedido,
-    estado_pedido: req.body.estadoPedido,
-    nombre_usuario: req.body.nombreUsuario,
-  };
+  // Puedes agregar más validaciones según tus necesidades
 
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -219,12 +186,54 @@ const actualizarPedido = async (req, res) => {
     const database = client.db('erikas_homemade');
     const pedidosCollection = database.collection('pedidos');
 
-    // Corrige la creación de ObjectId aquí
-    await pedidosCollection.updateOne({ _id: new ObjectId(pedidoId) }, { $set: pedidoActualizado });
+    // Obtener el pedido por ID
+    const pedido = await pedidosCollection.findOne({ _id: new ObjectId(pedidoId) });
 
-    res.redirect('/pedidos'); // Redirigir a la página de pedidos o donde sea necesario
+    if (!pedido) {
+      // Manejar el caso en que el pedido no se encuentre
+      res.status(404).send('Pedido no encontrado');
+      return;
+    }
+
+    // Actualizar los campos del pedido con los nuevos valores
+    pedido.fecha_pedido = fechaPedido;
+    pedido.estado_pedido = estadoPedido;
+    pedido.nombre_usuario = nombreUsuario;
+
+    // Actualizar servicios
+    pedido.servicios.forEach((servicio, index) => {
+      const servicioActualizado = servicios[index];
+      servicio.tipoServicio = servicioActualizado.tipoServicio;
+      servicio.estadoTipoServicio = servicioActualizado.estadoTipoServicio;
+      servicio.estadoServicio = servicioActualizado.estadoServicio;
+      servicio.nombreServicio = servicioActualizado.nombreServicio;
+      servicio.cantidadServicio = servicioActualizado.cantidadServicio;
+      servicio.precioServicio = servicioActualizado.precioServicio;
+      servicio.subtotal = servicioActualizado.cantidadServicio * servicioActualizado.precioServicio;
+    });
+
+    // Actualizar productos
+    pedido.productos.forEach((producto, index) => {
+      const productoActualizado = productos[index];
+      producto.tipoProducto = productoActualizado.tipoProducto;
+      producto.estadoTipoProducto = productoActualizado.estadoTipoProducto;
+      producto.estadoProducto = productoActualizado.estadoProducto;
+      producto.nombreProducto = productoActualizado.nombreProducto;
+      producto.cantidadProducto = productoActualizado.cantidadProducto;
+      producto.precioProducto = productoActualizado.precioProducto;
+      producto.subtotal = productoActualizado.cantidadProducto * productoActualizado.precioProducto;
+    });
+
+    // Recalcular el total del pedido
+    pedido.total_pedido = pedido.servicios.reduce((total, servicio) => total + servicio.subtotal, 0)
+                     + pedido.productos.reduce((total, producto) => total + producto.subtotal, 0);
+
+    // Actualizar el documento en la base de datos
+    await pedidosCollection.updateOne({ _id: new ObjectId(pedidoId) }, { $set: pedido });
+
+    res.redirect(`/pedido/${pedidoId}`); // Redirigir a la página de detalle del pedido actualizado
   } catch (error) {
-    console.error('Error al actualizar el pedido en la base de datos:', error);
+    console.error('Error al editar el pedido:', error);
     res.status(500).send('Error interno del servidor');
   } finally {
     await client.close();
@@ -233,4 +242,6 @@ const actualizarPedido = async (req, res) => {
 
 
 
-module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, actualizarPedido };
+
+
+module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido };
