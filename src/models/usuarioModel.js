@@ -6,9 +6,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 // Función para obtener los permisos según el rol
 function obtenerPermisosSegunRol(rol) {
-  switch (rol) {
-    case 'cliente':
-      return [
+    const permisosCliente = [
         { nombre_permiso: 'acceder al sistema', estado_permiso: true },
         { nombre_permiso: 'cerrar sesión', estado_permiso: true },
         { nombre_permiso: 'recuperar mi contraseña', estado_permiso: true },
@@ -30,8 +28,7 @@ function obtenerPermisosSegunRol(rol) {
         { nombre_permiso: 'Editar mis citas', estado_permiso: true },
         { nombre_permiso: 'Anular mis citas', estado_permiso: true },
       ];
-    case 'administrador':
-      return [
+    const permisosAdministrador = [
         { nombre_permiso: 'crear un nuevo rol', estado_permiso: true },
         { nombre_permiso: 'listar roles', estado_permiso: true },
         { nombre_permiso: 'ver permisos asociados a un rol', estado_permiso: true },
@@ -109,10 +106,20 @@ function obtenerPermisosSegunRol(rol) {
         { nombre_permiso: 'Anular las citas del aplicativo', estado_permiso: true },
         // ... Agregar más permisos según sea necesario
       ];
-    default:
-      return [];
-  }
-}
+      switch (rol) {
+        case 'cliente':
+          // Configurar el estado_permiso como inactivo para permisos no mencionados
+          return permisosCliente.map(permiso => ({
+            ...permiso,
+            estado_permiso: true,
+          }));
+        case 'administrador':
+          return permisosAdministrador;
+        default:
+          return [];
+      }
+    }
+
 
 const registrarUsuario = async (usuario) => {
   try {

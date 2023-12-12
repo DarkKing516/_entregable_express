@@ -5,7 +5,7 @@ const router = express.Router();
 
 const usuarioModel = require('../models/usuarioModel'); 
 const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido } = require('../controllers/pedidosController');
-const { getConfiguracionPage, registrarUsuario, eliminarUsuario} = require('../controllers/configuracionController');
+const { getConfiguracionPage, registrarUsuario, verPermisos, actualizarPermisos, eliminarUsuario} = require('../controllers/configuracionController');
 const { iniciarSesion, cerrarSesion } = require('../controllers/authController');
 const { getVentasPage, agregarVenta } = require('../controllers/ventasController');
 const { getReservasPage, agregarReserva, eliminarReserva } = require('../controllers/reservasController');
@@ -59,7 +59,9 @@ router.get('/eliminarPedido/:id', eliminarPedido);
 
 router.get('/configuracion', getConfiguracionPage);
 router.post('/registrarUsuario', registrarUsuario);
-router.delete('/eliminarUsuario/:id', eliminarUsuario);
+router.get('/configuracion/:id', verPermisos);
+router.post('/configuracion/:id/actualizarPermisos', actualizarPermisos);
+router.get('/eliminarUsuario/:id', eliminarUsuario);
 
 
 

@@ -77,19 +77,11 @@
             <%= usuario.contraseña %>
           </td>
           <td>
-            <% if (usuario.permisos && usuario.permisos.length> 0) { %>
-              <% usuario.permisos.forEach(permiso=> { %>
-                <div>
-                  <%= permiso.nombre_permiso %> %>
-                </div>
-                <% }); %>
-                  <% } else { %>
-                    <div>No hay permisos asignados</div>
-                    <% } %>
+            <button><a href="/configuracion/<%= usuario._id %>">Ver permisos</a></button>
           </td>
           <td>
             <button class="editarUsuarioBtn" data-id="<%= usuario._id.toString() %>">Editar</button>
-            <button class="eliminarUsuarioBtn" data-id="<%= usuario._id.toString() %>">Eliminar</button>
+            <button><a href="/eliminarUsuario/<%= usuario._id %>">Eliminar</a></button>
           </td>
         </tr>
         <% }); %>
@@ -102,39 +94,6 @@
     const agregarUsuarioBtn = document.getElementById('agregarUsuarioBtn');
     const agregarUsuarioModal = document.getElementById('agregarUsuarioModal');
     const cerrarModal = document.getElementById('cerrarModal');
-    const eliminarUsuarioBtns = document.querySelectorAll('.eliminarUsuarioBtn');
-
-    eliminarUsuarioBtns.forEach(btn => {
-      btn.addEventListener('click', (event) => {
-        const userId = event.currentTarget.dataset.id;
-        console.log('userId:', userId);
-    
-        if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-          fetch(`/configuracion/${userId}`, {
-            method: 'DELETE',
-          })
-            .then(response => {
-              if (response.ok) {
-                return response.json();
-              } else {
-                throw new Error(`Error en la solicitud: ${response.statusText}`);
-              }
-            })
-            .then(data => {
-              if (data.success) {
-                alert('Usuario eliminado exitosamente');
-                location.reload();
-              } else {
-                alert(`Error al eliminar el usuario: ${data.error}`);
-              }
-            })
-            .catch(error => {
-              console.error('Error al eliminar el usuario:', error);
-              alert('Error al eliminar el usuario');
-            });
-        }
-      });
-    });
     
     agregarUsuarioBtn.addEventListener('click', () => {
       agregarUsuarioModal.style.display = 'block';
