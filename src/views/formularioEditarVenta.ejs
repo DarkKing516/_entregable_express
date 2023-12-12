@@ -30,22 +30,22 @@
 
   <!-- Campos para productos -->
   <% venta.productos.forEach((producto, index)=> { %>
-    <label for="productos[<%= index %>][nombre]">Nombre Producto:</label>
-    <input type="text" name="productos[<%= index %>][nombre]" value="<%= producto.nombreProducto || '' %>" required
+    <label for="productos[<%= index %>][nombreProducto]">Nombre Producto:</label>
+    <input type="text" name="productos[<%= index %>][nombreProducto]" value="<%= producto.nombreProducto || '' %>" required
       >
 
-    <label for="productos[<%= index %>][precio]">Precio Producto:</label>
-    <input type="number" name="productos[<%= index %>][precio]" value="<%= producto.precioProducto || '' %>" required>
+    <label for="productos[<%= index %>][precioProducto]">Precio Producto:</label>
+    <input type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto || '' %>" required>
     <% }); %>
 
       <!-- Campos para servicios -->
       <% venta.servicios.forEach((servicio, index)=> { %>
-        <label for="servicios[<%= index %>][nombre]">Nombre Servicio:</label>
-        <input type="text" name="servicios[<%= index %>][nombre]" value="<%= servicio.nombreServicio || '' %>" required
+        <label for="servicios[<%= index %>][nombreServicio]">Nombre Servicio:</label>
+        <input type="text" name="servicios[<%= index %>][nombreServicio]" value="<%= servicio.nombreServicio || '' %>" required
           >
 
-        <label for="servicios[<%= index %>][precio]">Precio Servicio:</label>
-        <input type="number" name="servicios[<%= index %>][precio]" value="<%= servicio.precioServicio || '' %>"
+        <label for="servicios[<%= index %>][precioServicio]">Precio Servicio:</label>
+        <input type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio || '' %>"
           required>
         <% }); %>
 

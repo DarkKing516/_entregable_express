@@ -120,7 +120,7 @@
 
       let detalleProductos = 'Productos: ';
       productos.forEach((producto, index) => {
-        detalleProductos += `${producto.nombre}: Precio: ${producto.precio}`;
+        detalleProductos += `${producto.nombreProducto}: Precio: ${producto.precioProducto}`;
         if (index !== productos.length - 1) {
           detalleProductos += ', ';
         }
@@ -128,7 +128,7 @@
 
       let detalleServicios = 'Servicios: ';
       servicios.forEach((servicio, index) => {
-        detalleServicios += `${servicio.nombre}: Precio: ${servicio.precio}`;
+        detalleServicios += `${servicio.nombreServicio}: Precio: ${servicio.precioServicio}`;
         if (index !== servicios.length - 1) {
           detalleServicios += ', ';
         }
