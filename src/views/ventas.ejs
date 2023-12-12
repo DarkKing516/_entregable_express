@@ -24,10 +24,12 @@
         <label for="pedido">Pedido:</label>
         <select id="pedido" name="pedido">
           <% pedidos.forEach(pedido=> { %>
-            <option value="<%= pedido._id %>">
-              <%= pedido.nombre_usuario %>, total= <%= pedido.total_pedido %> 
-            </option>
-            <% }); %>
+            <% if (pedido.estado_pedido==="completado" ) { %>
+              <option value="<%= pedido._id %>">
+                <%= pedido.nombre_usuario %>, total= <%= pedido.total_pedido %>
+              </option>
+              <% } %>
+                <% }); %>
         </select>
 
         <label for="usuario">Usuario:</label>
@@ -99,11 +101,9 @@
             <a href="/editarVenta/<%= venta._id %>">
               <button>Editar</button>
             </a>
-          </td>          
+          </td>
           <td>
-            <form action="/eliminarVenta/<%= venta._id %>" method="POST">
-              <button type="submit">Eliminar</button>
-            </form>
+            <a href="/eliminarVenta/<%= venta._id %>">Eliminar</a>
           </td>
         </tr>
         <% }); %>

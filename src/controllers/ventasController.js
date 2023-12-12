@@ -123,6 +123,7 @@ const eliminarVenta = async (req, res) => {
     await client.close();
   }
 };
+
 const obtenerDatosVenta = async (req, res) => {
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri);
