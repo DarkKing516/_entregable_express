@@ -40,7 +40,7 @@ router.get('/pedidos', getPedidosPage);
 router.post('/agregarPedido', agregarPedido);
 router.get('/pedido/:id', verDetallePedido);
 router.get('/eliminarPedido/:id', eliminarPedido);
-
+router.post('/editarPedido/:id', editarPedido);
 
 
 router.get('/configuracion', getConfiguracionPage);
