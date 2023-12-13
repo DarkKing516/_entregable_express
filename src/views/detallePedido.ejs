@@ -32,6 +32,7 @@
       <% }); %>
   </select> -->
   <h2>Servicios</h2>
+  <button type="button" id="agregarServicioBtn">Agregar Servicio</button>
   <ul id="serviciosLista">
     <% pedido.servicios.forEach((servicio, index)=> { %>
       <li>
@@ -56,45 +57,49 @@
         <strong>Nombre del Servicio:</strong>
         <input type="text" name="servicios[<%= index %>][nombreServicio]" value="<%= servicio.nombreServicio %>"><br>
         <strong>Cantidad:</strong>
-        <input type="number" name="servicios[<%= index %>][cantidadServicio]" value="<%= servicio.cantidadServicio %>" oninput="calcularSubtotal(<%= index %>)"><br>
-        
+        <input type="number" name="servicios[<%= index %>][cantidadServicio]" value="<%= servicio.cantidadServicio %>"
+          oninput="calcularSubtotal(<%= index %>)"><br>
+
         <strong>Precio:</strong>
-        <input type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio %>" oninput="calcularSubtotal(<%= index %>)"><br>
+        <input type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio %>"
+          oninput="calcularSubtotal(<%= index %>)"><br>
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalServicio<%= index %>" name="subtotalServicio<%= index %>"
           value="<%= servicio.subtotal %>" readonly><br>
         <input type="hidden" name="servicios[][indice]" value="<%= index %>">
+        <input type="hidden" id="indiceActual" value="<%= pedido.servicios.length %>">
       </li>
       <% }); %>
   </ul>
   <script>
-function calcularSubtotal(index) {
-  const cantidadInput = document.querySelector(`[name="servicios[${index}][cantidadServicio]"]`);
-  const precioInput = document.querySelector(`[name="servicios[${index}][precioServicio]"]`);
-  const subtotalInput = document.querySelector(`#subtotalServicio${index}`);
+    function calcularSubtotal(index) {
+      const cantidadInput = document.querySelector(`[name="servicios[${index}][cantidadServicio]"]`);
+      const precioInput = document.querySelector(`[name="servicios[${index}][precioServicio]"]`);
+      const subtotalInput = document.querySelector(`#subtotalServicio${index}`);
 
-  const cantidad = parseInt(cantidadInput.value, 10);
-  const precio = parseFloat(precioInput.value);
-  const subtotal = cantidad * precio;
+      const cantidad = parseInt(cantidadInput.value, 10);
+      const precio = parseFloat(precioInput.value);
+      const subtotal = cantidad * precio;
 
-  // Actualizar el valor del subtotal
-  subtotalInput.value = subtotal.toFixed(2);
-  recalcularTotalPedido();
-}
+      // Actualizar el valor del subtotal
+      subtotalInput.value = subtotal.toFixed(2);
+      recalcularTotalPedido();
+    }
 
   </script>
 
-<h2>Productos</h2>
-<ul id="productosLista">
-  <% pedido.productos.forEach((producto, index) => { %>
-    <li>
-      <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
-      <strong>Tipo de Producto:</strong>
-      <select id="tipoProducto<%= index %>" name="productos[<%= index %>][tipoProducto]">
-        <option value="tipo1" <%= producto.tipoProducto === 'tipo1' ? 'selected' : '' %>>Tipo 1</option>
-        <option value="tipo2" <%= producto.tipoProducto === 'tipo2' ? 'selected' : '' %>>Tipo 2</option>
-        <option value="tipo3" <%= producto.tipoProducto === 'tipo3' ? 'selected' : '' %>>Tipo 3</option>
-      </select><br>
+  <h2>Productos</h2>
+  <button type="button" id="agregarProductoBtn">Agregar Producto</button>
+  <ul id="productosLista">
+    <% pedido.productos.forEach((producto, index)=> { %>
+      <li>
+        <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
+        <strong>Tipo de Producto:</strong>
+        <select id="tipoProducto<%= index %>" name="productos[<%= index %>][tipoProducto]">
+          <option value="tipo1" <%=producto.tipoProducto==='tipo1' ? 'selected' : '' %>>Tipo 1</option>
+          <option value="tipo2" <%=producto.tipoProducto==='tipo2' ? 'selected' : '' %>>Tipo 2</option>
+          <option value="tipo3" <%=producto.tipoProducto==='tipo3' ? 'selected' : '' %>>Tipo 3</option>
+        </select><br>
         <strong>Estado Tipo de Producto:</strong>
         <!-- <input type="text" name="estadoTipoProducto<%= index %>" value="<%= producto.tipoProducto.estadoTipoProducto %>" readonly><br> -->
         <select id="estadoTipoProducto<%= index %>" name="estadoTipoProducto<%= index %>">
@@ -112,32 +117,34 @@ function calcularSubtotal(index) {
         <strong>Nombre del Producto:</strong>
         <input type="text" name="productos[<%= index %>][nombreProducto]" value="<%= producto.nombreProducto %>"><br>
         <strong>Cantidad:</strong>
-        <input type="number" name="productos[<%= index %>][cantidadProducto]" value="<%= producto.cantidadProducto %>" oninput="calcularSubtotalProducto(<%= index %>)"><br>
-        
+        <input type="number" name="productos[<%= index %>][cantidadProducto]" value="<%= producto.cantidadProducto %>"
+          oninput="calcularSubtotalProducto(<%= index %>)"><br>
+
         <strong>Precio:</strong>
-        <input type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto %>" oninput="calcularSubtotalProducto(<%= index %>)"><br>
+        <input type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto %>"
+          oninput="calcularSubtotalProducto(<%= index %>)"><br>
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalProducto<%= index %>" name="subtotalProducto<%= index %>"
           value="<%= producto.subtotal %>" readonly><br>
-          <input type="hidden" name="productos[][indice]" value="<%= index %>">
-        </li>
+        <input type="hidden" name="productos[][indice]" value="<%= index %>">
+      </li>
       <% }); %>
   </ul>
   <script>
     // Función para calcular el subtotal de productos
-function calcularSubtotalProducto(index) {
-  const cantidadInput = document.querySelector(`[name="productos[${index}][cantidadProducto]"]`);
-  const precioInput = document.querySelector(`[name="productos[${index}][precioProducto]"]`);
-  const subtotalInput = document.querySelector(`#subtotalProducto${index}`);
+    function calcularSubtotalProducto(index) {
+      const cantidadInput = document.querySelector(`[name="productos[${index}][cantidadProducto]"]`);
+      const precioInput = document.querySelector(`[name="productos[${index}][precioProducto]"]`);
+      const subtotalInput = document.querySelector(`#subtotalProducto${index}`);
 
-  const cantidad = parseInt(cantidadInput.value, 10);
-  const precio = parseFloat(precioInput.value);
-  const subtotal = cantidad * precio;
+      const cantidad = parseInt(cantidadInput.value, 10);
+      const precio = parseFloat(precioInput.value);
+      const subtotal = cantidad * precio;
 
-  // Actualizar el valor del subtotal
-  subtotalInput.value = subtotal.toFixed(2);
-  recalcularTotalPedido();
-}
+      // Actualizar el valor del subtotal
+      subtotalInput.value = subtotal.toFixed(2);
+      recalcularTotalPedido();
+    }
   </script>
 
   <button type="submit">Guardar Cambios</button>
@@ -146,25 +153,25 @@ function calcularSubtotalProducto(index) {
 <a href="/pedidos">Volver a la lista de pedidos</a>
 
 <script>
-function recalcularTotalPedido() {
-  let totalPedido = 0;
+  function recalcularTotalPedido() {
+    let totalPedido = 0;
 
-  // Recorrer subtotales de servicios
-  document.querySelectorAll('[id^="subtotalServicio"]').forEach((subtotalInput) => {
-    totalPedido += parseFloat(subtotalInput.value);
-  });
+    // Recorrer subtotales de servicios
+    document.querySelectorAll('[id^="subtotalServicio"]').forEach((subtotalInput) => {
+      totalPedido += parseFloat(subtotalInput.value);
+    });
 
-  // Recorrer subtotales de productos
-  document.querySelectorAll('[id^="subtotalProducto"]').forEach((subtotalInput) => {
-    totalPedido += parseFloat(subtotalInput.value);
-  });
+    // Recorrer subtotales de productos
+    document.querySelectorAll('[id^="subtotalProducto"]').forEach((subtotalInput) => {
+      totalPedido += parseFloat(subtotalInput.value);
+    });
 
-  // Actualizar el valor del total del pedido
-  document.getElementById('totalPedido').value = totalPedido.toFixed(2);
-}
-</script>
+    // Actualizar el valor del total del pedido
+    document.getElementById('totalPedido').value = totalPedido.toFixed(2);
+  }
 
-<script>
+
+
   const fechaPedidoInput = document.getElementById('fechaPedido');
   const editarPedidoForm = document.getElementById('editarPedidoForm');
   editarPedidoForm.addEventListener('submit', function (event) {
@@ -176,5 +183,65 @@ function recalcularTotalPedido() {
       alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
       event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
     }
+  });
+</script>
+<script>
+    let indiceActual = parseInt(document.getElementById('indiceActual').value, 10) || 0;
+
+    document.getElementById('agregarServicioBtn').addEventListener('click', function () {
+      const serviciosLista = document.getElementById('serviciosLista');
+
+      // Crear un nuevo elemento li (item de lista) para el nuevo servicio
+      const nuevoServicioLi = document.createElement('li');
+
+      // HTML para un nuevo servicio
+      nuevoServicioLi.innerHTML = `
+      <input type="hidden" name="servicios[${indiceActual}][indice]" value="${indiceActual}">
+      <strong>Tipo de Servicio:</strong>
+      <select id="tipoServicio${indiceActual}" name="servicios[${indiceActual}][tipoServicio]">
+        <option value="tipo1">Tipo 1</option>
+        <option value="tipo2">Tipo 2</option>
+        <option value="tipo3">Tipo 3</option>
+      </select><br>
+      <strong>Estado Tipo de Servicio:</strong>
+      <select id="estadoTipoServicio${indiceActual}" name="servicios[${indiceActual}][estadoTipoServicio]">
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select><br>
+      <strong>Estado del Servicio:</strong>
+      <select id="estadoServicio${indiceActual}" name="servicios[${indiceActual}][estadoServicio]">
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select><br>
+      <strong>Nombre del Servicio:</strong>
+      <input type="text" name="servicios[${indiceActual}][nombreServicio]"><br>
+      <strong>Cantidad:</strong>
+      <input type="number" name="servicios[${indiceActual}][cantidadServicio]" oninput="calcularSubtotal(${indiceActual})"><br>
+      <strong>Precio:</strong>
+      <input type="number" name="servicios[${indiceActual}][precioServicio]" oninput="calcularSubtotal(${indiceActual})"><br>
+      <strong>Subtotal:</strong>
+      <input type="number" id="subtotalServicio${indiceActual}" name="subtotalServicio[${indiceActual}]" readonly><br>
+      <input type="hidden" name="servicios[${indiceActual}][indice]" value="${indiceActual}">
+    `;
+
+      // Incrementar el índice actual y actualizar el campo oculto
+      indiceActual++;
+      document.getElementById('indiceActual').value = indiceActual;
+
+      // Agregar el nuevo servicio a la lista de servicios
+      serviciosLista.appendChild(nuevoServicioLi);
+    });
+
+  document.getElementById('agregarProductoBtn').addEventListener('click', function () {
+    const productosLista = document.getElementById('productosLista');
+    const nuevoIndice = productosLista.children.length; // Obtener el nuevo índice
+    const nuevoProductoHTML = `
+    <!-- HTML para un nuevo producto -->
+    <li>
+      <!-- Campos del formulario para el nuevo producto -->
+      <!-- Puedes copiar y pegar los campos existentes y ajustar los índices -->
+    </li>
+  `;
+    productosLista.innerHTML += nuevoProductoHTML;
   });
 </script>
