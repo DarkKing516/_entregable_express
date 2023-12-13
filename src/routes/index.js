@@ -7,7 +7,8 @@ const usuarioModel = require('../models/usuarioModel');
 const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido, generarPDFPedidos } = require('../controllers/pedidosController');
 const { getConfiguracionPage, registrarUsuario, verPermisos, actualizarPermisos, eliminarUsuario} = require('../controllers/configuracionController');
 const { iniciarSesion, cerrarSesion } = require('../controllers/authController');
-const { getVentasPage, agregarVenta, eliminarVenta, actualizarVentas, obtenerDatosVenta} = require('../controllers/ventasController');
+const { getVentasPage, agregarVenta, eliminarVenta, actualizarVentas, obtenerDatosVenta, generarPDFVentas} = require('../controllers/ventasController');
+
 const { getReservasPage, agregarReserva, eliminarReserva, actualizarReserva, obtenerDetallesReserva } = require('../controllers/reservasController');
 
 // Rutas
@@ -75,12 +76,14 @@ router.get('/eliminarUsuario/:id', eliminarUsuario);
 
 
 
-
+router.get('/eliminarVenta/:id', eliminarVenta);
 router.get('/pelos', getVentasPage);
 router.post('/agregarVenta', agregarVenta)
-router.post('/eliminarVenta/:id', eliminarVenta);
 router.get('/editarVenta/:id', obtenerDatosVenta);
 router.post('/actualizarVenta/:id', actualizarVentas);
+router.get('/generarReporte', generarPDFVentas);
+
+
 
 
 
