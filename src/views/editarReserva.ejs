@@ -1,0 +1,21 @@
+<!-- src/views/editarReserva.ejs -->
+<link rel="shortcut icon" href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+<%- include('./layouts/nav') %>
+<h1>Editar Reserva</h1>
+
+<form id="formularioEditarReserva" action="/guardarEdicionReserva/<%= reserva._id %>" method="POST">
+  <!-- Mantén los campos que desees editar, por ejemplo: -->
+  <label for="fechaReserva">Fecha de Reserva:</label>
+  <input type="date" id="fechaReserva" name="fechaReserva" value="<%= reserva.fecha_reserva %>" required>
+
+  <label for="estadoReserva">Estado de Reserva:</label>
+  <select id="estadoReserva" name="estadoReserva" required>
+    <option value="Agendada" <%= reserva.estado_reserva === 'Agendada' ? 'selected' : '' %>>Agendada</option>
+    <option value="Rechazada" <%= reserva.estado_reserva === 'Rechazada' ? 'selected' : '' %>>Rechazada</option>
+    <option value="Terminada" <%= reserva.estado_reserva === 'Terminada' ? 'selected' : '' %>>Terminada</option>
+  </select>
+
+  <!-- Otros campos para editar -->
+
+  <button type="submit">Guardar Cambios</button>
+</form>

@@ -17,19 +17,24 @@ const getReservasPage = async (req, res) => {
 
   try {
     await client.connect(); // Conectar a la base de datos
-
     const database = client.db('erikas_homemade');
     const configuracionCollection = database.collection('configuracion');
     const reservasCollection = database.collection('gestion_reservas');
 
     // Obtener la lista de configuraciones para el menú desplegable
     const configuraciones = await configuracionCollection.find({}).toArray();
-
     // Obtener la lista de reservas
     const reservas = await reservasCollection.find({}).toArray();
+    const reservasFormateadas = reservas.map(reserva => {
+      return {
+        ...reserva,
+        fecha_creacion: reserva.fecha_creacion instanceof Date ? reserva.fecha_creacion.toISOString().split('T')[0] : reserva.fecha_creacion,
+        fecha_reserva: reserva.fecha_reserva instanceof Date ? reserva.fecha_reserva.toISOString().split('T')[0] : reserva.fecha_reserva,
+      };
+    });
 
     // Renderizar la vista con datos
-    res.render('reservas', { configuraciones, reservas });
+    res.render('reservas', { configuraciones, reservas: reservasFormateadas });
   } catch (error) {
     console.error('Error al obtener datos de la base de datos:', error);
     res.status(500).send('Error interno del servidor');
@@ -68,8 +73,8 @@ const agregarReserva = async (req, res) => {
 
     // Crear la nueva reserva
     const nuevaReserva = {
-      fecha_creacion: obtenerFechaActual(),
-      fecha_reserva: fechaReserva,
+      fecha_creacion: new Date(), // Utilizar la fecha actual al momento de la creación
+      fecha_reserva: new Date(fechaReserva),
       estado_reserva: estadoReserva,
       nombre_cliente: nombreCliente,
       telefono_cliente: telefonoCliente,
@@ -116,32 +121,8 @@ const eliminarReserva = async (req, res) => {
     }
 };
 
-const obtenerDetallesReserva = async (req, res) => {
-  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
-  const client = new MongoClient(uri);
 
-  try {
-    await client.connect(); // Conectar a la base de datos
-
-    const database = client.db('erikas_homemade');
-    const reservasCollection = database.collection('gestion_reservas');
-
-    const reservaId = req.params.id;
-
-    // Obtener los detalles de la reserva con el ID proporcionado
-    const reserva = await reservasCollection.findOne({ _id: new ObjectId(reservaId) });
-
-    // Enviar la información como respuesta JSON
-    res.json(reserva);
-  } catch (error) {
-    console.error('Error al obtener detalles de la reserva:', error);
-    res.status(500).send('Error interno del servidor');
-  } finally {
-    await client.close(); // Cerrar la conexión
-  }
-};
-
-const actualizarReserva = async (req, res) => {
+const verDetalleEdicionReserva = async (req, res) => {
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri);
 
@@ -151,48 +132,51 @@ const actualizarReserva = async (req, res) => {
     const database = client.db('erikas_homemade');
     const reservasCollection = database.collection('gestion_reservas');
 
-    const {
-      fechaReservaEdicion,
-      estadoReservaEdicion,
-      nombreCliente,
-      telefonoCliente,
-      documentoCliente,
-      contraseñaCliente,
-      correoCliente,
-      // Agrega otros campos según sea necesario
-    } = req.body;
-
     const reservaId = req.params.id;
 
-    console.log('Recibida solicitud PUT para actualizar reserva:', req.body); // Nuevo log
+    // Obtener la información de la reserva a editar
+    const reserva = await reservasCollection.findOne({ _id: new ObjectId(reservaId) });
 
-    const updatedReserva = await reservasCollection.findOneAndUpdate(
-      { _id: new ObjectId(reservaId) },
-      {
-        $set: {
-          fecha_reserva: fechaReservaEdicion,
-          estado_reserva: estadoReservaEdicion,
-          nombre_cliente: nombreCliente,
-          telefono_cliente: telefonoCliente,
-          documento_cliente: documentoCliente,
-          contraseña: contraseñaCliente,
-          correo: correoCliente,
-          // Agrega otros campos según sea necesario
-        },
-      },
-      { returnDocument: 'after' }
-    );
-
-    console.log('Reserva actualizada con éxito:', updatedReserva); // Nuevo log
-
-    res.json(updatedReserva.value);
+    // Renderizar la vista de edición con la información de la reserva
+    res.render('editarReserva', { reserva });
   } catch (error) {
-    console.error('Error al actualizar reserva:', error);
-    res.status(500).send('Error interno del servido');
+    console.error('Error al obtener información de la reserva para editar:', error);
+    res.status(500).send('Error interno del servidor');
   } finally {
     await client.close();
   }
 };
+
+const guardarEdicionReserva = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const reservasCollection = database.collection('gestion_reservas');
+
+    const reservaId = req.params.id;
+    const { fechaReserva, estadoReserva } = req.body;
+
+    // Actualizar la reserva en la base de datos
+    await reservasCollection.updateOne(
+      { _id: new ObjectId(reservaId) },
+      { $set: { fecha_reserva: fechaReserva, estado_reserva: estadoReserva } }
+    );
+
+    res.redirect('/reservas'); // Redirigir a la página de reservas después de guardar la edición
+  } catch (error) {
+    console.error('Error al guardar la edición de la reserva:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+
+
 
 // Otras funciones necesarias...
 
@@ -200,7 +184,7 @@ module.exports = {
   getReservasPage,
   agregarReserva,
   eliminarReserva,
-  obtenerDetallesReserva,
-  actualizarReserva,
+  verDetalleEdicionReserva,
+  guardarEdicionReserva,
   /* otras funciones */
 };

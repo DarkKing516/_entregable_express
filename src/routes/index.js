@@ -5,7 +5,7 @@ const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido } = requ
 const { getVentasPage, agregarVenta } = require('../controllers/ventasController');
 const { getConfiguracionPage } = require('../controllers/configuracionController');
 const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
-const { getReservasPage, agregarReserva, eliminarReserva, actualizarReserva, obtenerDetallesReserva } = require('../controllers/reservasController');
+const { getReservasPage, agregarReserva, eliminarReserva, verDetalleEdicionReserva, guardarEdicionReserva} = require('../controllers/reservasController');
 
 
 // Rutas
@@ -69,8 +69,12 @@ router.post('/agregarVenta', agregarVenta)
 router.get('/reservas', getReservasPage);
 router.post('/agregarReserva', agregarReserva); // Agrega esta línea para manejar las solicitudes POST para agregar reservas
 router.delete('/eliminarReserva/:id', eliminarReserva);
-router.get('/obtenerDetallesReserva/:id', obtenerDetallesReserva);
-router.put('/actualizarReserva/:id', actualizarReserva);
+router.get('/editarReserva/:id', verDetalleEdicionReserva);
+router.post('/guardarEdicionReserva/:id', guardarEdicionReserva);
+
+// ...
+
+
 
 
 module.exports = router;
