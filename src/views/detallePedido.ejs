@@ -36,6 +36,7 @@
   <ul id="serviciosLista">
     <% pedido.servicios.forEach((servicio, index)=> { %>
       <li>
+        <button type="button" onclick="eliminarServicio(<%= index %>)">Eliminar Servicio</button>
         <input type="hidden" name="servicios[<%= index %>][indice]" value="<%= index %>">
         <strong>Tipo de Servicio:</strong>
         <select id="tipoServicio<%= index %>" name="servicios[<%= index %>][tipoServicio]">
@@ -66,7 +67,6 @@
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalServicio<%= index %>" name="subtotalServicio<%= index %>"
           value="<%= servicio.subtotal %>" readonly><br>
-        <input type="hidden" name="servicios[][indice]" value="<%= index %>">
         <input type="hidden" id="indiceActual" value="<%= pedido.servicios.length %>">
       </li>
       <% }); %>
@@ -93,6 +93,7 @@
   <ul id="productosLista">
     <% pedido.productos.forEach((producto, index)=> { %>
       <li>
+        <button type="button" onclick="eliminarProducto(<%= index %>)">Eliminar Producto</button>
         <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
         <strong>Tipo de Producto:</strong>
         <select id="tipoProducto<%= index %>" name="productos[<%= index %>][tipoProducto]">
@@ -126,7 +127,6 @@
         <strong>Subtotal:</strong>
         <input type="number" id="subtotalProducto<%= index %>" name="subtotalProducto<%= index %>"
           value="<%= producto.subtotal %>" readonly><br>
-        <input type="hidden" name="productos[][indice]" value="<%= index %>">
       </li>
       <% }); %>
   </ul>
@@ -196,6 +196,7 @@
 
     // HTML para un nuevo servicio
     nuevoServicioLi.innerHTML = `
+    <button type="button" onclick="eliminarServicio(${nuevoIndice})">Eliminar Servicio</button>
       <input type="hidden" name="servicios[${nuevoIndice}][indice]" value="${nuevoIndice}">
       <strong>Tipo de Servicio:</strong>
       <select id="tipoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][tipoServicio]">
@@ -221,7 +222,6 @@
       <input type="number" name="servicios[${nuevoIndice}][precioServicio]" oninput="calcularSubtotal(${nuevoIndice})"><br>
       <strong>Subtotal:</strong>
       <input type="number" id="subtotalServicio${nuevoIndice}" name="subtotalServicio[${nuevoIndice}]" readonly><br>
-      <input type="hidden" name="servicios[][indice]" value="${nuevoIndice}">
     `;
     // Agregar el nuevo servicio a la lista de servicios
     serviciosLista.appendChild(nuevoServicioLi);
@@ -234,7 +234,7 @@
     // Crear un nuevo elemento li (item de lista) para el nuevo producto
     const nuevoProductoLi = document.createElement('li');
     nuevoProductoLi.innerHTML = `
-      <input type="hidden" name="productos[${nuevoIndice}][indice]" value="${nuevoIndice}">
+    <button type="button" onclick="eliminarProducto(${nuevoIndice})">Eliminar Producto</button>
       <strong>Tipo de Producto:</strong>
       <select id="tipoProducto${nuevoIndice}" name="productos[${nuevoIndice}][tipoProducto]">
         <option value="tipo1">Tipo 1</option>
@@ -261,6 +261,34 @@
       <input type="number" id="subtotalProducto${nuevoIndice}" name="subtotalProducto[${nuevoIndice}]" readonly><br>
       <input type="hidden" name="productos[${nuevoIndice}][indice]" value="${nuevoIndice}">
     `;
-    productosLista.innerHTML += nuevoProductoHTML;
+    // Agregar el nuevo producto a la lista de productos
+    productosLista.appendChild(nuevoProductoLi);
   });
+
+</script>
+
+<script>
+function eliminarServicio(index) {
+  const serviciosLista = document.getElementById('serviciosLista');
+  const servicioAEliminar = serviciosLista.querySelector(`[name="servicios[${index}][indice]"]`);
+  serviciosLista.removeChild(servicioAEliminar.closest('li'));
+
+  // Vuelve a calcular el total del pedido después de la eliminación
+  recalcularTotalPedido();
+
+  // Verifica si no hay más servicios y envía un arreglo vacío si es el caso
+  if (serviciosLista.children.length === 0) {
+    document.getElementById('editarPedidoForm').submit();
+  }
+}
+
+
+  function eliminarProducto(index) {
+    const productosLista = document.getElementById('productosLista');
+    const productoAEliminar = productosLista.querySelector(`[name="productos[${index}][indice]"]`);
+    productosLista.removeChild(productoAEliminar.closest('li'));
+
+    // Vuelve a calcular el total del pedido después de la eliminación
+    recalcularTotalPedido();
+  }
 </script>
