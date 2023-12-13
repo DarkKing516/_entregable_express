@@ -1,6 +1,7 @@
 <!-- src/views/pedidos.ejs -->
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+
 <%- include('./layouts/nav') %>
   <h1>Lista de usuarios</h1>
   <ul>
@@ -30,9 +31,9 @@
           <div class="servicio">
             <label for="tipoServicio">Tipo de Servicio:</label>
             <select id="tipoServicio" name="tipoServicio" required>
-              <option value="tipo1">Tipo 1</option>
-              <option value="tipo2">Tipo 2</option>
-              <option value="tipo3">Tipo 3</option>
+              <option value="confeccion">Confeccion</option>
+              <option value="arreglo">Arreglo Prendas</option>
+              <option value="manualidades">Manualidades</option>
             </select>
             <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
             <select id="estadoTipoServicio" name="estadoTipoServicio" required>
@@ -64,9 +65,9 @@
           <div class="producto">
             <label for="tipoProducto">Tipo de Producto:</label>
             <select id="tipoProducto" name="tipoProducto" required>
-              <option value="tipo1">Tipo 1</option>
-              <option value="tipo2">Tipo 2</option>
-              <option value="tipo3">Tipo 3</option>
+              <option value="accesorios">Accesorios</option>
+              <option value="prendas de vestir">Prendas de Vestir</option>
+              <option value="manualidades">Manualidades</option>
             </select>
 
             <label for="estadoTipoProducto">Estado Tipo de Producto:</label>

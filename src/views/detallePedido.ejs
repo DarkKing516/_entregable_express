@@ -40,9 +40,9 @@
         <input type="hidden" name="servicios[<%= index %>][indice]" value="<%= index %>">
         <strong>Tipo de Servicio:</strong>
         <select id="tipoServicio<%= index %>" name="servicios[<%= index %>][tipoServicio]">
-          <option value="tipo1" <%=servicio.tipoServicio==='tipo1' ? 'selected' : '' %>>Tipo 1</option>
-          <option value="tipo2" <%=servicio.tipoServicio==='tipo2' ? 'selected' : '' %>>Tipo 2</option>
-          <option value="tipo3" <%=servicio.tipoServicio==='tipo3' ? 'selected' : '' %>>Tipo 3</option>
+          <option value="confeccion" <%=servicio.tipoServicio==='confeccion' ? 'selected' : '' %>>Confeccion</option>
+          <option value="arreglo" <%=servicio.tipoServicio==='arreglo' ? 'selected' : '' %>>Arreglos</option>
+          <option value="manualidades" <%=servicio.tipoServicio==='manualidades' ? 'selected' : '' %>>Manualidades</option>
         </select><br>
         <strong>Estado Tipo de Servicio:</strong>
         <select id="estadoTipoServicio<%= index %>" name="servicios[<%= index %>][estadoTipoServicio]">
@@ -97,9 +97,9 @@
         <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
         <strong>Tipo de Producto:</strong>
         <select id="tipoProducto<%= index %>" name="productos[<%= index %>][tipoProducto]">
-          <option value="tipo1" <%=producto.tipoProducto==='tipo1' ? 'selected' : '' %>>Tipo 1</option>
-          <option value="tipo2" <%=producto.tipoProducto==='tipo2' ? 'selected' : '' %>>Tipo 2</option>
-          <option value="tipo3" <%=producto.tipoProducto==='tipo3' ? 'selected' : '' %>>Tipo 3</option>
+          <option value="accesorios" <%=producto.tipoProducto==='accesorios' ? 'selected' : '' %>>Accesorios</option>
+          <option value="prendas de vestir" <%=producto.tipoProducto==='prendas de vestir' ? 'selected' : '' %>>Prendas de Vestir</option>
+          <option value="manualidades" <%=producto.tipoProducto==='manualidades' ? 'selected' : '' %>>Manualidades</option>
         </select><br>
         <strong>Estado Tipo de Producto:</strong>
         <!-- <input type="text" name="estadoTipoProducto<%= index %>" value="<%= producto.tipoProducto.estadoTipoProducto %>" readonly><br> -->
@@ -200,9 +200,9 @@
       <input type="hidden" name="servicios[${nuevoIndice}][indice]" value="${nuevoIndice}">
       <strong>Tipo de Servicio:</strong>
       <select id="tipoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][tipoServicio]">
-        <option value="tipo1">Tipo 1</option>
-        <option value="tipo2">Tipo 2</option>
-        <option value="tipo3">Tipo 3</option>
+        <option value="confeccion">Confeccion</option>
+        <option value="arreglo">Arreglo Prendas</option>
+        <option value="manualidades">Manualidades</option>
       </select><br>
       <strong>Estado Tipo de Servicio:</strong>
       <select id="estadoTipoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][estadoTipoServicio]">
@@ -237,9 +237,9 @@
     <button type="button" onclick="eliminarProducto(${nuevoIndice})">Eliminar Producto</button>
       <strong>Tipo de Producto:</strong>
       <select id="tipoProducto${nuevoIndice}" name="productos[${nuevoIndice}][tipoProducto]">
-        <option value="tipo1">Tipo 1</option>
-        <option value="tipo2">Tipo 2</option>
-        <option value="tipo3">Tipo 3</option>
+        <option value="accesorios">Accesorios</option>
+        <option value="prendas de vestir">Prendas de Vestir</option>
+        <option value="manualidades">Manualidades</option>
       </select><br>
       <strong>Estado Tipo de Producto:</strong>
       <select id="estadoTipoProducto${nuevoIndice}" name="productos[${nuevoIndice}][estadoTipoProducto]">
