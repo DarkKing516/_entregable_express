@@ -55,6 +55,56 @@ const registrarUsuario = async (req, res) => {
   }
 };
 
+
+
+const actualizarUsuarios = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const usuariosCollection = database.collection('configuracion');
+
+    const usuarioId = req.params.id; // ID del usuario que se desea editar
+    const { nombre, correo, telefono, documento, estado_usuario} = req.body; // Datos actualizados del usuario desde el cuerpo de la solicitud
+
+    const result = await usuariosCollection.updateOne(
+      { _id: new ObjectId(usuarioId) },
+      {
+        $set: {
+          rol,
+          nombre,
+          correo,
+          telefono,
+          documento,
+          estado_usuario
+        },
+      }
+    );
+
+    console.log('Resultado de la actualización:', result); // Agrega este console.log para verificar el resultado de la actualización
+
+
+    if (result.matchedCount === 0) {
+      console.log('El usuario no fue encontrado o no se actualizó');
+      res.status(404).send('El usuario no fue encontrado o no se actualizó');
+      return;
+    }
+
+    res.redirect('/configuracion'); // Redirigir a la página deseada después de editar
+    console.log('Usuario actualizado correctamente');
+  } catch (error) {
+    console.error('Error al editar el usuario:', error);
+    res.status(500).send('Error interno del servidor al editar el usuario');
+  } finally {
+    await client.close();
+  }
+};
+
+
+
 const verPermisos = async (req, res) => {
   const configuracionId = req.params.id;
 
@@ -156,7 +206,42 @@ const eliminarUsuario = async (req, res) => {
   }
 };
 
-module.exports = { getConfiguracionPage, registrarUsuario, verPermisos, actualizarPermisos, eliminarUsuario };
+const obtenerDatosUsuario = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const configuracionCollection = database.collection('configuracion');
+
+    const usuarioId = req.params.id; // ID del usuario que se desea editar
+
+    // Obtener los datos del usuario específico
+    const usuario = await configuracionCollection.findOne({ _id: new ObjectId(usuarioId) });
+
+    if (!usuario) {
+      console.log('Usuario no encontrado');
+      res.status(404).send('Usuario no encontrado');
+      return;
+    }
+
+    console.log(usuario); // Agrega este console.log para verificar los datos del usuario
+
+    // Redirigir a la página de edición con los datos del usuario
+    res.render('editarUsuario', { usuario }); // 'editarUsuario' es el nombre de tu vista
+  } catch (error) {
+    console.error('Error al obtener los datos del usuario:', error);
+    res.status(500).send('Error interno del servidor al obtener los datos del usuario');
+  } finally {
+    await client.close();
+  }
+};
+
+
+
+module.exports = { getConfiguracionPage, registrarUsuario, actualizarUsuarios, verPermisos, actualizarPermisos, eliminarUsuario, obtenerDatosUsuario };
 
 
 
