@@ -19,3 +19,36 @@
 
   <button type="submit">Guardar Cambios</button>
 </form>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Obtener el elemento del campo de fecha
+    const fechaReservaInput = document.getElementById("fechaReserva");
+
+    // Obtener la fecha actual en formato 'YYYY-MM-DD'
+    const obtenerFechaActual = () => {
+      const fecha = new Date();
+      const year = fecha.getFullYear();
+      const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
+      const day = fecha.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // Escuchar el evento de cambio en el campo de fecha
+    fechaReservaInput.addEventListener("change", function (event) {
+      // Obtener el valor actual del campo de fecha
+      const valorFechaReserva = event.target.value;
+
+      // Obtener la fecha actual
+      const fechaActual = obtenerFechaActual();
+
+      // Validar si la fecha de reserva es menor o igual a la fecha actual
+      if (valorFechaReserva <= fechaActual) {
+        alert('La fecha de reserva debe ser mayor a la fecha actual.');
+        // Restaurar la fecha anterior o tomar una acción adicional si es necesario
+        event.target.value = "<%= reserva.fecha_reserva %>";
+      }
+    });
+  });
+</script>

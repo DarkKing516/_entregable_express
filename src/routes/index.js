@@ -1,17 +1,30 @@
 // src/routes/index.js
 const express = require('express');
+const app = express();
 const router = express.Router();
-const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido } = require('../controllers/pedidosController'); // Asegúrate de tener el controlador necesario
-const { getVentasPage, agregarVenta } = require('../controllers/ventasController');
-const { getConfiguracionPage } = require('../controllers/configuracionController');
-const { registrarUsuario, iniciarSesion, cerrarSesion } = require('../controllers/authController');
+
+const usuarioModel = require('../models/usuarioModel'); 
+const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido, generarPDFPedidos } = require('../controllers/pedidosController');
+const { getConfiguracionPage, registrarUsuario, verPermisos, actualizarPermisos, eliminarUsuario} = require('../controllers/configuracionController');
+const { iniciarSesion, cerrarSesion } = require('../controllers/authController');
+const { getVentasPage, agregarVenta, eliminarVenta, actualizarVentas, obtenerDatosVenta} = require('../controllers/ventasController');
 const { getReservasPage, agregarReserva, eliminarReserva, verDetalleEdicionReserva, guardarEdicionReserva, generarPDFReservas} = require('../controllers/reservasController');
-
-
 // Rutas
 router.get('/', (req, res) => {
   res.render('index');
 });
+
+router.post('/configuracion', async (req, res) => {
+  const nuevoUsuario = req.body;
+  try {
+    const resultado = await usuarioModel.registrarUsuario(nuevoUsuario);
+    res.status(201).json({ mensaje: 'Usuario registrado exitosamente', resultado });
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+});
+
 
 router.get('/signin', (req, res) => {
   // Si el usuario ya ha iniciado sesión, redirige a la página principal
@@ -40,10 +53,18 @@ router.get('/pedidos', getPedidosPage);
 router.post('/agregarPedido', agregarPedido);
 router.get('/pedido/:id', verDetallePedido);
 router.get('/eliminarPedido/:id', eliminarPedido);
+router.post('/editarPedido/:id', editarPedido);
+router.get('/generarPDFPedidos', generarPDFPedidos);
+
 
 
 
 router.get('/configuracion', getConfiguracionPage);
+router.post('/registrarUsuario', registrarUsuario);
+router.get('/configuracion/:id', verPermisos);
+router.post('/configuracion/:id/actualizarPermisos', actualizarPermisos);
+router.get('/eliminarUsuario/:id', eliminarUsuario);
+
 
 
 
@@ -56,6 +77,9 @@ router.get('/configuracion', getConfiguracionPage);
 
 router.get('/pelos', getVentasPage);
 router.post('/agregarVenta', agregarVenta)
+router.post('/eliminarVenta/:id', eliminarVenta);
+router.get('/editarVenta/:id', obtenerDatosVenta);
+router.post('/actualizarVenta/:id', actualizarVentas);
 
 
 
@@ -72,10 +96,6 @@ router.delete('/eliminarReserva/:id', eliminarReserva);
 router.get('/editarReserva/:id', verDetalleEdicionReserva);
 router.post('/guardarEdicionReserva/:id', guardarEdicionReserva);
 router.get('/generarPDFReservas', generarPDFReservas);
-
-
-// ...
-
 
 
 

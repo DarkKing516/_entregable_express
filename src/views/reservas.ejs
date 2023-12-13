@@ -152,4 +152,40 @@
     }
   }
 
+
+  function validarFechaReserva() {
+    var fechaReservaInput = document.getElementById('fechaReserva');
+    var fechaReserva = new Date(fechaReservaInput.value);
+    var fechaActual = new Date();
+
+    if (fechaReserva <= fechaActual) {
+      alert('La fecha de reserva debe ser mayor a la fecha actual.');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Agrega el evento onsubmit al formulario
+  document.getElementById('formularioAgregarReserva').onsubmit = function () {
+    return validarFechaReserva();
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Obtener el elemento del campo de teléfono
+    const telefonoInput = document.getElementById("telefonoCliente");
+
+    // Escuchar el evento de entrada en el campo de teléfono
+    telefonoInput.addEventListener("input", function (event) {
+      // Obtener el valor actual del campo de teléfono
+      let valorTelefono = event.target.value;
+
+      // Eliminar cualquier carácter que no sea un número
+      valorTelefono = valorTelefono.replace(/\D/g, "");
+
+      // Actualizar el valor del campo de teléfono
+      event.target.value = valorTelefono;
+    });
+  });
+
 </script>

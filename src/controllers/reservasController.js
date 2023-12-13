@@ -1,6 +1,8 @@
 // src/controllers/reservasController.js
 const { MongoClient } = require('mongodb');
 const { ObjectId } = require('mongodb');
+const PDFDocument = require('pdfkit');
+
 
 // Función para obtener la fecha actual en formato 'YYYY-MM-DD'
 const obtenerFechaActual = () => {
@@ -62,6 +64,14 @@ const agregarReserva = async (req, res) => {
       telefonoCliente,
       // Otros campos que ingreses manualmente
     } = req.body;
+
+    // Validar la fecha de reserva
+    const fechaReservaObj = new Date(fechaReserva);
+    const fechaActual = new Date();
+
+    if (fechaReservaObj <= fechaActual) {
+      return res.status(400).send('La fecha de reserva debe ser mayor a la fecha actual.');
+    }
 
     // Obtener la configuración del cliente seleccionado
     const configuracionCliente = await configuracionCollection.findOne({ nombre: nombreCliente });
@@ -191,7 +201,9 @@ const generarPDFReservas = async (req, res) => {
 
     // Crear un nuevo documento PDF
     const doc = new PDFDocument();
-    doc.pipe(res); // Enviar el PDF como respuesta HTTP
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=reservas.pdf');
+    doc.pipe(res);
 
     // Agregar contenido al PDF
     const fechaActual = new Date().toLocaleDateString();
@@ -211,17 +223,25 @@ const generarPDFReservas = async (req, res) => {
 
       doc.fontSize(12).text(`Fecha Creación: ${reserva.fecha_creacion}`);
       doc.fontSize(12).text(`Fecha Reserva: ${reserva.fecha_reserva}`);
+      doc.fontSize(12).text(`Total: ${reserva.total_reserva}`);
       doc.fontSize(12).text(`Estado: ${reserva.estado_reserva}`);
-      doc.fontSize(12).text(`Nombre Cliente: ${reserva.nombre_cliente}`);
-      doc.fontSize(12).text(`Correo Cliente: ${reserva.correo || ''}`);
-      doc.fontSize(12).text(`Teléfono Cliente: ${reserva.telefono_cliente}`);
-      doc.fontSize(12).text(`Documento Cliente: ${reserva.documento_cliente}`);
-      doc.fontSize(12).text(`Contraseña Cliente: ${reserva.contraseña || ''}`);
+      doc.fontSize(12).text(`Cliente: ${reserva.nombre_cliente}`);
+      doc.moveDown();
+
+      // Agregar detalles de servicios, productos u otra información específica de tus reservas
+      // ...
+
       doc.moveDown();
       doc.moveDown();
 
       // Incrementar número de página
       pageNumber++;
+
+      // Agregar número de página y nombre de empresa en el footer
+      const footerText = `Tu información de contacto o dirección`;
+      doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
+      const footerHeight = 20;
+      doc.text(footerText, { align: 'left', width: 410, height: footerHeight, underline: true, lineGap: 5 });
 
       // Agregar salto de página si hay más reservas
       if (pageNumber <= reservas.length) {
@@ -238,6 +258,7 @@ const generarPDFReservas = async (req, res) => {
     await client.close();
   }
 };
+
 
 
 
