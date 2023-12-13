@@ -110,6 +110,15 @@
   <h1>Listado de Pedidos</h1>
   <input type="text" id="buscarPedidos" placeholder="Buscar pedidos..." oninput="filtrarPedidos()">
   <button id="agregarPedidoBtn">Agregar</button>
+  <button>Generar PDF</button>
+
+  <button onclick="generarPDF()">Generar PDF</button>
+
+<script>
+  function generarPDF() {
+    window.location.href = '/generarPDFPedidos';
+  }
+</script>
 
   <!-- Modal -->
 
@@ -148,7 +157,6 @@
         <% }); %>
     </tbody>
   </table>
-
   <script>
     function filtrarPedidos() {
       // Obtener el valor del input de búsqueda

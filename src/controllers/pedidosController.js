@@ -245,4 +245,65 @@ const editarPedido = async (req, res) => {
 
 
 
-module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido };
+const PDFDocument = require('pdfkit');
+
+const generarPDFPedidos = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Obtener todos los pedidos
+    const pedidos = await pedidosCollection.find({}).toArray();
+
+    // Crear un nuevo documento PDF
+    const doc = new PDFDocument();
+    doc.pipe(res); // Enviar el PDF como respuesta HTTP
+
+    // Agregar contenido al PDF
+    doc.fontSize(16).text('Lista de Pedidos', { align: 'center' });
+    doc.moveDown();
+
+    pedidos.forEach((pedido) => {
+      doc.fontSize(14).text(`Pedido ID: ${pedido._id}`, { underline: true });
+      doc.moveDown();
+
+      doc.fontSize(12).text(`Fecha Creación: ${pedido.fecha_creacion}`);
+      doc.fontSize(12).text(`Fecha Pedido: ${pedido.fecha_pedido}`);
+      doc.fontSize(12).text(`Total: ${pedido.total_pedido}`);
+      doc.fontSize(12).text(`Estado: ${pedido.estado_pedido}`);
+      doc.fontSize(12).text(`Usuario: ${pedido.nombre_usuario}`);
+      doc.moveDown();
+
+      // Agregar detalles de servicios
+      doc.fontSize(14).text('Servicios:');
+      pedido.servicios.forEach((servicio) => {
+        doc.fontSize(12).text(`- ${servicio.nombreServicio}: ${servicio.cantidadServicio} x $${servicio.precioServicio} = $${servicio.subtotal}`);
+      });
+      doc.moveDown();
+
+      // Agregar detalles de productos
+      doc.fontSize(14).text('Productos:');
+      pedido.productos.forEach((producto) => {
+        doc.fontSize(12).text(`- ${producto.nombreProducto}: ${producto.cantidadProducto} x $${producto.precioProducto} = $${producto.subtotal}`);
+      });
+
+      doc.moveDown();
+      doc.moveDown();
+    });
+
+    // Finalizar y enviar el PDF
+    doc.end();
+  } catch (error) {
+    console.error('Error al generar el PDF de pedidos:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido, generarPDFPedidos };

@@ -4,7 +4,7 @@ const app = express();
 const router = express.Router();
 
 const usuarioModel = require('../models/usuarioModel'); 
-const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido } = require('../controllers/pedidosController');
+const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido, generarPDFPedidos } = require('../controllers/pedidosController');
 const { getConfiguracionPage, registrarUsuario, verPermisos, actualizarPermisos, eliminarUsuario} = require('../controllers/configuracionController');
 const { iniciarSesion, cerrarSesion } = require('../controllers/authController');
 const { getVentasPage, agregarVenta, eliminarVenta, actualizarVentas, obtenerDatosVenta} = require('../controllers/ventasController');
@@ -55,6 +55,9 @@ router.post('/agregarPedido', agregarPedido);
 router.get('/pedido/:id', verDetallePedido);
 router.get('/eliminarPedido/:id', eliminarPedido);
 router.post('/editarPedido/:id', editarPedido);
+router.get('/generarPDFPedidos', generarPDFPedidos);
+
+
 
 
 router.get('/configuracion', getConfiguracionPage);
