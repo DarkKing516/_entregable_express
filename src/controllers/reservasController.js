@@ -238,7 +238,7 @@ const generarPDFReservas = async (req, res) => {
       pageNumber++;
 
       // Agregar número de página y nombre de empresa en el footer
-      const footerText = `Tu información de contacto o dirección`;
+      const footerText = `Erika's Homemade  Cra 58 A #53-55`;
       doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
       const footerHeight = 20;
       doc.text(footerText, { align: 'left', width: 410, height: footerHeight, underline: true, lineGap: 5 });
