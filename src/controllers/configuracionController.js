@@ -88,34 +88,43 @@ const verPermisos = async (req, res) => {
 
 const actualizarPermisos = async (req, res) => {
   const configuracionId = req.params.id;
-  const nuevosPermisos = req.body.permisos || [];
+  const nuevosPermisos = req.body.permisos;
 
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
   try {
     await client.connect();
-
     const database = client.db('erikas_homemade');
     const configuracionCollection = database.collection('configuracion');
 
-    // Obtener los permisos actuales del usuario
-    const usuario = await configuracionCollection.findOne({ _id: new ObjectId(configuracionId) });
-    const permisosActuales = usuario.permisos || [];
+    // Obtener la configuración por ID
+    const configuracion = await configuracionCollection.findOne({ _id: new ObjectId(configuracionId) });
 
-    // Filtrar solo los permisos seleccionados que existen en la base de datos
-    const permisosSeleccionados = nuevosPermisos.filter(id => permisosActuales.includes(id));
+    if (!configuracion) {
+      return res.status(404).json({ mensaje: 'Configuración no encontrada' });
+    }
 
-    // Actualizar los permisos del usuario
-    await configuracionCollection.updateOne(
-      { _id: new ObjectId(configuracionId) },
-      { $set: { permisos: permisosSeleccionados.map(id => ObjectId(id)) } }
-    );
+    // Actualizar permisos existentes
+    configuracion.permisos.forEach(usuarioPermiso => {
+      const nuevoPermiso = nuevosPermisos.find(np => np.nombre_permiso === usuarioPermiso.nombre_permiso);
 
-    res.redirect('/configuracion'); // Redirigir a la página de configuracion después de actualizar permisos
+      if (nuevoPermiso) {
+        // Si el nuevoPermiso está presente, actualizar el estado, de lo contrario, establecer en 'false'
+        usuarioPermiso.estado_permiso = nuevoPermiso.estado_permiso || false;
+      } else {
+        // Si no se encuentra el nuevoPermiso, establecer en 'false'
+        usuarioPermiso.estado_permiso = false;
+      }
+    });
+
+    // Actualizar el documento en la base de datos
+    await configuracionCollection.updateOne({ _id: new ObjectId(configuracionId) }, { $set: { permisos: configuracion.permisos } });
+
+    return res.status(200).json({ mensaje: 'Permisos actualizados con éxito' });
   } catch (error) {
-    console.error('Error en actualizarPermisos:', error);
-    res.status(500).send(`Error interno del servidor: ${error.message}`);
+    console.error('Error al actualizar permisos:', error);
+    return res.status(500).json({ mensaje: 'Error interno del servidor', error: error.message });
   } finally {
     await client.close();
   }

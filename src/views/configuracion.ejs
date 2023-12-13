@@ -35,6 +35,7 @@
       </form>
     </div>
   </div>
+  <input type="text" id="buscarUsuarios" placeholder="Buscar pedidos..." oninput="filtrarUsuarios()">
 
   </div>
   <br>
@@ -94,6 +95,35 @@
     const agregarUsuarioBtn = document.getElementById('agregarUsuarioBtn');
     const agregarUsuarioModal = document.getElementById('agregarUsuarioModal');
     const cerrarModal = document.getElementById('cerrarModal');
+
+
+    function filtrarUsuarios() {
+      // Obtener el valor del input de búsqueda
+      var input = document.getElementById("buscarUsuarios");
+      var filtro = input.value.toUpperCase();
+
+      // Obtener todas las filas del cuerpo de la tabla
+      var filas = document.querySelector("tbody").getElementsByTagName("tr");
+
+      // Recorrer las filas y mostrar u ocultar aquellas que coincidan con el filtro
+      for (var i = 0; i < filas.length; i++) {
+        var celdas = filas[i].getElementsByTagName("td");
+        var mostrarFila = false;
+
+        for (var j = 0; j < celdas.length; j++) {
+          if (celdas[j]) {
+            var textoCelda = celdas[j].innerText || celdas[j].textContent;
+            if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
+              mostrarFila = true;
+              break;
+            }
+          }
+        }
+
+        // Mostrar u ocultar la fila según el resultado de la búsqueda
+        filas[i].style.display = mostrarFila ? "" : "none";
+      }
+    }
     
     agregarUsuarioBtn.addEventListener('click', () => {
       agregarUsuarioModal.style.display = 'block';

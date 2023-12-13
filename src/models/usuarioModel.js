@@ -106,19 +106,30 @@ function obtenerPermisosSegunRol(rol) {
         { nombre_permiso: 'Anular las citas del aplicativo', estado_permiso: true },
         // ... Agregar más permisos según sea necesario
       ];
-      switch (rol) {
-        case 'cliente':
+    // Filtrar permisos del administrador que no estén en los permisos del cliente
+    const permisosAdicionalesAdmin = permisosAdministrador.filter(adminPermiso => {
+      return !permisosCliente.some(clientePermiso =>
+          clientePermiso.nombre_permiso === adminPermiso.nombre_permiso
+      );
+  });
+
+  switch (rol) {
+      case 'cliente':
           // Configurar el estado_permiso como inactivo para permisos no mencionados
           return permisosCliente.map(permiso => ({
-            ...permiso,
-            estado_permiso: true,
+              ...permiso,
+              estado_permiso: true,
           }));
-        case 'administrador':
-          return permisosAdministrador;
-        default:
+      case 'administrador':
+          // Mantener los permisos del cliente y agregar los permisos del administrador que no estén en los del cliente
+          return [
+              ...permisosCliente,
+              ...permisosAdicionalesAdmin,
+          ];
+      default:
           return [];
-      }
-    }
+  }
+}
 
 
 const registrarUsuario = async (usuario) => {
