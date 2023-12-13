@@ -12,11 +12,13 @@
 
       <!-- Formulario para agregar venta -->
       <form id="formularioAgregarVenta" action="/agregarVenta" method="POST">
-        <label for="fechaVenta">Fecha Venta:</label>
-        <input type="text" id="fechaVenta" name="fecha_venta" required>
 
         <label for="metodoPago">Método de Pago:</label>
-        <input type="text" id="metodoPago" name="metodo_pago" required>
+        <select id="metodoPago" name="metodo_pago" required>
+          <option value="Efectivo">Efectivo</option>
+          <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+          <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+        </select>
 
         <label for="totalVenta">Total Venta:</label>
         <input type="number" id="totalVenta" name="total_venta" required>
@@ -24,19 +26,19 @@
         <label for="pedido">Pedido:</label>
         <select id="pedido" name="pedido">
           <% pedidos.forEach(pedido=> { %>
-            <option value="<%= pedido._id %>">
-              <%= pedido._id %>
-            </option>
-            <% }); %>
+            <% if (pedido.estado_pedido==="completado" ) { %>
+              <option value="<%= pedido._id %>">
+                <%= pedido.nombre_usuario %>, total= <%= pedido.total_pedido %>
+              </option>
+              <% } %>
+                <% }); %>
         </select>
-
-
 
         <label for="usuario">Usuario:</label>
         <select id="usuario" name="usuario">
           <% usuarios.forEach(usuario=> { %>
             <option value="<%= usuario._id %>">
-              <%= usuario.nombre %> - <%= usuario.email %>
+              <%= usuario.nombre%>
             </option>
             <% }); %>
         </select>
@@ -47,6 +49,11 @@
       </form>
     </div>
   </div>
+
+  <!-- Dentro del código HTML -->
+  <input type="text" id="searchInput" placeholder="Buscar ventas...">
+  <button onclick="buscarVentas()">Buscar</button>
+
 
 
 
@@ -92,33 +99,71 @@
             <%= venta.correo %>
           </td>
           <td>
-            <button onclick="mostrarDetalle('<%= JSON.stringify(venta.productos) %>')">Ver Detalle</button>
+            <button
+              onclick="mostrarDetalle('<%= JSON.stringify(venta.productos) %>', '<%= JSON.stringify(venta.servicios) %>')">Ver
+              Detalle</button>
           </td>
-          <td>editar</td>
+          <td>
+            <a href="/editarVenta/<%= venta._id %>">
+              <button>Editar</button>
+            </a>
+          </td>
+          <td>
+            <a href="#" onclick="confirmarEliminar('<%= venta._id %>')">Eliminar</a>
+          </td>
         </tr>
         <% }); %>
     </tbody>
   </table>
+  <!-- Agrega un botón para generar el reporte -->
+  <button onclick="generarReporteBtn()">Generar Reporte</button>
 
-  <!-- Resto del código HTML anterior -->
 
   <script>
-    function mostrarDetalle(productosJSON) {
+    function generarReporteBtn() {
+      window.location.href = '/generarReporte';
+    }
+
+    function confirmarEliminar(idVenta) {
+      // Muestra una alerta para confirmar la eliminación
+      const confirmacion = confirm('¿Seguro que desea eliminar?');
+
+      // Si el usuario confirma la eliminación
+      if (confirmacion) {
+        // Redirige a la página de eliminación con el ID de la venta
+        window.location.href = `/eliminarVenta/${idVenta}`;
+      } else {
+        // Si el usuario cancela, no hace nada o puedes realizar alguna acción adicional
+      }
+    }
+
+    <!-- Resto del código HTML anterior -->
+
+
+    function mostrarDetalle(productosJSON, serviciosJSON) {
       const productos = JSON.parse(productosJSON);
+      const servicios = JSON.parse(serviciosJSON);
 
       let detalleProductos = 'Productos: ';
       productos.forEach((producto, index) => {
-        detalleProductos += `${producto.nombre}: Precio: ${producto.precio}`;
+        detalleProductos += `${producto.nombreProducto}: Precio: ${producto.precioProducto}`;
         if (index !== productos.length - 1) {
           detalleProductos += ', ';
         }
       });
 
-      alert(detalleProductos);
-    }
-  </script>
+      let detalleServicios = 'Servicios: ';
+      servicios.forEach((servicio, index) => {
+        detalleServicios += `${servicio.nombreServicio}: Precio: ${servicio.precioServicio}`;
+        if (index !== servicios.length - 1) {
+          detalleServicios += ', ';
+        }
+      });
 
-  <script>
+      alert(detalleProductos + '\n' + detalleServicios);
+    }
+
+
     // JavaScript para mostrar/ocultar el modal y cerrar el modal
     const agregarVentaBtn = document.getElementById('agregarVentaBtn');
     const agregarVentaModal = document.getElementById('agregarVentaModal');
@@ -132,5 +177,37 @@
     cerrarModal.addEventListener('click', () => {
       agregarVentaModal.style.display = 'none';
     });
+
+
+    // JavaScript para la funcionalidad de búsqueda
+    function buscarVentas() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toUpperCase();
+      const table = document.querySelector('table');
+      const rows = table.getElementsByTagName('tr');
+
+      for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let found = false;
+
+        for (let j = 0; j < cells.length; j++) {
+          const cell = cells[j];
+          if (cell) {
+            if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+              found = true;
+              break;
+            }
+          }
+        }
+
+        if (found) {
+          rows[i].style.display = '';
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
+    }
+
+
 
   </script>

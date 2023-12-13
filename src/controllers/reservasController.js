@@ -176,6 +176,69 @@ const guardarEdicionReserva = async (req, res) => {
 };
 
 
+const generarPDFReservas = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const reservasCollection = database.collection('gestion_reservas');
+
+    // Obtener todas las reservas
+    const reservas = await reservasCollection.find({}).toArray();
+
+    // Crear un nuevo documento PDF
+    const doc = new PDFDocument();
+    doc.pipe(res); // Enviar el PDF como respuesta HTTP
+
+    // Agregar contenido al PDF
+    const fechaActual = new Date().toLocaleDateString();
+    doc.moveDown();
+    doc.fontSize(16).text(`Reporte de Reservas - Fecha: ${fechaActual}`, { align: 'center' });
+    doc.moveDown();
+
+    // Variable para el número de página
+    let pageNumber = 1;
+
+    reservas.forEach((reserva) => {
+      // Agregar número de página y nombre de empresa en todas las páginas
+      doc.moveDown();
+
+      doc.fontSize(14).text(`Reserva ID: ${reserva._id}`, { underline: true });
+      doc.moveDown();
+
+      doc.fontSize(12).text(`Fecha Creación: ${reserva.fecha_creacion}`);
+      doc.fontSize(12).text(`Fecha Reserva: ${reserva.fecha_reserva}`);
+      doc.fontSize(12).text(`Estado: ${reserva.estado_reserva}`);
+      doc.fontSize(12).text(`Nombre Cliente: ${reserva.nombre_cliente}`);
+      doc.fontSize(12).text(`Correo Cliente: ${reserva.correo || ''}`);
+      doc.fontSize(12).text(`Teléfono Cliente: ${reserva.telefono_cliente}`);
+      doc.fontSize(12).text(`Documento Cliente: ${reserva.documento_cliente}`);
+      doc.fontSize(12).text(`Contraseña Cliente: ${reserva.contraseña || ''}`);
+      doc.moveDown();
+      doc.moveDown();
+
+      // Incrementar número de página
+      pageNumber++;
+
+      // Agregar salto de página si hay más reservas
+      if (pageNumber <= reservas.length) {
+        doc.addPage();
+      }
+    });
+
+    // Finalizar y enviar el PDF
+    doc.end();
+  } catch (error) {
+    console.error('Error al generar el PDF de reservas:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
 
 
 // Otras funciones necesarias...
@@ -186,5 +249,6 @@ module.exports = {
   eliminarReserva,
   verDetalleEdicionReserva,
   guardarEdicionReserva,
+  generarPDFReservas,
   /* otras funciones */
 };

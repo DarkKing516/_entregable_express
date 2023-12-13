@@ -1,0 +1,17 @@
+<!-- src/views/permisos.ejs -->
+<h1>Permisos</h1>
+<form method="post" action="/configuracion/<%= configuracion._id %>/actualizarPermisos">
+    <% if (configuracion.permisos && configuracion.permisos.length > 0) { %>
+        <% configuracion.permisos.forEach(permiso => { %>
+            <div>
+                <input type="checkbox" id="<%= permiso.nombre_permiso %>" name="permisos" value="<%= permiso.nombre_permiso %>" <% if (permiso.estado_permiso) { %>checked<% } %>>
+                <label for="<%= permiso.nombre_permiso %>"><%= permiso.nombre_permiso %></label>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <div>No hay permisos asignados</div>
+    <% } %>
+    <button type="submit">Guardar Permisos</button>
+</form>
+
+<button><a href="/configuracion">Volver a la lista de usuarios</a></button>

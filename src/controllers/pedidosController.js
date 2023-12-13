@@ -38,6 +38,8 @@ const obtenerFechaActual = () => {
 
 const agregarPedido = async (req, res) => {
   // Obtener servicios y productos del cuerpo de la solicitud
+  console.log('Datos de servicios:', req.body.servicios);
+  
   const servicios = req.body.servicios ? JSON.parse(req.body.servicios) : [];
   const productos = req.body.productos ? JSON.parse(req.body.productos) : [];
 
@@ -120,6 +122,9 @@ const verDetallePedido = async (req, res) => {
 
     const database = client.db('erikas_homemade');
     const pedidosCollection = database.collection('pedidos');
+    const usuariosCollection = database.collection('configuracion');
+    const usuarios = await usuariosCollection.find({}).toArray();
+
 
     // Obtener el pedido por ID
     const pedido = await pedidosCollection.findOne({ _id: new ObjectId(pedidoId) });
@@ -131,7 +136,7 @@ const verDetallePedido = async (req, res) => {
     }
 
     // Renderizar la vista con detalles del pedido
-    res.render('detallePedido', { pedido });
+    res.render('detallePedido', { pedido, usuarios });
   } catch (error) {
     console.error('Error al obtener el detalle del pedido:', error);
     res.status(500).send('Error interno del servidor');
@@ -165,4 +170,162 @@ const eliminarPedido = async (req, res) => {
   }
 };
 
-module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido };
+const editarPedido = async (req, res) => {
+  const pedidoId = req.params.id;
+
+  // Obtener los datos actualizados del formulario de edición
+  const { fechaPedido, estadoPedido, nombreUsuario, servicios, productos } = req.body;
+
+  // Puedes agregar más validaciones según tus necesidades
+
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Obtener el pedido por ID
+    const pedido = await pedidosCollection.findOne({ _id: new ObjectId(pedidoId) });
+
+    if (!pedido) {
+      // Manejar el caso en que el pedido no se encuentre
+      res.status(404).send('Pedido no encontrado');
+      return;
+    }
+
+    // Actualizar los campos del pedido con los nuevos valores
+    pedido.fecha_pedido = fechaPedido;
+    pedido.estado_pedido = estadoPedido;
+    pedido.nombre_usuario = nombreUsuario;
+
+    // Actualizar servicios
+    pedido.servicios.forEach((servicio, index) => {
+      const servicioActualizado = servicios[index];
+      servicio.tipoServicio = servicioActualizado.tipoServicio;
+      servicio.estadoTipoServicio = servicioActualizado.estadoTipoServicio;
+      servicio.estadoServicio = servicioActualizado.estadoServicio;
+      servicio.nombreServicio = servicioActualizado.nombreServicio;
+      servicio.cantidadServicio = servicioActualizado.cantidadServicio;
+      servicio.precioServicio = servicioActualizado.precioServicio;
+      servicio.subtotal = servicioActualizado.cantidadServicio * servicioActualizado.precioServicio;
+    });
+
+    // Actualizar productos
+    pedido.productos.forEach((producto, index) => {
+      const productoActualizado = productos[index];
+      producto.tipoProducto = productoActualizado.tipoProducto;
+      producto.estadoTipoProducto = productoActualizado.estadoTipoProducto;
+      producto.estadoProducto = productoActualizado.estadoProducto;
+      producto.nombreProducto = productoActualizado.nombreProducto;
+      producto.cantidadProducto = productoActualizado.cantidadProducto;
+      producto.precioProducto = productoActualizado.precioProducto;
+      producto.subtotal = productoActualizado.cantidadProducto * productoActualizado.precioProducto;
+    });
+
+    // Recalcular el total del pedido
+    pedido.total_pedido = pedido.servicios.reduce((total, servicio) => total + servicio.subtotal, 0)
+                     + pedido.productos.reduce((total, producto) => total + producto.subtotal, 0);
+
+    // Actualizar el documento en la base de datos
+    await pedidosCollection.updateOne({ _id: new ObjectId(pedidoId) }, { $set: pedido });
+
+    res.redirect(`/pedido/${pedidoId}`); // Redirigir a la página de detalle del pedido actualizado
+  } catch (error) {
+    console.error('Error al editar el pedido:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+
+const PDFDocument = require('pdfkit');
+
+const generarPDFPedidos = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const pedidosCollection = database.collection('pedidos');
+
+    // Obtener todos los pedidos
+    const pedidos = await pedidosCollection.find({}).toArray();
+
+    // Crear un nuevo documento PDF
+    const doc = new PDFDocument();
+    doc.pipe(res); // Enviar el PDF como respuesta HTTP
+
+    // Agregar contenido al PDF
+    const fechaActual = new Date().toLocaleDateString();
+    doc.moveDown();
+    doc.fontSize(16).text(`Reporte de Pedidos - Fecha: ${fechaActual}`, { align: 'center' });
+    doc.moveDown();
+
+    // Variable para el número de página
+    let pageNumber = 1;
+
+    pedidos.forEach((pedido) => {
+      // Agregar número de página y nombre de empresa en todas las páginas
+      // doc.text('Nombre de la Empresa', 20, 20, { align: 'left' }); // Ajusta la posición según sea necesario
+      // doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
+      doc.moveDown();
+
+      doc.fontSize(14).text(`Pedido ID: ${pedido._id}`, { underline: true });
+      doc.moveDown();
+
+      doc.fontSize(12).text(`Fecha Creación: ${pedido.fecha_creacion}`);
+      doc.fontSize(12).text(`Fecha Pedido: ${pedido.fecha_pedido}`);
+      doc.fontSize(12).text(`Total: ${pedido.total_pedido}`);
+      doc.fontSize(12).text(`Estado: ${pedido.estado_pedido}`);
+      doc.fontSize(12).text(`Usuario: ${pedido.nombre_usuario}`);
+      doc.moveDown();
+
+      // Agregar detalles de servicios
+      doc.fontSize(14).text('Servicios:');
+      pedido.servicios.forEach((servicio) => {
+        doc.fontSize(12).text(`- ${servicio.nombreServicio}: ${servicio.cantidadServicio} x $${servicio.precioServicio} = $${servicio.subtotal}`);
+      });
+      doc.moveDown();
+
+      // Agregar detalles de productos
+      doc.fontSize(14).text('Productos:');
+      pedido.productos.forEach((producto) => {
+        doc.fontSize(12).text(`- ${producto.nombreProducto}: ${producto.cantidadProducto} x $${producto.precioProducto} = $${producto.subtotal}`);
+      });
+
+      doc.moveDown();
+      doc.moveDown();
+
+      // Incrementar número de página
+      pageNumber++;
+
+      // Agregar número de página y nombre de empresa en el footer
+      const footerText = `Erika's HomeMade Cra 58 # 69 - 22 piso 11`;
+      doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
+      const footerHeight = 20;
+      doc.text(footerText, { align: 'left', width: 410, height: footerHeight, underline: true, lineGap: 5 });
+      
+      // Agregar salto de página si hay más pedidos
+      if (pageNumber <= pedidos.length) {
+        doc.addPage();
+      }
+    });
+
+    // Finalizar y enviar el PDF
+    doc.end();
+  } catch (error) {
+    console.error('Error al generar el PDF de pedidos:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+
+module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido, generarPDFPedidos };

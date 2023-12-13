@@ -1,0 +1,53 @@
+<form id="formularioEditarVenta" action="/actualizarVenta/<%= venta._id %>" method="POST">
+  <label for="fecha_venta">Fecha Venta:</label>
+  <input type="text" id="fecha_venta" name="fecha_venta" value="<%= venta.fecha_venta || '' %>" required>
+
+  <label for="metodo_pago">Método Pago:</label>
+  <select id="metodo_pago" name="metodo_pago" required>
+    <option value="Efectivo">Efectivo</option>
+    <option value="Tarjeta">Tarjeta</option>
+    <option value="Transferencia">Transferencia</option>
+  </select>
+
+
+  <label for="total_venta">Total Venta:</label>
+  <input type="number" id="total_venta" name="total_venta" value="<%= venta.total_venta || '' %>" >
+
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre" name="nombre" value="<%= venta.nombre || '' %>" required >
+
+  <label for="telefono">Teléfono:</label>
+  <input type="text" id="telefono" name="telefono" value="<%= venta.telefono || '' %>" required>
+
+  <label for="documento">Documento:</label>
+  <input type="text" id="documento" name="documento" value="<%= venta.documento || '' %>" required >
+
+  <label for="correo">Correo:</label>
+  <input type="email" id="correo" name="correo" value="<%= venta.correo || '' %>" required >
+
+  <label for="total_pedido">Total Pedido:</label>
+  <input type="number" id="total_pedido" name="total_pedido" value="<%= venta.total_pedido || '' %>" required>
+
+  <!-- Campos para productos -->
+  <% venta.productos.forEach((producto, index)=> { %>
+    <label for="productos[<%= index %>][nombreProducto]">Nombre Producto:</label>
+    <input type="text" name="productos[<%= index %>][nombreProducto]" value="<%= producto.nombreProducto || '' %>" required
+      >
+
+    <label for="productos[<%= index %>][precioProducto]">Precio Producto:</label>
+    <input type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto || '' %>" required>
+    <% }); %>
+
+      <!-- Campos para servicios -->
+      <% venta.servicios.forEach((servicio, index)=> { %>
+        <label for="servicios[<%= index %>][nombreServicio]">Nombre Servicio:</label>
+        <input type="text" name="servicios[<%= index %>][nombreServicio]" value="<%= servicio.nombreServicio || '' %>" required
+          >
+
+        <label for="servicios[<%= index %>][precioServicio]">Precio Servicio:</label>
+        <input type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio || '' %>"
+          required>
+        <% }); %>
+
+          <button type="submit">Guardar Cambios</button>
+</form>

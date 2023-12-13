@@ -41,6 +41,10 @@
 <label for="buscarEstado">Buscar por Estado:</label>&nbsp;
 <input type="text" id="buscarEstado" oninput="filtrarReservasPorEstado()" placeholder="Ingrese el estado...">
 
+<form action="/generarPDFReservas" method="GET">
+  <button type="submit">Generar Informe en PDF</button>
+</form>
+
 <!-- Tabla de reservas -->
 <table id="tablaReservas">
   <thead>
