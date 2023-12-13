@@ -175,7 +175,7 @@ const editarPedido = async (req, res) => {
 
   // Obtener los datos actualizados del formulario de edición
   const { fechaPedido, estadoPedido, nombreUsuario, servicios, productos } = req.body;
-
+console.log(servicios)
   // Puedes agregar más validaciones según tus necesidades
 
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
