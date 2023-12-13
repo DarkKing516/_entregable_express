@@ -242,9 +242,6 @@ const editarPedido = async (req, res) => {
 };
 
 
-
-
-
 const PDFDocument = require('pdfkit');
 
 const generarPDFPedidos = async (req, res) => {
@@ -265,10 +262,20 @@ const generarPDFPedidos = async (req, res) => {
     doc.pipe(res); // Enviar el PDF como respuesta HTTP
 
     // Agregar contenido al PDF
-    doc.fontSize(16).text('Lista de Pedidos', { align: 'center' });
+    const fechaActual = new Date().toLocaleDateString();
+    doc.moveDown();
+    doc.fontSize(16).text(`Reporte de Pedidos - Fecha: ${fechaActual}`, { align: 'center' });
     doc.moveDown();
 
+    // Variable para el número de página
+    let pageNumber = 1;
+
     pedidos.forEach((pedido) => {
+      // Agregar número de página y nombre de empresa en todas las páginas
+      // doc.text('Nombre de la Empresa', 20, 20, { align: 'left' }); // Ajusta la posición según sea necesario
+      // doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
+      doc.moveDown();
+
       doc.fontSize(14).text(`Pedido ID: ${pedido._id}`, { underline: true });
       doc.moveDown();
 
@@ -294,6 +301,20 @@ const generarPDFPedidos = async (req, res) => {
 
       doc.moveDown();
       doc.moveDown();
+
+      // Incrementar número de página
+      pageNumber++;
+
+      // Agregar número de página y nombre de empresa en el footer
+      const footerText = `Erika's HomeMade Cra 58 # 69 - 22 piso 11`;
+      doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
+      const footerHeight = 20;
+      doc.text(footerText, { align: 'left', width: 410, height: footerHeight, underline: true, lineGap: 5 });
+      
+      // Agregar salto de página si hay más pedidos
+      if (pageNumber <= pedidos.length) {
+        doc.addPage();
+      }
     });
 
     // Finalizar y enviar el PDF
@@ -305,5 +326,6 @@ const generarPDFPedidos = async (req, res) => {
     await client.close();
   }
 };
+
 
 module.exports = { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido, generarPDFPedidos };
