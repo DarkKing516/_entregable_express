@@ -75,8 +75,8 @@
             <%= usuario.estado_usuario%>
           </td>
           <td>
-            <%= '*'.repeat(usuario.contraseña.length) %>
-          </td>          
+            <%= '*' .repeat(usuario.contraseña.length) %>
+          </td>
           <td>
             <button><a href="/configuracion/<%= usuario._id %>">Ver permisos</a></button>
           </td>
@@ -88,14 +88,18 @@
         <% }); %>
     </tbody>
   </table>
+  <button onclick="generarReporteBtn()">Generar Reporte</button>
 
   <script>
     // JavaScript para mostrar/ocultar el modal
-    
+
     const agregarUsuarioBtn = document.getElementById('agregarUsuarioBtn');
     const agregarUsuarioModal = document.getElementById('agregarUsuarioModal');
     const cerrarModal = document.getElementById('cerrarModal');
 
+    function generarReporteBtn() {
+      window.location.href = '/ReporteUsuarios';
+    }
 
     function filtrarUsuarios() {
       // Obtener el valor del input de búsqueda
@@ -124,7 +128,7 @@
         filas[i].style.display = mostrarFila ? "" : "none";
       }
     }
-    
+
     agregarUsuarioBtn.addEventListener('click', () => {
       agregarUsuarioModal.style.display = 'block';
     });

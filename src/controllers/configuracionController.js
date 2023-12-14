@@ -1,6 +1,8 @@
 // src/controllers/configuracionController.js
 const { MongoClient, ObjectId } = require('mongodb');
 const usuarioModel = require('../models/usuarioModel');
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 const { obtenerPermisosSegunRol } = require('../models/usuarioModel');
 
 
@@ -226,8 +228,83 @@ const obtenerDatosUsuario = async (req, res) => {
 };
 
 
+const generarReportePDF = async (req, res) => {
+  const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-module.exports = { getConfiguracionPage, registrarUsuario, actualizarUsuarios, verPermisos, actualizarPermisos, eliminarUsuario, obtenerDatosUsuario };
+  try {
+    await client.connect();
+
+    const database = client.db('erikas_homemade');
+    const configuracionCollection = database.collection('configuracion');
+
+    // Obtener todas las ventas
+    const usuarios = await configuracionCollection.find({}).toArray();
+
+    // Crear un nuevo documento PDF
+    const doc = new PDFDocument();
+
+    // Crear un buffer para el PDF
+    const buffer = await new Promise((resolve, reject) => {
+      const chunks = [];
+      doc.on('data', chunk => chunks.push(chunk));
+      doc.on('end', () => resolve(Buffer.concat(chunks)));
+      doc.on('error', error => reject(error));
+
+      // Agregar contenido al PDF
+      let pageNumber = 1;
+
+      usuarios.forEach((usuario, index) => {
+        if (index > 0) {
+          doc.addPage();
+          pageNumber++;
+        }
+
+        doc.fontSize(16).text('Reporte de usuarios', { align: 'center' });
+        doc.moveDown();
+
+        doc.fontSize(14).text(`Usuario ID: ${usuario._id}`, { underline: true });
+        doc.moveDown();
+
+        doc.fontSize(12).text(`Rol: ${usuario.rol}`);
+        doc.fontSize(12).text(`Nombre: ${usuario.nombre}`);
+        doc.fontSize(12).text(`Correo: ${usuario.correo}`);
+        doc.fontSize(12).text(`Teléfono: ${usuario.telefono}`);
+        doc.fontSize(12).text(`Documento: ${usuario.documento}`);
+        doc.fontSize(12).text(`Contraseña: ${'*'.repeat(usuario.contraseña.length)}`);
+        doc.fontSize(12).text(`Estado: ${usuario.estado_usuario}`);
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+        doc.moveDown();
+
+        // Pie de página con la información de la empresa y el paginado
+        doc.fontSize(10).text('Erika\'s Homemade - Calle 84 numero 57-31', { align: 'left' });
+        doc.fontSize(8).text(`Página ${pageNumber}`, { align: 'right' });
+
+        doc.moveDown();
+        doc.moveDown();
+      });
+
+      // Finalizar el documento PDF
+      doc.end();
+    });
+
+    // Configurar encabezados y enviar el buffer como respuesta
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename=informe.pdf');
+    res.send(buffer);
+
+  } catch (error) {
+    console.error('Error al generar el PDF de usuarios:', error);
+    res.status(500).send('Error interno del servidor');
+  } finally {
+    await client.close();
+  }
+};
+
+
+  module.exports = { getConfiguracionPage, registrarUsuario, actualizarUsuarios, verPermisos, actualizarPermisos, eliminarUsuario, obtenerDatosUsuario, generarReportePDF };
 
 
 

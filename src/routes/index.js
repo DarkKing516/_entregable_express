@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const usuarioModel = require('../models/usuarioModel'); 
 const { getPedidosPage, agregarPedido, verDetallePedido, eliminarPedido, editarPedido, generarPDFPedidos } = require('../controllers/pedidosController');
-const { getConfiguracionPage, registrarUsuario, verPermisos, actualizarPermisos, eliminarUsuario,obtenerDatosUsuario,actualizarUsuarios } = require('../controllers/configuracionController');
+const { getConfiguracionPage, registrarUsuario, verPermisos, actualizarPermisos, eliminarUsuario,obtenerDatosUsuario,actualizarUsuarios, generarReportePDF } = require('../controllers/configuracionController');
 const { iniciarSesion, cerrarSesion } = require('../controllers/authController');
 const { getVentasPage, agregarVenta, eliminarVenta, actualizarVentas, obtenerDatosVenta, generarPDFVentas} = require('../controllers/ventasController');
 const { getReservasPage, agregarReserva, eliminarReserva, verDetalleEdicionReserva, guardarEdicionReserva, generarPDFReservas} = require('../controllers/reservasController');
@@ -69,6 +69,8 @@ router.post('/configuracion/:id/actualizarPermisos', actualizarPermisos);
 router.get('/editarUsuario/:id', obtenerDatosUsuario);
 router.post('/actualizarUsuario/:id', actualizarUsuarios);
 router.get('/eliminarUsuario/:id', eliminarUsuario);
+router.get('/ReporteUsuarios', generarReportePDF);
+
 
 
 
