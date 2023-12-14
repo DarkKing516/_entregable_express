@@ -1,163 +1,186 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Tu Página</title>
+  <!-- Agrega el enlace al archivo CSS de Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <!-- Enlaces a tus estilos o scripts adicionales, si los tienes -->
+  <link rel="shortcut icon"
+    href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png"
+    type="image/x-icon" />
+  <!-- Otros enlaces y estilos que puedas tener en tu head -->
+</head>
 <!-- src/views/pedidos.ejs -->
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 
 <%- include('./layouts/nav') %>
-  <h1>Lista de usuarios</h1>
-  <ul>
-    <% usuarios.forEach(usuario=> { %>
-      <li>
-        <%= usuario.nombre %>
-      </li>
-      <% }); %>
-  </ul>
+  <!-- Contenedor principal con la clase "container" de Bootstrap -->
+  <div class="container mt-4">
 
-  <div id="agregarPedidoModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span id="cerrarModal" class="cerrar">&times;</span>
-      <h2>Agregar Pedido</h2>
-      <!-- Tu formulario para agregar pedidos aquí -->
-      <form id="formularioAgregarPedido" action="/agregarPedido" method="POST">
-        <label for="fechaPedido">Fecha pedido:</label>
-        <input type="date" id="fechaPedido" name="fechaPedido" min="<%= fechaActual %>" required>
-
-        <!-- Botones para agregar servicios y productos -->
-        <button type="button" id="agregarServicioBtn">Agregar Servicio</button>
-        <button type="button" id="agregarProductoBtn">Agregar Producto</button>
-
-        <!-- Campos para agregar servicios -->
-        <div id="serviciosContainer">
-          <h3>Servicios</h3>
-          <div class="servicio">
-            <label for="tipoServicio">Tipo de Servicio:</label>
-            <select id="tipoServicio" name="tipoServicio" required>
-              <option value="confeccion">Confeccion</option>
-              <option value="arreglo">Arreglo Prendas</option>
-              <option value="manualidades">Manualidades</option>
-            </select>
-            <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
-            <select id="estadoTipoServicio" name="estadoTipoServicio" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-
-            <label for="nombreServicio">Nombre Servicio:</label>
-            <input type="text" id="nombreServicio" name="nombreServicio" required>
-
-            <label for="estadoServicio">Estado Servicio:</label>
-            <select id="estadoServicio" name="estadoServicio" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-
-            <label for="cantidadServicio">Cantidadad Servicio:</label>
-            <input type="number" id="cantidadServicio" name="cantidadServicio" required>
-
-            <label for="precioServicio">Precio Servicio:</label>
-            <input type="number" id="precioServicio" name="precioServicio" required>
-          </div>
-          <input type="hidden" name="servicios" id="serviciosInput" />
-        </div>
-
-        <!-- Campos para agregar productos -->
-        <div id="productosContainer">
-          <h3>Productos</h3>
-          <div class="producto">
-            <label for="tipoProducto">Tipo de Producto:</label>
-            <select id="tipoProducto" name="tipoProducto" required>
-              <option value="accesorios">Accesorios</option>
-              <option value="prendas de vestir">Prendas de Vestir</option>
-              <option value="manualidades">Manualidades</option>
-            </select>
-
-            <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
-            <select id="estadoTipoProducto" name="estadoTipoProducto" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-
-            <label for="nombreProducto">Nombre Producto:</label>
-            <input type="text" id="nombreProducto" name="nombreProducto" required>
-
-            <label for="estadoProducto">Estado Producto:</label>
-            <select id="estadoProducto" name="estadoProducto" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-            <label for="cantidadProducto">Cantidadad Producto:</label>
-            <input type="number" id="cantidadProducto" name="cantidadProducto" required>
-
-            <label for="precioProducto">Precio Producto:</label>
-            <input type="number" id="precioProducto" name="precioProducto" required>
-          </div>
-          <input type="hidden" name="productos" id="productosInput" />
-        </div>
-
-        <label for="nombreUsuario">Nombre Usuario:</label>
-        <select id="nombreUsuario" name="nombreUsuario" required>
-          <% usuarios.forEach(usuario=> { %>
-            <option value="<%= usuario.nombre %>">
-              <%= usuario.nombre %>
-            </option>
-            <% }); %>
-        </select>
-
-        <input type="hidden" name="totalPedido" id="totalPedidoInput" />
-
-        <button type="submit">Guardar Pedido</button>
-      </form>
-    </div>
-  </div>
-  <h1>Listado de Pedidos</h1>
-  <input type="text" id="buscarPedidos" placeholder="Buscar pedidos..." oninput="filtrarPedidos()">
-  <button id="agregarPedidoBtn">Agregar</button>
-
-  <a target="_blank" href="/generarPDFPedidos">Generar PDF</a>
-  <!-- <button onclick="generarPDF()">Generar PDF</button> -->
-
-<script>
-  function generarPDF() {
-    window.location.href = '/generarPDFPedidos';
-  }
-</script>
-
-  <!-- Modal -->
-
-  <table>
-    <thead>
-      <tr>
-        <td>Fecha Creacion</td>
-        <td>Fecha Pedido</td>
-        <td>Total</td>
-        <td>Estado</td>
-        <td>Usuario</td>
-        <td>Acción</td>
-      </tr>
-    </thead>
-    <tbody>
-      <% pedidos.forEach(pedido=> { %>
-        <tr>
-          <td>
-            <%= pedido.fecha_creacion %>
-          </td>
-          <td>
-            <%= pedido.fecha_pedido %>
-          </td>
-          <td>
-            <%= pedido.total_pedido %>
-          </td>
-          <td>
-            <%= pedido.estado_pedido %>
-          </td>
-          <td>
-            <%= pedido.nombre_usuario %>
-          </td>
-          <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a
-              href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
-        </tr>
+    <h1>Lista de usuarios</h1>
+    <ul class="list-group">
+      <% usuarios.forEach(usuario=> { %>
+        <li class="list-group-item">
+          <%= usuario.nombre %>
+        </li>
         <% }); %>
-    </tbody>
-  </table>
+    </ul>
+
+    <!-- Modal con clases de Bootstrap -->
+    <div class="modal" id="agregarPedidoModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title">Agregar Pedido</h2>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="formularioAgregarPedido" action="/agregarPedido" method="POST">
+              <label for="fechaPedido">Fecha pedido:</label>
+              <input type="date" id="fechaPedido" name="fechaPedido" min="<%= fechaActual %>" required>
+
+              <!-- Botones para agregar servicios y productos -->
+              <button type="button" class="btn btn-primary" id="agregarServicioBtn">Agregar Servicio</button>
+              <button type="button" class="btn btn-primary" id="agregarProductoBtn">Agregar Producto</button>
+
+              <!-- Campos para agregar servicios -->
+              <div id="serviciosContainer">
+                <h3>Servicios</h3>
+                <div class="servicio">
+                  <label for="tipoServicio">Tipo de Servicio:</label>
+                  <select id="tipoServicio" name="tipoServicio" required>
+                    <option value="confeccion">Confeccion</option>
+                    <option value="arreglo">Arreglo Prendas</option>
+                    <option value="manualidades">Manualidades</option>
+                  </select>
+                  <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
+                  <select id="estadoTipoServicio" name="estadoTipoServicio" required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                  </select>
+
+                  <label for="nombreServicio">Nombre Servicio:</label>
+                  <input type="text" id="nombreServicio" name="nombreServicio" required>
+
+                  <label for="estadoServicio">Estado Servicio:</label>
+                  <select id="estadoServicio" name="estadoServicio" required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                  </select>
+
+                  <label for="cantidadServicio">Cantidadad Servicio:</label>
+                  <input type="number" id="cantidadServicio" name="cantidadServicio" required>
+
+                  <label for="precioServicio">Precio Servicio:</label>
+                  <input type="number" id="precioServicio" name="precioServicio" required>
+                </div>
+                <input type="hidden" name="servicios" id="serviciosInput" />
+              </div>
+
+              <!-- Campos para agregar productos -->
+              <div id="productosContainer">
+                <h3>Productos</h3>
+                <div class="producto">
+                  <label for="tipoProducto">Tipo de Producto:</label>
+                  <select id="tipoProducto" name="tipoProducto" required>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="prendas de vestir">Prendas de Vestir</option>
+                    <option value="manualidades">Manualidades</option>
+                  </select>
+
+                  <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
+                  <select id="estadoTipoProducto" name="estadoTipoProducto" required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                  </select>
+
+                  <label for="nombreProducto">Nombre Producto:</label>
+                  <input type="text" id="nombreProducto" name="nombreProducto" required>
+
+                  <label for="estadoProducto">Estado Producto:</label>
+                  <select id="estadoProducto" name="estadoProducto" required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                  </select>
+                  <label for="cantidadProducto">Cantidadad Producto:</label>
+                  <input type="number" id="cantidadProducto" name="cantidadProducto" required>
+
+                  <label for="precioProducto">Precio Producto:</label>
+                  <input type="number" id="precioProducto" name="precioProducto" required>
+                </div>
+                <input type="hidden" name="productos" id="productosInput" />
+              </div>
+
+              <label for="nombreUsuario">Nombre Usuario:</label>
+              <select id="nombreUsuario" name="nombreUsuario" required>
+                <% usuarios.forEach(usuario=> { %>
+                  <option value="<%= usuario.nombre %>">
+                    <%= usuario.nombre %>
+                  </option>
+                  <% }); %>
+              </select>
+
+              <input type="hidden" name="totalPedido" id="totalPedidoInput" />
+
+              <button type="submit" class="btn btn-success">Guardar Pedido</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h1>Listado de Pedidos</h1>
+    <input type="text" id="buscarPedidos" class="form-control mb-2" placeholder="Buscar pedidos..."
+      oninput="filtrarPedidos()">
+    <button id="agregarPedidoBtn" class="btn btn-primary mb-2" data-toggle="modal"
+      data-target="#agregarPedidoModal">Agregar</button>
+
+    <a target="_blank" href="/generarPDFPedidos" class="btn btn-secondary mb-2">Generar PDF</a>
+
+    <script>
+      function generarPDF() {
+        window.location.href = '/generarPDFPedidos';
+      }
+    </script>
+
+    <!-- Modal -->
+
+    <table>
+      <thead>
+        <tr>
+          <td>Fecha Creacion</td>
+          <td>Fecha Pedido</td>
+          <td>Total</td>
+          <td>Estado</td>
+          <td>Usuario</td>
+          <td>Acción</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% pedidos.forEach(pedido=> { %>
+          <tr>
+            <td>
+              <%= pedido.fecha_creacion %>
+            </td>
+            <td>
+              <%= pedido.fecha_pedido %>
+            </td>
+            <td>
+              <%= pedido.total_pedido %>
+            </td>
+            <td>
+              <%= pedido.estado_pedido %>
+            </td>
+            <td>
+              <%= pedido.nombre_usuario %>
+            </td>
+            <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a
+                href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
+          </tr>
+          <% }); %>
+      </tbody>
+    </table>
+  </div>
   <script>
     function filtrarPedidos() {
       // Obtener el valor del input de búsqueda
