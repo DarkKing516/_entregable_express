@@ -56,7 +56,6 @@ const registrarUsuario = async (req, res) => {
 };
 
 
-
 const actualizarUsuarios = async (req, res) => {
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri);
@@ -68,13 +67,14 @@ const actualizarUsuarios = async (req, res) => {
     const usuariosCollection = database.collection('configuracion');
 
     const usuarioId = req.params.id; // ID del usuario que se desea editar
-    const { nombre, correo, telefono, documento, estado_usuario} = req.body; // Datos actualizados del usuario desde el cuerpo de la solicitud
+    const { nombre, correo, telefono, documento, estado_usuario } = req.body; // Datos actualizados del usuario desde el cuerpo de la solicitud
+
+    console.log('Datos recibidos para actualizar:', req.body);
 
     const result = await usuariosCollection.updateOne(
       { _id: new ObjectId(usuarioId) },
       {
         $set: {
-          rol,
           nombre,
           correo,
           telefono,
@@ -84,8 +84,7 @@ const actualizarUsuarios = async (req, res) => {
       }
     );
 
-    console.log('Resultado de la actualización:', result); // Agrega este console.log para verificar el resultado de la actualización
-
+    console.log('Resultado de la actualización:', result);
 
     if (result.matchedCount === 0) {
       console.log('El usuario no fue encontrado o no se actualizó');
@@ -93,17 +92,15 @@ const actualizarUsuarios = async (req, res) => {
       return;
     }
 
-    res.redirect('/configuracion'); // Redirigir a la página deseada después de editar
+    res.redirect('/configuracion');
     console.log('Usuario actualizado correctamente');
   } catch (error) {
     console.error('Error al editar el usuario:', error);
-    res.status(500).send('Error interno del servidor al editar el usuario');
+    res.status(500).send(`Error interno del servidor al editar el usuario: ${error}`);
   } finally {
     await client.close();
   }
 };
-
-
 
 const verPermisos = async (req, res) => {
   const configuracionId = req.params.id;
@@ -138,7 +135,7 @@ const verPermisos = async (req, res) => {
 
 const actualizarPermisos = async (req, res) => {
   const configuracionId = req.params.id;
-  const nuevosPermisos = req.body.permisos;
+  const nuevosPermisos = req.body.permisos || []; // Asegúrate de manejar correctamente el caso en el que no se envíen permisos
 
   const uri = 'mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade';
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -157,21 +154,14 @@ const actualizarPermisos = async (req, res) => {
 
     // Actualizar permisos existentes
     configuracion.permisos.forEach(usuarioPermiso => {
-      const nuevoPermiso = nuevosPermisos.find(np => np.nombre_permiso === usuarioPermiso.nombre_permiso);
-
-      if (nuevoPermiso) {
-        // Si el nuevoPermiso está presente, actualizar el estado, de lo contrario, establecer en 'false'
-        usuarioPermiso.estado_permiso = nuevoPermiso.estado_permiso || false;
-      } else {
-        // Si no se encuentra el nuevoPermiso, establecer en 'false'
-        usuarioPermiso.estado_permiso = false;
-      }
+      const nuevoPermiso = nuevosPermisos.find(np => np === usuarioPermiso.nombre_permiso);
+      usuarioPermiso.estado_permiso = nuevoPermiso ? true : false;
     });
 
     // Actualizar el documento en la base de datos
     await configuracionCollection.updateOne({ _id: new ObjectId(configuracionId) }, { $set: { permisos: configuracion.permisos } });
 
-    return res.status(200).json({ mensaje: 'Permisos actualizados con éxito' });
+    return res.redirect('/configuracion');
   } catch (error) {
     console.error('Error al actualizar permisos:', error);
     return res.status(500).json({ mensaje: 'Error interno del servidor', error: error.message });
@@ -179,8 +169,6 @@ const actualizarPermisos = async (req, res) => {
     await client.close();
   }
 };
-
-
 
 const eliminarUsuario = async (req, res) => {
   const configuracionId = req.params.id;
@@ -194,7 +182,7 @@ const eliminarUsuario = async (req, res) => {
     const database = client.db('erikas_homemade');
     const configuracionCollection = database.collection('configuracion');
 
-    // Eliminar el configuracion por ID
+    // Eliminar el configuracion por I
     await configuracionCollection.deleteOne({ _id: new ObjectId(configuracionId) });
 
     res.redirect('/configuracion'); // Redirigir a la página de configuracion después de eliminar
@@ -226,8 +214,6 @@ const obtenerDatosUsuario = async (req, res) => {
       res.status(404).send('Usuario no encontrado');
       return;
     }
-
-    console.log(usuario); // Agrega este console.log para verificar los datos del usuario
 
     // Redirigir a la página de edición con los datos del usuario
     res.render('editarUsuario', { usuario }); // 'editarUsuario' es el nombre de tu vista

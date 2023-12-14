@@ -72,11 +72,11 @@
             <%= usuario.documento %>
           </td>
           <td>
-            <%= usuario.estado_usuario ? 'Activo' : 'Inactivo' %>
+            <%= usuario.estado_usuario%>
           </td>
           <td>
-            <%= usuario.contraseña %>
-          </td>
+            <%= '*'.repeat(usuario.contraseña.length) %>
+          </td>          
           <td>
             <button><a href="/configuracion/<%= usuario._id %>">Ver permisos</a></button>
           </td>
