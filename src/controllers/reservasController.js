@@ -121,8 +121,12 @@ const eliminarReserva = async (req, res) => {
   
       // Utilizar ObjectId directamente como una función
       await reservasCollection.deleteOne({ _id: new ObjectId(reservaId) });
+
+
+      // Obtener la lista actualizada de reservas
+      const reservasActualizadas = await reservasCollection.find({}).toArray();
   
-      res.redirect('/reservas'); // Redirigir a la página de reservas después de eliminar la reserva
+      res.render('reservas', { reservas: reservasActualizadas }); // Renderizar la vista con los datos actualizados
     } catch (error) {
       console.error('Error al eliminar reserva:', error);
       res.status(500).send('Error interno del servidor');
