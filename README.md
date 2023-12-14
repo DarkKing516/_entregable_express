@@ -79,10 +79,10 @@ La aplicación estará disponible en [http://localhost:3000](http://localhost:30
 
 **Importante:** 
 Colecciones:
-Configuracion: Danilo
-Ventas: Emmanuel
-Pedidos: Jhon
-Reservas: Nelson
+- Configuracion: Danilo,
+- Ventas: Emmanuel,
+- Pedidos: Jhon,
+- Reservas: Nelson,
 
 para poder ver la barra de navegación (el cual era uno de los requisitos así como contener login) solo se puede ver luego de loguearse, para ello se puede registrar o iniciar sesión (al registrarse se guardará como un usuario en la colección configuración la cual le pertenece a Danilo) al iniciar sesión podrá apreciar accesos a las colecciones en la navbar, desde allí podrá acceder al CRUD
 
