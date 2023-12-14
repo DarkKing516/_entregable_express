@@ -69,7 +69,7 @@ La aplicación estará disponible en [http://localhost:3000](http://localhost:30
 
 ## Consideraciones Importantes
 
-- La aplicación no utiliza CSS3, Bootstrap u otros frameworks de diseño. El diseño se implementa exclusivamente con HTML y JavaScript.
+- La aplicación no utiliza CSS3, Bootstrap u otros frameworks de diseño. El diseño se implementa exclusivamente con HTML y JavaScript. (o al menos este fue el primer requisito que se nos iformó, pero luego el instructor cambió de opinión)
 
 - No se ha utilizado React, Angular u otros frameworks o librerías similares.
 
