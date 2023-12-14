@@ -78,6 +78,7 @@ La aplicación estará disponible en [http://localhost:3000](http://localhost:30
 ---
 
 **Importante:** 
+
 Colecciones:
 
 - Configuracion: Danilo,
