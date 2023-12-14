@@ -1,15 +1,35 @@
-<link  rel="shortcut icon"  href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon"/>
+<link rel="shortcut icon" href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 <%- include('./layouts/nav') %>
-<h1>Registrarse</h1>
-<form action="/signup" method="POST">
-  <input type="hidden" name="rol">
-  <input type="hidden" name="permisos">
-  <input type="text" name="nombre" placeholder="Nombre">
-  <input type="email" name="correo" placeholder="Email">
-  <input type="number" name="telefono" placeholder="Teléfono">
-  <input type="number" name="documento" placeholder="Documento">
-  <input type="hidden" name="estado_usuario">
-  <input type="password" name="contraseña" placeholder="Contraseña">
-  <button type="submit">SignUp</button>
-</form>
-
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h1 class="text-center mb-4">Registrarse</h1>
+      <form action="/signup" method="POST">
+        <input type="hidden" name="rol">
+        <input type="hidden" name="permisos">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" required>
+        </div>
+        <div class="mb-3">
+          <label for="correo" class="form-label">Email</label>
+          <input type="email" class="form-control" id="correo" name="correo" placeholder="Email" required>
+        </div>
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="number" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
+        </div>
+        <div class="mb-3">
+          <label for="documento" class="form-label">Documento</label>
+          <input type="number" class="form-control" id="documento" name="documento" placeholder="Documento" required>
+        </div>
+        <input type="hidden" name="estado_usuario">
+        <div class="mb-3">
+          <label for="contraseña" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="contraseña" name="contraseña" placeholder="Contraseña" required>
+        </div>
+        <button type="submit" class="btn btn-primary">SignUp</button>
+      </form>
+    </div>
+  </div>
+</div>
