@@ -2,7 +2,8 @@
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 
-
+  <%- include('./layouts/nav') %>
+  
 <h1>Lista de usuarios</h1>
 <ul>
   <% usuarios.forEach(usuario=> { %>
@@ -305,6 +306,22 @@
 
   li {
     margin-bottom: 8px;
+    padding-left: 20px;
+    /* Agregado para espacio del punto */
+    position: relative;
+  }
+
+  li:before {
+    content: '\2022';
+    /* Código del punto unicode */
+    color: #007bff;
+    /* Color del punto */
+    font-size: 16px;
+    /* Tamaño del punto */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .modal {
