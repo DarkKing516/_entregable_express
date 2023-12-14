@@ -1,0 +1,54 @@
+<!-- src/views/editarReserva.ejs -->
+<link rel="shortcut icon" href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+<%- include('./layouts/nav') %>
+<h1>Editar Reserva</h1>
+
+<form id="formularioEditarReserva" action="/guardarEdicionReserva/<%= reserva._id %>" method="POST">
+  <!-- Mantén los campos que desees editar, por ejemplo: -->
+  <label for="fechaReserva">Fecha de Reserva:</label>
+  <input type="date" id="fechaReserva" name="fechaReserva" value="<%= reserva.fecha_reserva %>" required>
+
+  <label for="estadoReserva">Estado de Reserva:</label>
+  <select id="estadoReserva" name="estadoReserva" required>
+    <option value="Agendada" <%= reserva.estado_reserva === 'Agendada' ? 'selected' : '' %>>Agendada</option>
+    <option value="Rechazada" <%= reserva.estado_reserva === 'Rechazada' ? 'selected' : '' %>>Rechazada</option>
+    <option value="Terminada" <%= reserva.estado_reserva === 'Terminada' ? 'selected' : '' %>>Terminada</option>
+  </select>
+
+  <!-- Otros campos para editar -->
+
+  <button type="submit">Guardar Cambios</button>
+</form>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Obtener el elemento del campo de fecha
+    const fechaReservaInput = document.getElementById("fechaReserva");
+
+    // Obtener la fecha actual en formato 'YYYY-MM-DD'
+    const obtenerFechaActual = () => {
+      const fecha = new Date();
+      const year = fecha.getFullYear();
+      const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
+      const day = fecha.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // Escuchar el evento de cambio en el campo de fecha
+    fechaReservaInput.addEventListener("change", function (event) {
+      // Obtener el valor actual del campo de fecha
+      const valorFechaReserva = event.target.value;
+
+      // Obtener la fecha actual
+      const fechaActual = obtenerFechaActual();
+
+      // Validar si la fecha de reserva es menor o igual a la fecha actual
+      if (valorFechaReserva <= fechaActual) {
+        alert('La fecha de reserva debe ser mayor a la fecha actual.');
+        // Restaurar la fecha anterior o tomar una acción adicional si es necesario
+        event.target.value = "<%= reserva.fecha_reserva %>";
+      }
+    });
+  });
+</script>

@@ -1,5 +1,7 @@
 <!-- src/views/reservas.ejs -->
 <link rel="shortcut icon" href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+
+
 <%- include('./layouts/nav') %>
 <h1>Gestión de Reservas</h1>
 
@@ -34,7 +36,17 @@
 
 <!-- Lista de reservas existentes -->
 <h2>Listado de Reservas</h2>
-<table>
+
+<!-- Buscar -->
+<label for="buscarEstado">Buscar por Estado:</label>&nbsp;
+<input type="text" id="buscarEstado" oninput="filtrarReservasPorEstado()" placeholder="Ingrese el estado...">
+
+<form action="/generarPDFReservas" method="GET">
+  <button type="submit">Generar Informe en PDF</button>
+</form>
+
+<!-- Tabla de reservas -->
+<table id="tablaReservas">
   <thead>
     <tr>
       <td>Fecha de Creación</td>
@@ -52,8 +64,8 @@
   <tbody>
     <% reservas.forEach(reserva => { %>
       <tr>
-        <td><%= new Date(reserva.fecha_creacion).toLocaleDateString('es-ES') %></td>
-        <td><%= new Date(reserva.fecha_reserva).toLocaleDateString('es-ES') %></td>
+        <td><%= reserva.fecha_creacion %></td>
+        <td><%= reserva.fecha_reserva %></td>
         <td><%= reserva.estado_reserva %></td>
         <td><%= reserva.nombre_cliente %></td>
         <td><%= reserva.correo || reserva.email %></td>
@@ -76,25 +88,6 @@
   </tbody>
 </table>
 
-<!-- Sección de Edición -->
-<div id="edicionReserva" style="display:none;">
-  <h2>Edición de Reserva</h2>
-  <form id="formularioEdicionReserva" action="/actualizarReserva" method="POST" onsubmit="actualizarReservaDesdeEdicion(event)">
-    <input type="hidden" id="reservaIdEdicion" name="reservaIdEdicion">
-    <label for="fechaReservaEdicion">Fecha de Reserva:</label>
-    <input type="date" id="fechaReservaEdicion" name="fechaReservaEdicion" required>
-
-    <label for="estadoReservaEdicion">Estado de Reserva:</label>
-    <select id="estadoReservaEdicion" name="estadoReservaEdicion" required>
-      <option value="Agendada">Agendada</option>
-      <option value="Rechazada">Rechazada</option>
-      <option value="Terminada">Terminada</option>
-    </select>
-
-    <button type="submit">Guardar Cambios</button>
-    <button type="button" onclick="cerrarEdicionReserva()">Cancelar</button>
-  </form>
-</div>
 
 <script>
   function obtenerConfiguracionCliente() {
@@ -137,82 +130,62 @@
     }
   }
 
-  function abrirEdicionReserva(id) {
-  fetch(`/obtenerDetallesReserva/${id}`)
-    .then(response => response.json())
-    .then(reserva => {
-      document.getElementById('reservaIdEdicion').value = reserva._id;
-      document.getElementById('fechaReservaEdicion').value = reserva.fecha_reserva;
-      document.getElementById('estadoReservaEdicion').value = reserva.estado_reserva;
-
-      // Mostrar la sección de edición
-      document.getElementById('edicionReserva').style.display = 'block';
-    })
-    .catch(error => console.error('Error al obtener detalles de la reserva:', error));
-}
-
-  function cerrarEdicionReserva() {
-    // Ocultar la sección de edición
-    document.getElementById('edicionReserva').style.display = 'none';
+  function abrirEdicionReserva(reservaId) {
+    // Redireccionar a la página de edición de la reserva
+    window.location.href = `/editarReserva/${reservaId}`;
   }
 
-  async function actualizarReservaDesdeEdicion(event) {
-    console.log('Submit del formulario de edición');
-  event.preventDefault();
+  function filtrarReservasPorEstado() {
+    const inputEstado = document.getElementById('buscarEstado').value.toLowerCase();
+    const tablaReservas = document.getElementById('tablaReservas');
+    const filas = tablaReservas.getElementsByTagName('tr');
 
-  const reservaId = document.getElementById('reservaIdEdicion').value;
-  const fechaReserva = document.getElementById('fechaReservaEdicion').value;
-  const estadoReserva = document.getElementById('estadoReservaEdicion').value;
-  const telefonoCliente = document.getElementById('telefonoClienteEdicion').value;
-  const documentoCliente = document.getElementById('documentoClienteEdicion').value; // Agrega otros campos según sea necesario
-  const contraseñaCliente = document.getElementById('contraseñaClienteEdicion').value;
-  const correoCliente = document.getElementById('correoClienteEdicion').value;
+    for (let i = 1; i < filas.length; i++) {
+      const celdaEstado = filas[i].getElementsByTagName('td')[2]; // Índice 2 corresponde a la columna del estado
+      const estado = celdaEstado.textContent.toLowerCase();
 
-  console.log('Datos a enviar:', {
-    reservaId,
-    fechaReserva,
-    estadoReserva,
-    telefonoCliente,
-    documentoCliente,
-    contraseñaCliente,
-    correoCliente,
-  });
+      if (estado.includes(inputEstado)) {
+        filas[i].style.display = '';
+      } else {
+        filas[i].style.display = 'none';
+      }
+    }
+  }
 
-  const options = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      fechaReserva,
-      estadoReserva,
-      telefonoCliente,
-      documentoCliente,
-      contraseñaCliente,
-      correoCliente,
-    }),
+
+  function validarFechaReserva() {
+    var fechaReservaInput = document.getElementById('fechaReserva');
+    var fechaReserva = new Date(fechaReservaInput.value);
+    var fechaActual = new Date();
+
+    if (fechaReserva <= fechaActual) {
+      alert('La fecha de reserva debe ser mayor a la fecha actual.');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Agrega el evento onsubmit al formulario
+  document.getElementById('formularioAgregarReserva').onsubmit = function () {
+    return validarFechaReserva();
   };
 
-  try {
-    const response = await fetch(`/actualizarReserva/${reservaId}`, options);
-    if (response.ok) {
-      console.log('Reserva actualizada con éxito:', await response.json());
-    } else {
-      console.error('Error al actualizar la reserva:', response.statusText);
-    }
-  } catch (error) {
-    console.error('Error de red:', error);
-  }
-  return false;
-}
+  document.addEventListener("DOMContentLoaded", function () {
+    // Obtener el elemento del campo de teléfono
+    const telefonoInput = document.getElementById("telefonoCliente");
 
+    // Escuchar el evento de entrada en el campo de teléfono
+    telefonoInput.addEventListener("input", function (event) {
+      // Obtener el valor actual del campo de teléfono
+      let valorTelefono = event.target.value;
 
+      // Eliminar cualquier carácter que no sea un número
+      valorTelefono = valorTelefono.replace(/\D/g, "");
 
-function actualizarFilaEnDOM(reservaId, updatedReserva) {
-  // Encuentra la fila correspondiente y actualiza sus celdas
-  const fila = document.querySelector(`tr[data-id="${reservaId}"]`);
-  fila.querySelector('td:nth-child(2)').textContent = new Date(updatedReserva.fecha_reserva).toLocaleDateString('es-ES');
-  fila.querySelector('td:nth-child(3)').textContent = updatedReserva.estado_reserva;
-  // Actualiza otras celdas según sea necesario
-}
+      // Actualizar el valor del campo de teléfono
+      event.target.value = valorTelefono;
+    });
+  });
+
 </script>
