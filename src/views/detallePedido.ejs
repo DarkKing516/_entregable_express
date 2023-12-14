@@ -1,294 +1,367 @@
 <!-- src/views/detallePedido.ejs -->
-<h1>Detalle del Pedido</h1>
+<link rel="shortcut icon"
+  href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+<%- include('./layouts/nav') %>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Detalle del Pedido</h1>
 
-<!-- Formulario para editar el pedido -->
-<form id="editarPedidoForm" action="/editarPedido/<%= pedido._id %>" method="POST">
-  <input type="hidden" name="_id" value="<%= pedido._id %>">
+    <!-- Formulario para editar el pedido -->
+    <form id="editarPedidoForm" action="/editarPedido/<%= pedido._id %>" method="POST">
+      <input type="hidden" name="_id" value="<%= pedido._id %>">
 
-  <label for="fechaCreacion">Fecha Creación:</label>
-  <input type="date" id="fechaCreacion" name="fechaCreacion" value="<%= pedido.fecha_creacion %>" readonly>
+      <div class="mb-3">
+        <label for="fechaCreacion" class="form-label">Fecha Creación:</label>
+        <input type="date" class="form-control" id="fechaCreacion" name="fechaCreacion"
+          value="<%= pedido.fecha_creacion %>" readonly>
+      </div>
 
-  <label for="fechaPedido">Fecha Pedido:</label>
-  <input type="date" id="fechaPedido" name="fechaPedido" value="<%= pedido.fecha_pedido %>">
+      <div class="mb-3">
+        <label for="fechaPedido" class="form-label">Fecha Pedido:</label>
+        <input type="date" class="form-control" id="fechaPedido" name="fechaPedido" value="<%= pedido.fecha_pedido %>">
+      </div>
 
-  <label for="totalPedido">Total Pedido:</label>
-  <input type="number" id="totalPedido" name="totalPedido" value="<%= pedido.total_pedido %>" readonly>
+      <div class="mb-3">
+        <label for="totalPedido" class="form-label">Total Pedido:</label>
+        <input type="number" class="form-control" id="totalPedido" name="totalPedido" value="<%= pedido.total_pedido %>"
+          readonly>
+      </div>
 
-  <label for="estadoPedido">Estado Pedido:</label>
-  <select id="estadoPedido" name="estadoPedido">
-    <option value="por hacer" <%=pedido.estado_pedido==='por hacer' ? 'selected' : '' %>>Por hacer</option>
-    <option value="en proceso" <%=pedido.estado_pedido==='en proceso' ? 'selected' : '' %>>En proceso</option>
-    <option value="completado" <%=pedido.estado_pedido==='completado' ? 'selected' : '' %>>Completado</option>
-    <option value="cancelado" <%=pedido.estado_pedido==='cancelado' ? 'selected' : '' %>>Cancelado</option>
-  </select>
+      <div class="mb-3">
+        <label for="estadoPedido" class="form-label">Estado Pedido:</label>
+        <select class="form-select" id="estadoPedido" name="estadoPedido">
+          <option value="por hacer" <%=pedido.estado_pedido==='por hacer' ? 'selected' : '' %>>Por hacer</option>
+          <option value="en proceso" <%=pedido.estado_pedido==='en proceso' ? 'selected' : '' %>>En proceso</option>
+          <option value="completado" <%=pedido.estado_pedido==='completado' ? 'selected' : '' %>>Completado</option>
+          <option value="cancelado" <%=pedido.estado_pedido==='cancelado' ? 'selected' : '' %>>Cancelado</option>
+        </select>
+      </div>
 
-  <label for="nombreUsuario">Nombre Usuario:</label>
-  <input type="text" id="nombreUsuario" name="nombreUsuario" value="<%= pedido.nombre_usuario %>">
-  <!-- <select id="nombreUsuario" name="nombreUsuario" required>
-    <% usuarios.forEach(usuario=> { %>
-      <option value="<%= usuario.nombre %>">
-        <%= usuario.nombre %>
-      </option>
-      <% }); %>
-  </select> -->
-  <h2>Servicios</h2>
-  <button type="button" id="agregarServicioBtn">Agregar Servicio</button>
-  <ul id="serviciosLista">
-    <% pedido.servicios.forEach((servicio, index)=> { %>
-      <li>
-        <button type="button" onclick="eliminarServicio(<%= index %>)">Eliminar Servicio</button>
-        <input type="hidden" name="servicios[<%= index %>][indice]" value="<%= index %>">
-        <strong>Tipo de Servicio:</strong>
-        <select id="tipoServicio<%= index %>" name="servicios[<%= index %>][tipoServicio]">
-          <option value="confeccion" <%=servicio.tipoServicio==='confeccion' ? 'selected' : '' %>>Confeccion</option>
-          <option value="arreglo" <%=servicio.tipoServicio==='arreglo' ? 'selected' : '' %>>Arreglos</option>
-          <option value="manualidades" <%=servicio.tipoServicio==='manualidades' ? 'selected' : '' %>>Manualidades</option>
-        </select><br>
-        <strong>Estado Tipo de Servicio:</strong>
-        <select id="estadoTipoServicio<%= index %>" name="servicios[<%= index %>][estadoTipoServicio]">
-          <option value="activo" <%=servicio.estadoTipoServicio==='activo' ? 'selected' : '' %>>Activo</option>
-          <option value="inactivo" <%=servicio.estadoTipoServicio==='inactivo' ? 'selected' : '' %>>Inactivo</option>
-        </select><br>
-        <strong>Estado del Servicio:</strong>
-        <!-- <input type="text" name="estadoServicio<%= index %>" value="<%= servicio.estadoServicio %>"><br> -->
-        <select id="estadoServicio<%= index %>" name="servicios[<%= index %>][estadoServicio]">
-          <option value="activo" <%=servicio.estadoServicio==='activo' ? 'selected' : '' %>>Activo</option>
-          <option value="inactivo" <%=servicio.estadoServicio==='inactivo' ? 'selected' : '' %>>Inactivo</option>
-        </select><br>
-        <strong>Nombre del Servicio:</strong>
-        <input type="text" name="servicios[<%= index %>][nombreServicio]" value="<%= servicio.nombreServicio %>"><br>
-        <strong>Cantidad:</strong>
-        <input type="number" name="servicios[<%= index %>][cantidadServicio]" value="<%= servicio.cantidadServicio %>"
-          oninput="calcularSubtotal(<%= index %>)"><br>
+      <div class="mb-3">
+        <label for="nombreUsuario" class="form-label">Nombre Usuario:</label>
+        <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario"
+          value="<%= pedido.nombre_usuario %>">
+      </div>
 
-        <strong>Precio:</strong>
-        <input type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio %>"
-          oninput="calcularSubtotal(<%= index %>)"><br>
-        <strong>Subtotal:</strong>
-        <input type="number" id="subtotalServicio<%= index %>" name="subtotalServicio<%= index %>"
-          value="<%= servicio.subtotal %>" readonly><br>
-        <input type="hidden" id="indiceActual" value="<%= pedido.servicios.length %>">
-      </li>
-      <% }); %>
-  </ul>
-  <script>
-    function calcularSubtotal(index) {
-      const cantidadInput = document.querySelector(`[name="servicios[${index}][cantidadServicio]"]`);
-      const precioInput = document.querySelector(`[name="servicios[${index}][precioServicio]"]`);
-      const subtotalInput = document.querySelector(`#subtotalServicio${index}`);
+      <h2>Servicios</h2>
+      <button type="button" class="btn btn-primary" id="agregarServicioBtn">Agregar Servicio</button><br><br>
+      <ul class="list-unstyled" id="serviciosLista">
+        <% pedido.servicios.forEach((servicio, index)=> { %>
+          <li>
+            <button type="button" class="btn btn-outline-danger" onclick="eliminarServicio(<%= index %>)">Eliminar
+              Servicio</button>
+            <input class="form-control" type="hidden" name="servicios[<%= index %>][indice]" value="<%= index %>">
+            <strong>Tipo de Servicio:</strong>
+            <select class="form-select" id="tipoServicio<%= index %>" name="servicios[<%= index %>][tipoServicio]">
+              <option value="confeccion" <%=servicio.tipoServicio==='confeccion' ? 'selected' : '' %>>Confeccion
+              </option>
+              <option value="arreglo" <%=servicio.tipoServicio==='arreglo' ? 'selected' : '' %>>Arreglos</option>
+              <option value="manualidades" <%=servicio.tipoServicio==='manualidades' ? 'selected' : '' %>>Manualidades
+              </option>
+            </select><br>
+            <strong>Estado Tipo de Servicio:</strong>
+            <select class="form-select" id="estadoTipoServicio<%= index %>" name="servicios[<%= index %>][estadoTipoServicio]">
+              <option value="activo" <%=servicio.estadoTipoServicio==='activo' ? 'selected' : '' %>>Activo</option>
+              <option value="inactivo" <%=servicio.estadoTipoServicio==='inactivo' ? 'selected' : '' %>>Inactivo
+              </option>
+            </select><br>
+            <strong>Estado del Servicio:</strong>
+            <!-- <input class="form-control" type="text" name="estadoServicio<%= index %>" value="<%= servicio.estadoServicio %>"><br> -->
+            <select class="form-select" id="estadoServicio<%= index %>" name="servicios[<%= index %>][estadoServicio]">
+              <option value="activo" <%=servicio.estadoServicio==='activo' ? 'selected' : '' %>>Activo</option>
+              <option value="inactivo" <%=servicio.estadoServicio==='inactivo' ? 'selected' : '' %>>Inactivo</option>
+            </select><br>
+            <strong>Nombre del Servicio:</strong>
+            <input class="form-control" type="text" name="servicios[<%= index %>][nombreServicio]"
+              value="<%= servicio.nombreServicio %>"><br>
+            <strong>Cantidad:</strong>
+            <input class="form-control" type="number" name="servicios[<%= index %>][cantidadServicio]"
+              value="<%= servicio.cantidadServicio %>" oninput="calcularSubtotal(<%= index %>)"><br>
 
-      const cantidad = parseInt(cantidadInput.value, 10);
-      const precio = parseFloat(precioInput.value);
-      const subtotal = cantidad * precio;
+            <strong>Precio:</strong>
+            <input class="form-control" type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio %>"
+              oninput="calcularSubtotal(<%= index %>)"><br>
+            <strong>Subtotal:</strong>
+            <input class="form-control" type="number" id="subtotalServicio<%= index %>" name="subtotalServicio<%= index %>"
+              value="<%= servicio.subtotal %>" readonly><br>
+            <input class="form-control" type="hidden" id="indiceActual" value="<%= pedido.servicios.length %>">
+          </li>
+          <% }); %>
+      </ul>
+      <script>
+        function calcularSubtotal(index) {
+          const cantidadInput = document.querySelector(`[name="servicios[${index}][cantidadServicio]"]`);
+          const precioInput = document.querySelector(`[name="servicios[${index}][precioServicio]"]`);
+          const subtotalInput = document.querySelector(`#subtotalServicio${index}`);
 
-      // Actualizar el valor del subtotal
-      subtotalInput.value = subtotal.toFixed(2);
-      recalcularTotalPedido();
-    }
+          const cantidad = parseInt(cantidadInput.value, 10);
+          const precio = parseFloat(precioInput.value);
+          const subtotal = cantidad * precio;
 
-  </script>
+          // Actualizar el valor del subtotal
+          subtotalInput.value = subtotal.toFixed(2);
+          recalcularTotalPedido();
+        }
 
-  <h2>Productos</h2>
-  <button type="button" id="agregarProductoBtn">Agregar Producto</button>
-  <ul id="productosLista">
-    <% pedido.productos.forEach((producto, index)=> { %>
-      <li>
-        <button type="button" onclick="eliminarProducto(<%= index %>)">Eliminar Producto</button>
-        <input type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
-        <strong>Tipo de Producto:</strong>
-        <select id="tipoProducto<%= index %>" name="productos[<%= index %>][tipoProducto]">
-          <option value="accesorios" <%=producto.tipoProducto==='accesorios' ? 'selected' : '' %>>Accesorios</option>
-          <option value="prendas de vestir" <%=producto.tipoProducto==='prendas de vestir' ? 'selected' : '' %>>Prendas de Vestir</option>
-          <option value="manualidades" <%=producto.tipoProducto==='manualidades' ? 'selected' : '' %>>Manualidades</option>
-        </select><br>
-        <strong>Estado Tipo de Producto:</strong>
-        <!-- <input type="text" name="estadoTipoProducto<%= index %>" value="<%= producto.tipoProducto.estadoTipoProducto %>" readonly><br> -->
-        <select id="estadoTipoProducto<%= index %>" name="estadoTipoProducto<%= index %>">
-          <option value="activo" <%=producto.tipoProducto.estadoTipoProducto==='activo' ? 'selected' : '' %>>Activo
-          </option>
-          <option value="inactivo" <%=producto.tipoProducto.estadoTipoProducto==='inactivo' ? 'selected' : '' %>
-            >Inactivo</option>
-        </select><br>
-        <strong>Estado del Producto:</strong>
-        <!-- <input type="text" name="estadoProducto<%= index %>" value="<%= producto.estadoProducto %>"><br> -->
-        <select id="estadoProducto<%= index %>" name="productos[<%= index %>][estadoProducto]">
-          <option value="activo" <%=producto.estadoProducto==='activo' ? 'selected' : '' %>>Activo</option>
-          <option value="inactivo" <%=producto.estadoProducto==='inactivo' ? 'selected' : '' %>>Inactivo</option>
-        </select><br>
-        <strong>Nombre del Producto:</strong>
-        <input type="text" name="productos[<%= index %>][nombreProducto]" value="<%= producto.nombreProducto %>"><br>
-        <strong>Cantidad:</strong>
-        <input type="number" name="productos[<%= index %>][cantidadProducto]" value="<%= producto.cantidadProducto %>"
-          oninput="calcularSubtotalProducto(<%= index %>)"><br>
+      </script>
 
-        <strong>Precio:</strong>
-        <input type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto %>"
-          oninput="calcularSubtotalProducto(<%= index %>)"><br>
-        <strong>Subtotal:</strong>
-        <input type="number" id="subtotalProducto<%= index %>" name="subtotalProducto<%= index %>"
-          value="<%= producto.subtotal %>" readonly><br>
-      </li>
-      <% }); %>
-  </ul>
-  <script>
-    // Función para calcular el subtotal de productos
-    function calcularSubtotalProducto(index) {
-      const cantidadInput = document.querySelector(`[name="productos[${index}][cantidadProducto]"]`);
-      const precioInput = document.querySelector(`[name="productos[${index}][precioProducto]"]`);
-      const subtotalInput = document.querySelector(`#subtotalProducto${index}`);
+      <h2>Productos</h2>
+      <button type="button" class="btn btn-primary" id="agregarProductoBtn">Agregar Producto</button><br><br>
+      <ul class="list-unstyled" id="productosLista">
+        <% pedido.productos.forEach((producto, index)=> { %>
+          <li>
+            <button type="button" class="btn btn-outline-danger" onclick="eliminarProducto(<%= index %>)">Eliminar
+              Producto</button>
+            <input class="form-control" type="hidden" name="productos[<%= index %>][indice]" value="<%= index %>">
+            <strong>Tipo de Producto:</strong>
+            <select class="form-select" id="tipoProducto<%= index %>" name="productos[<%= index %>][tipoProducto]">
+              <option value="accesorios" <%=producto.tipoProducto==='accesorios' ? 'selected' : '' %>>Accesorios
+              </option>
+              <option value="prendas de vestir" <%=producto.tipoProducto==='prendas de vestir' ? 'selected' : '' %>
+                >Prendas de Vestir</option>
+              <option value="manualidades" <%=producto.tipoProducto==='manualidades' ? 'selected' : '' %>>Manualidades
+              </option>
+            </select><br>
+            <strong>Estado Tipo de Producto:</strong>
+            <!-- <input class="form-control" type="text" name="estadoTipoProducto<%= index %>" value="<%= producto.tipoProducto.estadoTipoProducto %>" readonly><br> -->
+            <select class="form-select" id="estadoTipoProducto<%= index %>" name="estadoTipoProducto<%= index %>">
+              <option value="activo" <%=producto.tipoProducto.estadoTipoProducto==='activo' ? 'selected' : '' %>>Activo
+              </option>
+              <option value="inactivo" <%=producto.tipoProducto.estadoTipoProducto==='inactivo' ? 'selected' : '' %>
+                >Inactivo</option>
+            </select><br>
+            <strong>Estado del Producto:</strong>
+            <!-- <input class="form-control" type="text" name="estadoProducto<%= index %>" value="<%= producto.estadoProducto %>"><br> -->
+            <select class="form-select" id="estadoProducto<%= index %>" name="productos[<%= index %>][estadoProducto]">
+              <option value="activo" <%=producto.estadoProducto==='activo' ? 'selected' : '' %>>Activo</option>
+              <option value="inactivo" <%=producto.estadoProducto==='inactivo' ? 'selected' : '' %>>Inactivo</option>
+            </select><br>
+            <strong>Nombre del Producto:</strong>
+            <input class="form-control" type="text" name="productos[<%= index %>][nombreProducto]"
+              value="<%= producto.nombreProducto %>"><br>
+            <strong>Cantidad:</strong>
+            <input class="form-control" type="number" name="productos[<%= index %>][cantidadProducto]"
+              value="<%= producto.cantidadProducto %>" oninput="calcularSubtotalProducto(<%= index %>)"><br>
 
-      const cantidad = parseInt(cantidadInput.value, 10);
-      const precio = parseFloat(precioInput.value);
-      const subtotal = cantidad * precio;
+            <strong>Precio:</strong>
+            <input class="form-control" type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto %>"
+              oninput="calcularSubtotalProducto(<%= index %>)"><br>
+            <strong>Subtotal:</strong>
+            <input class="form-control" type="number" id="subtotalProducto<%= index %>" name="subtotalProducto<%= index %>"
+              value="<%= producto.subtotal %>" readonly><br>
+          </li>
+          <% }); %>
+      </ul>
+      <script>
+        // Función para calcular el subtotal de productos
+        function calcularSubtotalProducto(index) {
+          const cantidadInput = document.querySelector(`[name="productos[${index}][cantidadProducto]"]`);
+          const precioInput = document.querySelector(`[name="productos[${index}][precioProducto]"]`);
+          const subtotalInput = document.querySelector(`#subtotalProducto${index}`);
 
-      // Actualizar el valor del subtotal
-      subtotalInput.value = subtotal.toFixed(2);
-      recalcularTotalPedido();
-    }
-  </script>
+          const cantidad = parseInt(cantidadInput.value, 10);
+          const precio = parseFloat(precioInput.value);
+          const subtotal = cantidad * precio;
 
-  <button type="submit">Guardar Cambios</button>
-</form>
+          // Actualizar el valor del subtotal
+          subtotalInput.value = subtotal.toFixed(2);
+          recalcularTotalPedido();
+        }
+      </script>
 
-<a href="/pedidos">Volver a la lista de pedidos</a>
+      <button type="submit" class="btn btn-success">Guardar Cambios</button>
+    </form>
 
-<script>
-  function recalcularTotalPedido() {
-    let totalPedido = 0;
+    <a href="/pedidos" class="btn btn-secondary">Volver a la lista de pedidos</a>
 
-    // Recorrer subtotales de servicios
-    document.querySelectorAll('[id^="subtotalServicio"]').forEach((subtotalInput) => {
-      totalPedido += parseFloat(subtotalInput.value);
-    });
+    <script>
+      function recalcularTotalPedido() {
+        let totalPedido = 0;
 
-    // Recorrer subtotales de productos
-    document.querySelectorAll('[id^="subtotalProducto"]').forEach((subtotalInput) => {
-      totalPedido += parseFloat(subtotalInput.value);
-    });
+        // Recorrer subtotales de servicios
+        document.querySelectorAll('[id^="subtotalServicio"]').forEach((subtotalInput) => {
+          totalPedido += parseFloat(subtotalInput.value);
+        });
 
-    // Actualizar el valor del total del pedido
-    document.getElementById('totalPedido').value = totalPedido.toFixed(2);
-  }
+        // Recorrer subtotales de productos
+        document.querySelectorAll('[id^="subtotalProducto"]').forEach((subtotalInput) => {
+          totalPedido += parseFloat(subtotalInput.value);
+        });
+
+        // Actualizar el valor del total del pedido
+        document.getElementById('totalPedido').value = totalPedido.toFixed(2);
+      }
 
 
 
-  const fechaPedidoInput = document.getElementById('fechaPedido');
-  const editarPedidoForm = document.getElementById('editarPedidoForm');
-  editarPedidoForm.addEventListener('submit', function (event) {
-    const fechaCreacion = new Date(); // Obtener la fecha actual
-    const fechaPedido = new Date(fechaPedidoInput.value);
+      const fechaPedidoInput = document.getElementById('fechaPedido');
+      const editarPedidoForm = document.getElementById('editarPedidoForm');
+      editarPedidoForm.addEventListener('submit', function (event) {
+        const fechaCreacion = new Date(); // Obtener la fecha actual
+        const fechaPedido = new Date(fechaPedidoInput.value);
 
-    // Validar que la fecha de pedido sea al menos 5 días después de la fecha de creación
-    if (fechaPedido - fechaCreacion < 5 * 24 * 60 * 60 * 1000) {
-      alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
-      event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
-    }
-  });
-</script>
-<script>
+        // Validar que la fecha de pedido sea al menos 5 días después de la fecha de creación
+        if (fechaPedido - fechaCreacion < 5 * 24 * 60 * 60 * 1000) {
+          alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
+          event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
+        }
+      });
+    </script>
+    <script>
 
-  document.getElementById('agregarServicioBtn').addEventListener('click', function () {
-    const serviciosLista = document.getElementById('serviciosLista');
-    const nuevoIndice = serviciosLista.children.length; // Obtener el nuevo índice
+      document.getElementById('agregarServicioBtn').addEventListener('click', function () {
+        const serviciosLista = document.getElementById('serviciosLista');
+        const nuevoIndice = serviciosLista.children.length; // Obtener el nuevo índice
 
-    // Crear un nuevo elemento li (item de lista) para el nuevo servicio
-    const nuevoServicioLi = document.createElement('li');
+        // Crear un nuevo elemento li (item de lista) para el nuevo servicio
+        const nuevoServicioLi = document.createElement('li');
 
-    // HTML para un nuevo servicio
-    nuevoServicioLi.innerHTML = `
-    <button type="button" onclick="eliminarServicio(${nuevoIndice})">Eliminar Servicio</button>
-      <input type="hidden" name="servicios[${nuevoIndice}][indice]" value="${nuevoIndice}">
+        // HTML para un nuevo servicio
+        nuevoServicioLi.innerHTML = `
+    <button type="button" class="btn btn-outline-danger" onclick="eliminarServicio(${nuevoIndice})">Eliminar Servicio</button>
+      <input class="form-control" type="hidden" name="servicios[${nuevoIndice}][indice]" value="${nuevoIndice}">
       <strong>Tipo de Servicio:</strong>
-      <select id="tipoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][tipoServicio]">
+      <select class="form-select" id="tipoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][tipoServicio]">
         <option value="confeccion">Confeccion</option>
         <option value="arreglo">Arreglo Prendas</option>
         <option value="manualidades">Manualidades</option>
       </select><br>
       <strong>Estado Tipo de Servicio:</strong>
-      <select id="estadoTipoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][estadoTipoServicio]">
+      <select class="form-select" id="estadoTipoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][estadoTipoServicio]">
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
       </select><br>
       <strong>Estado del Servicio:</strong>
-      <select id="estadoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][estadoServicio]">
+      <select class="form-select" id="estadoServicio${nuevoIndice}" name="servicios[${nuevoIndice}][estadoServicio]">
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
       </select><br>
       <strong>Nombre del Servicio:</strong>
-      <input type="text" name="servicios[${nuevoIndice}][nombreServicio]"><br>
+      <input class="form-control" type="text" name="servicios[${nuevoIndice}][nombreServicio]"><br>
       <strong>Cantidad:</strong>
-      <input type="number" name="servicios[${nuevoIndice}][cantidadServicio]" oninput="calcularSubtotal(${nuevoIndice})"><br>
+      <input class="form-control" type="number" name="servicios[${nuevoIndice}][cantidadServicio]" oninput="calcularSubtotal(${nuevoIndice})"><br>
       <strong>Precio:</strong>
-      <input type="number" name="servicios[${nuevoIndice}][precioServicio]" oninput="calcularSubtotal(${nuevoIndice})"><br>
+      <input class="form-control" type="number" name="servicios[${nuevoIndice}][precioServicio]" oninput="calcularSubtotal(${nuevoIndice})"><br>
       <strong>Subtotal:</strong>
-      <input type="number" id="subtotalServicio${nuevoIndice}" name="subtotalServicio[${nuevoIndice}]" readonly><br>
+      <input class="form-control" type="number" id="subtotalServicio${nuevoIndice}" name="subtotalServicio[${nuevoIndice}]" readonly><br>
     `;
-    // Agregar el nuevo servicio a la lista de servicios
-    serviciosLista.appendChild(nuevoServicioLi);
-  });
+        // Agregar el nuevo servicio a la lista de servicios
+        serviciosLista.appendChild(nuevoServicioLi);
+      });
 
-  document.getElementById('agregarProductoBtn').addEventListener('click', function () {
-    const productosLista = document.getElementById('productosLista');
-    const nuevoIndice = productosLista.children.length; // Obtener el nuevo índice
+      document.getElementById('agregarProductoBtn').addEventListener('click', function () {
+        const productosLista = document.getElementById('productosLista');
+        const nuevoIndice = productosLista.children.length; // Obtener el nuevo índice
 
-    // Crear un nuevo elemento li (item de lista) para el nuevo producto
-    const nuevoProductoLi = document.createElement('li');
-    nuevoProductoLi.innerHTML = `
-    <button type="button" onclick="eliminarProducto(${nuevoIndice})">Eliminar Producto</button>
+        // Crear un nuevo elemento li (item de lista) para el nuevo producto
+        const nuevoProductoLi = document.createElement('li');
+        nuevoProductoLi.innerHTML = `
+    <button type="button" class="btn btn-outline-danger" onclick="eliminarProducto(${nuevoIndice})">Eliminar Producto</button>
       <strong>Tipo de Producto:</strong>
-      <select id="tipoProducto${nuevoIndice}" name="productos[${nuevoIndice}][tipoProducto]">
+      <select class="form-select" id="tipoProducto${nuevoIndice}" name="productos[${nuevoIndice}][tipoProducto]">
         <option value="accesorios">Accesorios</option>
         <option value="prendas de vestir">Prendas de Vestir</option>
         <option value="manualidades">Manualidades</option>
       </select><br>
       <strong>Estado Tipo de Producto:</strong>
-      <select id="estadoTipoProducto${nuevoIndice}" name="productos[${nuevoIndice}][estadoTipoProducto]">
+      <select class="form-select" id="estadoTipoProducto${nuevoIndice}" name="productos[${nuevoIndice}][estadoTipoProducto]">
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
       </select><br>
       <strong>Estado del Producto:</strong>
-      <select id="estadoProducto${nuevoIndice}" name="productos[${nuevoIndice}][estadoProducto]">
+      <select class="form-select" id="estadoProducto${nuevoIndice}" name="productos[${nuevoIndice}][estadoProducto]">
         <option value="activo">Activo</option>
         <option value="inactivo">Inactivo</option>
       </select><br>
       <strong>Nombre del Producto:</strong>
-      <input type="text" name="productos[${nuevoIndice}][nombreProducto]"><br>
+      <input class="form-control" type="text" name="productos[${nuevoIndice}][nombreProducto]"><br>
       <strong>Cantidad:</strong>
-      <input type="number" name="productos[${nuevoIndice}][cantidadProducto]" oninput="calcularSubtotalProducto(${nuevoIndice})"><br>
+      <input class="form-control" type="number" name="productos[${nuevoIndice}][cantidadProducto]" oninput="calcularSubtotalProducto(${nuevoIndice})"><br>
       <strong>Precio:</strong>
-      <input type="number" name="productos[${nuevoIndice}][precioProducto]" oninput="calcularSubtotalProducto(${nuevoIndice})"><br>
+      <input class="form-control" type="number" name="productos[${nuevoIndice}][precioProducto]" oninput="calcularSubtotalProducto(${nuevoIndice})"><br>
       <strong>Subtotal:</strong>
-      <input type="number" id="subtotalProducto${nuevoIndice}" name="subtotalProducto[${nuevoIndice}]" readonly><br>
-      <input type="hidden" name="productos[${nuevoIndice}][indice]" value="${nuevoIndice}">
+      <input class="form-control" type="number" id="subtotalProducto${nuevoIndice}" name="subtotalProducto[${nuevoIndice}]" readonly><br>
+      <input class="form-control" type="hidden" name="productos[${nuevoIndice}][indice]" value="${nuevoIndice}">
     `;
-    // Agregar el nuevo producto a la lista de productos
-    productosLista.appendChild(nuevoProductoLi);
-  });
+        // Agregar el nuevo producto a la lista de productos
+        productosLista.appendChild(nuevoProductoLi);
+      });
 
-</script>
+    </script>
 
-<script>
-function eliminarServicio(index) {
-  const serviciosLista = document.getElementById('serviciosLista');
-  const servicioAEliminar = serviciosLista.querySelector(`[name="servicios[${index}][indice]"]`);
-  serviciosLista.removeChild(servicioAEliminar.closest('li'));
+    <script>
+      function eliminarServicio(index) {
+        const serviciosLista = document.getElementById('serviciosLista');
+        const servicioAEliminar = serviciosLista.querySelector(`[name="servicios[${index}][indice]"]`);
+        serviciosLista.removeChild(servicioAEliminar.closest('li'));
 
-  // Vuelve a calcular el total del pedido después de la eliminación
-  recalcularTotalPedido();
+        // Vuelve a calcular el total del pedido después de la eliminación
+        recalcularTotalPedido();
 
-  // Verifica si no hay más servicios y envía un arreglo vacío si es el caso
-  if (serviciosLista.children.length === 0) {
-    document.getElementById('editarPedidoForm').submit();
-  }
-}
+        // Verifica si no hay más servicios y envía un arreglo vacío si es el caso
+        if (serviciosLista.children.length === 0) {
+          document.getElementById('editarPedidoForm').submit();
+        }
+      }
 
 
-  function eliminarProducto(index) {
-    const productosLista = document.getElementById('productosLista');
-    const productoAEliminar = productosLista.querySelector(`[name="productos[${index}][indice]"]`);
-    productosLista.removeChild(productoAEliminar.closest('li'));
+      function eliminarProducto(index) {
+        const productosLista = document.getElementById('productosLista');
+        const productoAEliminar = productosLista.querySelector(`[name="productos[${index}][indice]"]`);
+        productosLista.removeChild(productoAEliminar.closest('li'));
 
-    // Vuelve a calcular el total del pedido después de la eliminación
-    recalcularTotalPedido();
-  }
-</script>
+        // Vuelve a calcular el total del pedido después de la eliminación
+        recalcularTotalPedido();
+      }
+    </script>
+
+    <style>
+      /* Agrega estos estilos en el archivo styles.css */
+      /* Estilos para los campos de servicios */
+      #serviciosLista li {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      #serviciosLista select,
+      #serviciosLista input {
+        margin-bottom: 5px;
+      }
+
+      /* Estilos para los campos de productos */
+      #productosLista li {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      #productosLista select,
+      #productosLista input {
+        margin-bottom: 5px;
+      }
+    </style>
+    <style>
+      /* Estilos para los campos de servicios dentro del formulario principal */
+      #editarPedidoForm #serviciosLista li {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      #editarPedidoForm #serviciosLista select,
+      #editarPedidoForm #serviciosLista input {
+        margin-bottom: 5px;
+      }
+
+      /* Estilos para los campos de productos dentro del formulario principal */
+      #editarPedidoForm #productosLista li {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      #editarPedidoForm #productosLista select,
+      #editarPedidoForm #productosLista input {
+        margin-bottom: 5px;
+      }
+    </style>

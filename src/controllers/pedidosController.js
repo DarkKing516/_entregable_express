@@ -277,6 +277,9 @@ const generarPDFPedidos = async (req, res) => {
       // Agregar número de página y nombre de empresa en todas las páginas
       // doc.text('Nombre de la Empresa', 20, 20, { align: 'left' }); // Ajusta la posición según sea necesario
       // doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
+      // Encabezado en cada página
+      doc.text('Erika´s Homemade', { align: 'left' });
+
       doc.moveDown();
 
       doc.fontSize(14).text(`Pedido ID: ${pedido._id}`, { underline: true });
