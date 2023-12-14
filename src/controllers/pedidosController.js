@@ -271,7 +271,7 @@ const generarPDFPedidos = async (req, res) => {
     doc.moveDown();
 
     // Variable para el número de página
-    let pageNumber = 1;
+    let pageNumber = 0;
 
     pedidos.forEach((pedido) => {
       // Agregar número de página y nombre de empresa en todas las páginas
@@ -310,12 +310,11 @@ const generarPDFPedidos = async (req, res) => {
 
       // Incrementar número de página
       pageNumber++;
-
-      // Agregar número de página y nombre de empresa en el footer
+      // Pie de página al final de cada página
       const footerText = `Erika's HomeMade Cra 58 # 69 - 22 piso 11`;
-      doc.text(`Página ${pageNumber}`, { align: 'right', continued: true });
       const footerHeight = 20;
-      doc.text(footerText, { align: 'left', width: 410, height: footerHeight, underline: true, lineGap: 5 });
+      doc.text(footerText, 20, doc.page.height - footerHeight, { width: 410, height: footerHeight, underline: true, lineGap: 5 });
+      doc.text(`Página ${pageNumber}`, doc.page.width - 70, doc.page.height - footerHeight, { align: 'right' });
 
       // Agregar salto de página si hay más pedidos
       if (pageNumber <= pedidos.length) {
