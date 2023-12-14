@@ -294,11 +294,13 @@
 
   h1 {
     color: #007bff;
+    text-align: center;
   }
 
   ul {
     list-style: none;
     padding: 0;
+    margin: 0;
   }
 
   li {
@@ -306,20 +308,20 @@
   }
 
   .modal {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-height: 80%;
-  overflow-y: auto;
-  width: 80%;
-  max-width: 600px; /* Ajusta según sea necesario */
-}
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-height: 80%;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 600px;
+  }
 
   .modal-content {
     max-width: 600px;
@@ -368,7 +370,8 @@
     margin-top: 20px;
   }
 
-  th, td {
+  th,
+  td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
@@ -397,14 +400,18 @@
   a:hover {
     text-decoration: underline;
   }
-  .servicio {
-  border-bottom: 1px solid #ff0000; /* Agrega un borde inferior */
-  padding-bottom: 10px; /* Espaciado inferior entre servicios */
-}
 
-.producto {
-  border-bottom: 1px solid #ff0000; /* Agrega un borde inferior */
-  padding-bottom: 10px; /* Espaciado inferior entre productos */
-}
+  .servicio,
+  .producto {
+    border-bottom: 1px solid #ff0000;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
 
+  .servicio label,
+  .producto label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
 </style>
