@@ -1,213 +1,220 @@
-<link rel="shortcut icon"
-  href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+<link rel="shortcut icon" href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 <%- include('./layouts/nav') %>
-  <h1>Listado de Ventas</h1>
-  <button id="agregarVentaBtn">Agregar</button>
+<h1>Listado de Ventas</h1>
+<button id="agregarVentaBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarVentaModal">Agregar</button>
 
-  <!-- Modal -->
-  <div id="agregarVentaModal" class="modal">
+<div class="modal fade" id="agregarVentaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
-      <span id="cerrarModal" class="cerrar">&times;</span>
-      <h2>Agregar Venta</h2>
-
-      <!-- Formulario para agregar venta -->
-      <form id="formularioAgregarVenta" action="/agregarVenta" method="POST">
-
-        <label for="metodoPago">Método de Pago:</label>
-        <select id="metodoPago" name="metodo_pago" required>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
-          <option value="Transferencia Bancaria">Transferencia Bancaria</option>
-        </select>
-
-        <label for="totalVenta">Total Venta:</label>
-        <input type="number" id="totalVenta" name="total_venta" required>
-
-        <label for="pedido">Pedido:</label>
-        <select id="pedido" name="pedido">
-          <% pedidos.forEach(pedido=> { %>
-            <% if (pedido.estado_pedido==="completado" ) { %>
-              <option value="<%= pedido._id %>">
-                <%= pedido.nombre_usuario %>, total= <%= pedido.total_pedido %>
-              </option>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Venta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formularioAgregarVenta" action="/agregarVenta" method="POST">
+          <div class="mb-3">
+            <label for="metodoPago" class="form-label">Método de Pago:</label>
+            <select id="metodoPago" name="metodo_pago" class="form-select" required>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+              <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="totalVenta" class="form-label">Total Venta:</label>
+            <input type="number" id="totalVenta" name="total_venta" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="pedido" class="form-label">Pedido:</label>
+            <select id="pedido" name="pedido" class="form-select">
+              <% pedidos.forEach(pedido=> { %>
+              <% if (pedido.estado_pedido==="completado" ) { %>
+              <option value="<%= pedido._id %>"><%= pedido.nombre_usuario %>, total=<%= pedido.total_pedido %></option>
               <% } %>
-                <% }); %>
-        </select>
-
-        <label for="usuario">Usuario:</label>
-        <select id="usuario" name="usuario">
-          <% usuarios.forEach(usuario=> { %>
-            <option value="<%= usuario._id %>">
-              <%= usuario.nombre%>
-            </option>
-            <% }); %>
-        </select>
-
-        <!-- Otros campos según la estructura de tu venta -->
-
-        <button type="submit">Guardar Venta</button>
-      </form>
+              <% }); %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="usuario" class="form-label">Usuario:</label>
+            <select id="usuario" name="usuario" class="form-select">
+              <% usuarios.forEach(usuario=> { %>
+              <option value="<%= usuario._id %>"><%= usuario.nombre%></option>
+              <% }); %>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar Venta</button>
+        </form>
+      </div>
     </div>
   </div>
-
-  <!-- Dentro del código HTML -->
-  <input type="text" id="searchInput" placeholder="Buscar ventas...">
-  <button onclick="buscarVentas()">Buscar</button>
-
-
-
-
-  <table>
-    <thead>
-      <tr>
-        <td>Fecha Venta</td>
-        <td>Método Pago</td>
-        <td>Total Venta</td>
-        <td>Total Pedido</td>
-        <td>Nombre</td>
-        <td>Teléfono</td>
-        <td>Documento</td>
-        <td>Correo</td>
-        <td>Acción</td>
-      </tr>
-    </thead>
-    <tbody>
-      <% ventas.forEach(venta=> { %>
-        <tr>
-          <td>
-            <%= venta.fecha_venta %>
-          </td>
-          <td>
-            <%= venta.metodo_pago %>
-          </td>
-          <td>
-            <%= venta.total_venta %>
-          </td>
-          <td>
-            <%= venta.total_pedido %>
-          </td>
-          <td>
-            <%= venta.nombre %>
-          </td>
-          <td>
-            <%= venta.telefono %>
-          </td>
-          <td>
-            <%= venta.documento %>
-          </td>
-          <td>
-            <%= venta.correo %>
-          </td>
-          <td>
-            <button
-              onclick="mostrarDetalle('<%= JSON.stringify(venta.productos) %>', '<%= JSON.stringify(venta.servicios) %>')">Ver
-              Detalle</button>
-          </td>
-          <td>
-            <a href="/editarVenta/<%= venta._id %>">
-              <button>Editar</button>
-            </a>
-          </td>
-          <td>
-            <a href="#" onclick="confirmarEliminar('<%= venta._id %>')">Eliminar</a>
-          </td>
-        </tr>
-        <% }); %>
-    </tbody>
-  </table>
-  <!-- Agrega un botón para generar el reporte -->
-  <button onclick="generarReporteBtn()">Generar Reporte</button>
-
-
   <script>
-    function generarReporteBtn() {
-      window.location.href = '/generarReporte';
-    }
-
-    function confirmarEliminar(idVenta) {
-      // Muestra una alerta para confirmar la eliminación
-      const confirmacion = confirm('¿Seguro que desea eliminar?');
-
-      // Si el usuario confirma la eliminación
-      if (confirmacion) {
-        // Redirige a la página de eliminación con el ID de la venta
-        window.location.href = `/eliminarVenta/${idVenta}`;
-      } else {
-        // Si el usuario cancela, no hace nada o puedes realizar alguna acción adicional
-      }
-    }
-
-    <!-- Resto del código HTML anterior -->
-
-
-    function mostrarDetalle(productosJSON, serviciosJSON) {
-      const productos = JSON.parse(productosJSON);
-      const servicios = JSON.parse(serviciosJSON);
-
-      let detalleProductos = 'Productos: ';
-      productos.forEach((producto, index) => {
-        detalleProductos += `${producto.nombreProducto}: Precio: ${producto.precioProducto}`;
-        if (index !== productos.length - 1) {
-          detalleProductos += ', ';
+    document.addEventListener('DOMContentLoaded', function () {
+      const totalVentaInput = document.getElementById('totalVenta');
+      const pedidoSelect = document.getElementById('pedido');
+      
+      const validateTotalVenta = () => {
+        const totalVenta = parseFloat(totalVentaInput.value);
+        const totalPedido = parseFloat(pedidoSelect.options[pedidoSelect.selectedIndex].text.match(/\d+/)[0]);
+        
+        if (isNaN(totalVenta) || isNaN(totalPedido)) {
+          return true; // No se puede realizar la validación si los valores no son números
+        }
+  
+        if (totalVenta < totalPedido) {
+          alert('El Total Venta no puede ser menor que el Total Pedido seleccionado.');
+          totalVentaInput.value = totalPedido; // Restaura el valor a Total Pedido
+          return false;
+        }
+  
+        return true;
+      };
+  
+      const form = document.getElementById('formularioAgregarVenta');
+      form.addEventListener('submit', function (event) {
+        if (!validateTotalVenta()) {
+          event.preventDefault(); // Evita que el formulario se envíe si la validación falla
         }
       });
+    });
+  </script>
+</div>
 
-      let detalleServicios = 'Servicios: ';
-      servicios.forEach((servicio, index) => {
-        detalleServicios += `${servicio.nombreServicio}: Precio: ${servicio.precioServicio}`;
-        if (index !== servicios.length - 1) {
-          detalleServicios += ', ';
-        }
-      });
+<input type="text" id="searchInput" class="form-control" placeholder="Buscar ventas...">
+<button onclick="buscarVentas()" class="btn btn-primary">Buscar</button>
 
-      alert(detalleProductos + '\n' + detalleServicios);
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Fecha Venta</th>
+      <th>Método Pago</th>
+      <th>Total Venta</th>
+      <th>Total Pedido</th>
+      <th>Nombre</th>
+      <th>Teléfono</th>
+      <th>Documento</th>
+      <th>Correo</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% ventas.forEach(venta=> { %>
+    <tr>
+      <td><%= venta.fecha_venta %></td>
+      <td><%= venta.metodo_pago %></td>
+      <td><%= venta.total_venta %></td>
+      <td><%= venta.total_pedido %></td>
+      <td><%= venta.nombre %></td>
+      <td><%= venta.telefono %></td>
+      <td><%= venta.documento %></td>
+      <td><%= venta.correo %></td>
+      <td>
+        <button onclick="mostrarDetalle('<%= JSON.stringify(venta.productos) %>', '<%= JSON.stringify(venta.servicios) %>')" class="btn btn-info">Ver Detalle</button>
+      </td>
+      <td>
+        <a href="/editarVenta/<%= venta._id %>" class="btn btn-warning">Editar</a>
+      </td>
+      <td>
+        <a href="#" onclick="confirmarEliminar('<%= venta._id %>')" class="btn btn-danger">Eliminar</a>
+      </td>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>
+
+<button onclick="generarReporteBtn()" class="btn btn-success">Generar Reporte</button>
+
+
+<div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detalle de Venta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Productos:</h6>
+        <ul id="detalleProductos"></ul>
+        <h6>Servicios:</h6>
+        <ul id="detalleServicios"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function generarReporteBtn() {
+    window.location.href = '/generarReporte';
+  }
+
+  function confirmarEliminar(idVenta) {
+    const confirmacion = confirm('¿Seguro que desea eliminar?');
+
+    if (confirmacion) {
+      window.location.href = `/eliminarVenta/${idVenta}`;
+    } else {
+      // Acción adicional si el usuario cancela
     }
+  }
 
+  function mostrarDetalle(productosJSON, serviciosJSON) {
+    const productos = JSON.parse(productosJSON);
+    const servicios = JSON.parse(serviciosJSON);
 
-    // JavaScript para mostrar/ocultar el modal y cerrar el modal
-    const agregarVentaBtn = document.getElementById('agregarVentaBtn');
-    const agregarVentaModal = document.getElementById('agregarVentaModal');
-    const cerrarModal = document.getElementById('cerrarModal');
-    const formularioAgregarVenta = document.getElementById('formularioAgregarVenta');
-
-    agregarVentaBtn.addEventListener('click', () => {
-      agregarVentaModal.style.display = 'block';
+    let detalleProductos = '';
+    productos.forEach((producto) => {
+      detalleProductos += `<li>${producto.nombreProducto}: Precio: ${producto.precioProducto}</li>`;
     });
 
-    cerrarModal.addEventListener('click', () => {
-      agregarVentaModal.style.display = 'none';
+    let detalleServicios = '';
+    servicios.forEach((servicio) => {
+      detalleServicios += `<li>${servicio.nombreServicio}: Precio: ${servicio.precioServicio}</li>`;
     });
 
+    document.getElementById('detalleProductos').innerHTML = detalleProductos;
+    document.getElementById('detalleServicios').innerHTML = detalleServicios;
 
-    // JavaScript para la funcionalidad de búsqueda
-    function buscarVentas() {
-      const input = document.getElementById('searchInput');
-      const filter = input.value.toUpperCase();
-      const table = document.querySelector('table');
-      const rows = table.getElementsByTagName('tr');
+    const detalleModal = new bootstrap.Modal(document.getElementById('detalleModal'));
+    detalleModal.show();
+  }
 
-      for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName('td');
-        let found = false;
+  const agregarVentaBtn = document.getElementById('agregarVentaBtn');
+  const agregarVentaModal = document.getElementById('agregarVentaModal');
+  const cerrarModal = document.getElementById('cerrarModal');
+  const formularioAgregarVenta = document.getElementById('formularioAgregarVenta');
 
-        for (let j = 0; j < cells.length; j++) {
-          const cell = cells[j];
-          if (cell) {
-            if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
-              found = true;
-              break;
-            }
+  agregarVentaBtn.addEventListener('click', () => {
+    agregarVentaModal.style.display = 'block';
+  });
+
+  cerrarModal.addEventListener('click', () => {
+    agregarVentaModal.style.display = 'none';
+  });
+
+  function buscarVentas() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toUpperCase();
+    const table = document.querySelector('table');
+    const rows = table.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName('td');
+      let found = false;
+
+      for (let j = 0; j < cells.length; j++) {
+        const cell = cells[j];
+        if (cell) {
+          if (cell.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            found = true;
+            break;
           }
         }
+      }
 
-        if (found) {
-          rows[i].style.display = '';
-        } else {
-          rows[i].style.display = 'none';
-        }
+      if (found) {
+        rows[i].style.display = '';
+      } else {
+        rows[i].style.display = 'none';
       }
     }
-
-
-
-  </script>
+  }
+  
+</script>

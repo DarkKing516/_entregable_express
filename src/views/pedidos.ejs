@@ -2,118 +2,119 @@
 <link rel="shortcut icon"
   href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
 
-<%- include('./layouts/nav') %>
-  <h1>Lista de usuarios</h1>
-  <ul>
-    <% usuarios.forEach(usuario=> { %>
-      <li>
-        <%= usuario.nombre %>
-      </li>
-      <% }); %>
-  </ul>
+  <%- include('./layouts/nav') %>
+  
+<h1>Lista de usuarios</h1>
+<ul>
+  <% usuarios.forEach(usuario=> { %>
+    <li>
+      <%= usuario.nombre %>
+    </li>
+    <% }); %>
+</ul>
 
-  <div id="agregarPedidoModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span id="cerrarModal" class="cerrar">&times;</span>
-      <h2>Agregar Pedido</h2>
-      <!-- Tu formulario para agregar pedidos aquí -->
-      <form id="formularioAgregarPedido" action="/agregarPedido" method="POST">
-        <label for="fechaPedido">Fecha pedido:</label>
-        <input type="date" id="fechaPedido" name="fechaPedido" min="<%= fechaActual %>" required>
+<div id="agregarPedidoModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span id="cerrarModal" class="cerrar">&times;</span>
+    <h2>Agregar Pedido</h2>
+    <!-- Tu formulario para agregar pedidos aquí -->
+    <form id="formularioAgregarPedido" action="/agregarPedido" method="POST">
+      <label for="fechaPedido">Fecha pedido:</label>
+      <input type="date" id="fechaPedido" name="fechaPedido" min="<%= fechaActual %>" required>
 
-        <!-- Botones para agregar servicios y productos -->
-        <button type="button" id="agregarServicioBtn">Agregar Servicio</button>
-        <button type="button" id="agregarProductoBtn">Agregar Producto</button>
+      <!-- Botones para agregar servicios y productos -->
+      <button type="button" id="agregarServicioBtn">Agregar Servicio</button>
+      <button type="button" id="agregarProductoBtn">Agregar Producto</button>
 
-        <!-- Campos para agregar servicios -->
-        <div id="serviciosContainer">
-          <h3>Servicios</h3>
-          <div class="servicio">
-            <label for="tipoServicio">Tipo de Servicio:</label>
-            <select id="tipoServicio" name="tipoServicio" required>
-              <option value="confeccion">Confeccion</option>
-              <option value="arreglo">Arreglo Prendas</option>
-              <option value="manualidades">Manualidades</option>
-            </select>
-            <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
-            <select id="estadoTipoServicio" name="estadoTipoServicio" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
+      <!-- Campos para agregar servicios -->
+      <div id="serviciosContainer">
+        <h3>Servicios</h3>
+        <div class="servicio">
+          <label for="tipoServicio">Tipo de Servicio:</label>
+          <select id="tipoServicio" name="tipoServicio" required>
+            <option value="confeccion">Confeccion</option>
+            <option value="arreglo">Arreglo Prendas</option>
+            <option value="manualidades">Manualidades</option>
+          </select>
+          <label for="estadoTipoServicio">Estado Tipo de Servicio:</label>
+          <select id="estadoTipoServicio" name="estadoTipoServicio" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
 
-            <label for="nombreServicio">Nombre Servicio:</label>
-            <input type="text" id="nombreServicio" name="nombreServicio" required>
+          <label for="nombreServicio">Nombre Servicio:</label>
+          <input type="text" id="nombreServicio" name="nombreServicio" required>
 
-            <label for="estadoServicio">Estado Servicio:</label>
-            <select id="estadoServicio" name="estadoServicio" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
+          <label for="estadoServicio">Estado Servicio:</label>
+          <select id="estadoServicio" name="estadoServicio" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
 
-            <label for="cantidadServicio">Cantidadad Servicio:</label>
-            <input type="number" id="cantidadServicio" name="cantidadServicio" required>
+          <label for="cantidadServicio">Cantidadad Servicio:</label>
+          <input type="number" id="cantidadServicio" name="cantidadServicio" required>
 
-            <label for="precioServicio">Precio Servicio:</label>
-            <input type="number" id="precioServicio" name="precioServicio" required>
-          </div>
-          <input type="hidden" name="servicios" id="serviciosInput" />
+          <label for="precioServicio">Precio Servicio:</label>
+          <input type="number" id="precioServicio" name="precioServicio" required>
         </div>
+        <input type="hidden" name="servicios" id="serviciosInput" />
+      </div>
 
-        <!-- Campos para agregar productos -->
-        <div id="productosContainer">
-          <h3>Productos</h3>
-          <div class="producto">
-            <label for="tipoProducto">Tipo de Producto:</label>
-            <select id="tipoProducto" name="tipoProducto" required>
-              <option value="accesorios">Accesorios</option>
-              <option value="prendas de vestir">Prendas de Vestir</option>
-              <option value="manualidades">Manualidades</option>
-            </select>
+      <!-- Campos para agregar productos -->
+      <div id="productosContainer">
+        <h3>Productos</h3>
+        <div class="producto">
+          <label for="tipoProducto">Tipo de Producto:</label>
+          <select id="tipoProducto" name="tipoProducto" required>
+            <option value="accesorios">Accesorios</option>
+            <option value="prendas de vestir">Prendas de Vestir</option>
+            <option value="manualidades">Manualidades</option>
+          </select>
 
-            <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
-            <select id="estadoTipoProducto" name="estadoTipoProducto" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
+          <label for="estadoTipoProducto">Estado Tipo de Producto:</label>
+          <select id="estadoTipoProducto" name="estadoTipoProducto" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
 
-            <label for="nombreProducto">Nombre Producto:</label>
-            <input type="text" id="nombreProducto" name="nombreProducto" required>
+          <label for="nombreProducto">Nombre Producto:</label>
+          <input type="text" id="nombreProducto" name="nombreProducto" required>
 
-            <label for="estadoProducto">Estado Producto:</label>
-            <select id="estadoProducto" name="estadoProducto" required>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-            <label for="cantidadProducto">Cantidadad Producto:</label>
-            <input type="number" id="cantidadProducto" name="cantidadProducto" required>
+          <label for="estadoProducto">Estado Producto:</label>
+          <select id="estadoProducto" name="estadoProducto" required>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+          <label for="cantidadProducto">Cantidadad Producto:</label>
+          <input type="number" id="cantidadProducto" name="cantidadProducto" required>
 
-            <label for="precioProducto">Precio Producto:</label>
-            <input type="number" id="precioProducto" name="precioProducto" required>
-          </div>
-          <input type="hidden" name="productos" id="productosInput" />
+          <label for="precioProducto">Precio Producto:</label>
+          <input type="number" id="precioProducto" name="precioProducto" required>
         </div>
+        <input type="hidden" name="productos" id="productosInput" />
+      </div>
 
-        <label for="nombreUsuario">Nombre Usuario:</label>
-        <select id="nombreUsuario" name="nombreUsuario" required>
-          <% usuarios.forEach(usuario=> { %>
-            <option value="<%= usuario.nombre %>">
-              <%= usuario.nombre %>
-            </option>
-            <% }); %>
-        </select>
+      <label for="nombreUsuario">Nombre Usuario:</label>
+      <select id="nombreUsuario" name="nombreUsuario" required>
+        <% usuarios.forEach(usuario=> { %>
+          <option value="<%= usuario.nombre %>">
+            <%= usuario.nombre %>
+          </option>
+          <% }); %>
+      </select>
 
-        <input type="hidden" name="totalPedido" id="totalPedidoInput" />
+      <input type="hidden" name="totalPedido" id="totalPedidoInput" />
 
-        <button type="submit">Guardar Pedido</button>
-      </form>
-    </div>
+      <button type="submit">Guardar Pedido</button>
+    </form>
   </div>
-  <h1>Listado de Pedidos</h1>
-  <input type="text" id="buscarPedidos" placeholder="Buscar pedidos..." oninput="filtrarPedidos()">
-  <button id="agregarPedidoBtn">Agregar</button>
+</div>
+<h1>Listado de Pedidos</h1>
+<input type="text" id="buscarPedidos" placeholder="Buscar pedidos..." oninput="filtrarPedidos()">
+<button id="agregarPedidoBtn">Agregar</button>
 
-  <a target="_blank" href="/generarPDFPedidos">Generar PDF</a>
-  <!-- <button onclick="generarPDF()">Generar PDF</button> -->
+<a target="_blank" href="/generarPDFPedidos">Generar PDF</a>
+<!-- <button onclick="generarPDF()">Generar PDF</button> -->
 
 <script>
   function generarPDF() {
@@ -121,165 +122,313 @@
   }
 </script>
 
-  <!-- Modal -->
+<!-- Modal -->
 
-  <table>
-    <thead>
+<table>
+  <thead>
+    <tr>
+      <td>Fecha Creacion</td>
+      <td>Fecha Pedido</td>
+      <td>Total</td>
+      <td>Estado</td>
+      <td>Usuario</td>
+      <td>Acción</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% pedidos.forEach(pedido=> { %>
       <tr>
-        <td>Fecha Creacion</td>
-        <td>Fecha Pedido</td>
-        <td>Total</td>
-        <td>Estado</td>
-        <td>Usuario</td>
-        <td>Acción</td>
+        <td>
+          <%= pedido.fecha_creacion %>
+        </td>
+        <td>
+          <%= pedido.fecha_pedido %>
+        </td>
+        <td>
+          <%= pedido.total_pedido %>
+        </td>
+        <td>
+          <%= pedido.estado_pedido %>
+        </td>
+        <td>
+          <%= pedido.nombre_usuario %>
+        </td>
+        <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a
+            href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
       </tr>
-    </thead>
-    <tbody>
-      <% pedidos.forEach(pedido=> { %>
-        <tr>
-          <td>
-            <%= pedido.fecha_creacion %>
-          </td>
-          <td>
-            <%= pedido.fecha_pedido %>
-          </td>
-          <td>
-            <%= pedido.total_pedido %>
-          </td>
-          <td>
-            <%= pedido.estado_pedido %>
-          </td>
-          <td>
-            <%= pedido.nombre_usuario %>
-          </td>
-          <td><a href="/pedido/<%= pedido._id %>">Ver Detalle</a>&nbsp;<a
-              href="/eliminarPedido/<%= pedido._id %>">Eliminar</a></td>
-        </tr>
-        <% }); %>
-    </tbody>
-  </table>
-  <script>
-    function filtrarPedidos() {
-      // Obtener el valor del input de búsqueda
-      var input = document.getElementById("buscarPedidos");
-      var filtro = input.value.toUpperCase();
+      <% }); %>
+  </tbody>
+</table>
+<script>
+  function filtrarPedidos() {
+    // Obtener el valor del input de búsqueda
+    var input = document.getElementById("buscarPedidos");
+    var filtro = input.value.toUpperCase();
 
-      // Obtener todas las filas del cuerpo de la tabla
-      var filas = document.querySelector("tbody").getElementsByTagName("tr");
+    // Obtener todas las filas del cuerpo de la tabla
+    var filas = document.querySelector("tbody").getElementsByTagName("tr");
 
-      // Recorrer las filas y mostrar u ocultar aquellas que coincidan con el filtro
-      for (var i = 0; i < filas.length; i++) {
-        var celdas = filas[i].getElementsByTagName("td");
-        var mostrarFila = false;
+    // Recorrer las filas y mostrar u ocultar aquellas que coincidan con el filtro
+    for (var i = 0; i < filas.length; i++) {
+      var celdas = filas[i].getElementsByTagName("td");
+      var mostrarFila = false;
 
-        for (var j = 0; j < celdas.length; j++) {
-          if (celdas[j]) {
-            var textoCelda = celdas[j].innerText || celdas[j].textContent;
-            if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
-              mostrarFila = true;
-              break;
-            }
+      for (var j = 0; j < celdas.length; j++) {
+        if (celdas[j]) {
+          var textoCelda = celdas[j].innerText || celdas[j].textContent;
+          if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
+            mostrarFila = true;
+            break;
           }
         }
-
-        // Mostrar u ocultar la fila según el resultado de la búsqueda
-        filas[i].style.display = mostrarFila ? "" : "none";
-      }
-    }
-
-    // JavaScript para mostrar/ocultar el modal y validar fechas
-    const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
-    const agregarPedidoModal = document.getElementById('agregarPedidoModal');
-    const cerrarModal = document.getElementById('cerrarModal');
-
-    agregarPedidoBtn.addEventListener('click', () => {
-      agregarPedidoModal.style.display = 'block';
-    });
-
-    cerrarModal.addEventListener('click', () => {
-      agregarPedidoModal.style.display = 'none';
-    });
-
-    const agregarServicioBtn = document.getElementById('agregarServicioBtn');
-    const agregarProductoBtn = document.getElementById('agregarProductoBtn');
-    const serviciosContainer = document.getElementById('serviciosContainer');
-    const productosContainer = document.getElementById('productosContainer');
-
-    agregarServicioBtn.addEventListener('click', agregarCampoServicio);
-    agregarProductoBtn.addEventListener('click', agregarCampoProducto);
-
-    function agregarCampoServicio() {
-      const nuevoServicio = document.querySelector('.servicio').cloneNode(true);
-      serviciosContainer.appendChild(nuevoServicio);
-    }
-
-    function agregarCampoProducto() {
-      const nuevoProducto = document.querySelector('.producto').cloneNode(true);
-      productosContainer.appendChild(nuevoProducto);
-    }
-
-    const fechaPedidoInput = document.getElementById('fechaPedido');
-    const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
-
-    // Función para obtener datos de un servicio desde su contenedor HTML
-    function obtenerDatosServicio(servicio) {
-      return {
-        tipoServicio: servicio.querySelector('#tipoServicio').value,
-        estadoTipoServicio: servicio.querySelector('#estadoTipoServicio').value,
-        nombreServicio: servicio.querySelector('#nombreServicio').value,
-        estadoServicio: servicio.querySelector('#estadoServicio').value,
-        cantidadServicio: parseFloat(servicio.querySelector('#cantidadServicio').value), // Parsear como número
-        precioServicio: parseFloat(servicio.querySelector('#precioServicio').value), // Parsear como número
-      };
-    }
-
-    // Función para obtener datos de un producto desde su contenedor HTML
-    function obtenerDatosProducto(producto) {
-      return {
-        tipoProducto: producto.querySelector('#tipoProducto').value,
-        estadoTipoProducto: producto.querySelector('#estadoTipoProducto').value,
-        nombreProducto: producto.querySelector('#nombreProducto').value,
-        estadoProducto: producto.querySelector('#estadoProducto').value,
-        cantidadProducto: parseFloat(producto.querySelector('#cantidadProducto').value), // Parsear como número
-        precioProducto: parseFloat(producto.querySelector('#precioProducto').value), // Parsear como número
-      };
-    }
-
-    formularioAgregarPedido.addEventListener('submit', function (event) {
-      const fechaCreacion = new Date(); // Obtener la fecha actual
-      const fechaPedido = new Date(fechaPedidoInput.value);
-
-      // Validar que la fecha de pedido sea al menos 5 días después de la fecha de creación
-      if (fechaPedido - fechaCreacion < 5 * 24 * 60 * 60 * 1000) {
-        alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
-        event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
       }
 
-      // Obtener servicios y productos del contenedor y actualizar los campos ocultos
-      const servicios = Array.from(serviciosContainer.querySelectorAll('.servicio'));
-      const productos = Array.from(productosContainer.querySelectorAll('.producto'));
+      // Mostrar u ocultar la fila según el resultado de la búsqueda
+      filas[i].style.display = mostrarFila ? "" : "none";
+    }
+  }
 
-      const serviciosData = servicios.map(obtenerDatosServicio);
-      const productosData = productos.map(obtenerDatosProducto);
+  // JavaScript para mostrar/ocultar el modal y validar fechas
+  const agregarPedidoBtn = document.getElementById('agregarPedidoBtn');
+  const agregarPedidoModal = document.getElementById('agregarPedidoModal');
+  const cerrarModal = document.getElementById('cerrarModal');
 
-      // Calcular subtotales y total
-      let totalPedido = 0;
+  agregarPedidoBtn.addEventListener('click', () => {
+    agregarPedidoModal.style.display = 'block';
+  });
 
-      const serviciosConSubtotales = serviciosData.map(servicio => {
-        const subtotal = servicio.cantidadServicio * servicio.precioServicio;
-        totalPedido += subtotal;
-        return { ...servicio, subtotal };
-      });
+  cerrarModal.addEventListener('click', () => {
+    agregarPedidoModal.style.display = 'none';
+  });
 
-      const productosConSubtotales = productosData.map(producto => {
-        const subtotal = producto.cantidadProducto * producto.precioProducto;
-        totalPedido += subtotal;
-        return { ...producto, subtotal };
-      });
+  const agregarServicioBtn = document.getElementById('agregarServicioBtn');
+  const agregarProductoBtn = document.getElementById('agregarProductoBtn');
+  const serviciosContainer = document.getElementById('serviciosContainer');
+  const productosContainer = document.getElementById('productosContainer');
 
-      document.getElementById('serviciosInput').value = JSON.stringify(serviciosConSubtotales);
-      document.getElementById('productosInput').value = JSON.stringify(productosConSubtotales);
-      document.getElementById('totalPedidoInput').value = totalPedido;
+  agregarServicioBtn.addEventListener('click', agregarCampoServicio);
+  agregarProductoBtn.addEventListener('click', agregarCampoProducto);
 
+  function agregarCampoServicio() {
+    const nuevoServicio = document.querySelector('.servicio').cloneNode(true);
+    serviciosContainer.appendChild(nuevoServicio);
+  }
+
+  function agregarCampoProducto() {
+    const nuevoProducto = document.querySelector('.producto').cloneNode(true);
+    productosContainer.appendChild(nuevoProducto);
+  }
+
+  const fechaPedidoInput = document.getElementById('fechaPedido');
+  const formularioAgregarPedido = document.getElementById('formularioAgregarPedido');
+
+  // Función para obtener datos de un servicio desde su contenedor HTML
+  function obtenerDatosServicio(servicio) {
+    return {
+      tipoServicio: servicio.querySelector('#tipoServicio').value,
+      estadoTipoServicio: servicio.querySelector('#estadoTipoServicio').value,
+      nombreServicio: servicio.querySelector('#nombreServicio').value,
+      estadoServicio: servicio.querySelector('#estadoServicio').value,
+      cantidadServicio: parseFloat(servicio.querySelector('#cantidadServicio').value), // Parsear como número
+      precioServicio: parseFloat(servicio.querySelector('#precioServicio').value), // Parsear como número
+    };
+  }
+
+  // Función para obtener datos de un producto desde su contenedor HTML
+  function obtenerDatosProducto(producto) {
+    return {
+      tipoProducto: producto.querySelector('#tipoProducto').value,
+      estadoTipoProducto: producto.querySelector('#estadoTipoProducto').value,
+      nombreProducto: producto.querySelector('#nombreProducto').value,
+      estadoProducto: producto.querySelector('#estadoProducto').value,
+      cantidadProducto: parseFloat(producto.querySelector('#cantidadProducto').value), // Parsear como número
+      precioProducto: parseFloat(producto.querySelector('#precioProducto').value), // Parsear como número
+    };
+  }
+
+  formularioAgregarPedido.addEventListener('submit', function (event) {
+    const fechaCreacion = new Date(); // Obtener la fecha actual
+    const fechaPedido = new Date(fechaPedidoInput.value);
+
+    // Validar que la fecha de pedido sea al menos 5 días después de la fecha de creación
+    if (fechaPedido - fechaCreacion < 5 * 24 * 60 * 60 * 1000) {
+      alert('La fecha de pedido debe ser al menos 5 días después de la fecha de creación.');
+      event.preventDefault(); // Evitar el envío del formulario si no pasa la validación
+    }
+
+    // Obtener servicios y productos del contenedor y actualizar los campos ocultos
+    const servicios = Array.from(serviciosContainer.querySelectorAll('.servicio'));
+    const productos = Array.from(productosContainer.querySelectorAll('.producto'));
+
+    const serviciosData = servicios.map(obtenerDatosServicio);
+    const productosData = productos.map(obtenerDatosProducto);
+
+    // Calcular subtotales y total
+    let totalPedido = 0;
+
+    const serviciosConSubtotales = serviciosData.map(servicio => {
+      const subtotal = servicio.cantidadServicio * servicio.precioServicio;
+      totalPedido += subtotal;
+      return { ...servicio, subtotal };
     });
-  </script>
+
+    const productosConSubtotales = productosData.map(producto => {
+      const subtotal = producto.cantidadProducto * producto.precioProducto;
+      totalPedido += subtotal;
+      return { ...producto, subtotal };
+    });
+
+    document.getElementById('serviciosInput').value = JSON.stringify(serviciosConSubtotales);
+    document.getElementById('productosInput').value = JSON.stringify(productosConSubtotales);
+    document.getElementById('totalPedidoInput').value = totalPedido;
+
+  });
+</script>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+  }
+
+  h1 {
+    color: #007bff;
+    text-align: center;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    /* Agregado para espacio del punto */
+    position: relative;
+  }
+
+  li:before {
+    content: '\2022';
+    /* Código del punto unicode */
+    color: #007bff;
+    /* Color del punto */
+    font-size: 16px;
+    /* Tamaño del punto */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-height: 80%;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 600px;
+  }
+
+  .modal-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cerrar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  form {
+    margin-top: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  input,
+  select,
+  button {
+    margin-bottom: 10px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  button {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  thead {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  tbody tr:hover {
+    background-color: #f0f0f0;
+  }
+
+  #buscarPedidos,
+  #agregarPedidoBtn {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  a {
+    text-decoration: none;
+    color: #007bff;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .servicio,
+  .producto {
+    border-bottom: 1px solid #ff0000;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+
+  .servicio label,
+  .producto label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+</style>

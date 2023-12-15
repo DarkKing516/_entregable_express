@@ -1,55 +1,82 @@
-<form id="formularioEditarVenta" action="/actualizarVenta/<%= venta._id %>" method="POST">
-  <label for="fecha_venta">Fecha Venta:</label>
-  <input type="text" id="fecha_venta" name="fecha_venta" value="<%= venta.fecha_venta || '' %>" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Ventas</title>
 
-  <label for="metodo_pago">Método Pago:</label>
-  <select id="metodo_pago" name="metodo_pago" required>
-    <option value="Efectivo">Efectivo</option>
-    <option value="Tarjeta">Tarjeta</option>
-    <option value="Transferencia">Transferencia</option>
-  </select>
+  <!-- CSS de Bootstrap 5 --
+  
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="https://ajeetchaulagain.com/static/7cb4af597964b0911fe71cb2f8148d64/87351/express-js.png" type="image/x-icon" />
+</head>
+<body>
+  <%- include('./layouts/nav') %>
 
 
-  <label for="total_venta">Total Venta:</label>
-  <input type="number" id="total_venta" name="total_venta" value="<%= venta.total_venta || '' %>" >
+  <div class="container mt-4">
+    <form id="formularioEditarVenta" action="/actualizarVenta/<%= venta._id %>" method="POST">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="fecha_venta" class="form-label">Fecha Venta:</label>
+            <input type="text" id="fecha_venta" name="fecha_venta" class="form-control" value="<%= venta.fecha_venta || '' %>" required>
+          </div>
+  
+          <div class="mb-3">
+            <label for="metodo_pago" class="form-label">Método Pago:</label>
+            <select id="metodo_pago" name="metodo_pago" class="form-select" required>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Tarjeta">Tarjeta</option>
+              <option value="Transferencia">Transferencia</option>
+            </select>
+          </div>
+  
+          <div class="mb-3">
+            <label for="total_venta" class="form-label">Total Venta:</label>
+            <input type="number" id="total_venta" name="total_venta" class="form-control" value="<%= venta.total_venta || '' %>">
+          </div>
+        </div>
+  
+        <div class="col-md-6">
+          <% venta.productos.forEach((producto, index)=> { %>
+            <div class="mb-3">
+              <label for="productos[<%= index %>][nombreProducto]" class="form-label">Nombre Producto:</label>
+              <input type="text" name="productos[<%= index %>][nombreProducto]" class="form-control" value="<%= producto.nombreProducto || '' %>" required>
+            </div>
+  
+            <div class="mb-3">
+              <label for="productos[<%= index %>][precioProducto]" class="form-label">Precio Producto:</label>
+              <input type="number" name="productos[<%= index %>][precioProducto]" class="form-control" value="<%= producto.precioProducto || '' %>" required>
+            </div>
+          <% }); %>
+  
+          <% venta.servicios.forEach((servicio, index)=> { %>
+            <div class="mb-3">
+              <label for="servicios[<%= index %>][nombreServicio]" class="form-label">Nombre Servicio:</label>
+              <input type="text" name="servicios[<%= index %>][nombreServicio]" class="form-control" value="<%= servicio.nombreServicio || '' %>" required>
+            </div>
+  
+            <div class="mb-3">
+              <label for="servicios[<%= index %>][precioServicio]" class="form-label">Precio Servicio:</label>
+              <input type="number" name="servicios[<%= index %>][precioServicio]" class="form-control" value="<%= servicio.precioServicio || '' %>" required>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary me-3">Guardar Cambios</button>
+          <a href="/pelos" class="btn btn-secondary">Volver a la lista de ventas</a>
+        </div>
+      </div>
+    </form>
+  </div>
+  
 
-  <label for="nombre">Nombre:</label>
-  <input type="text" id="nombre" name="nombre" value="<%= venta.nombre || '' %>" required >
-
-  <label for="telefono">Teléfono:</label>
-  <input type="text" id="telefono" name="telefono" value="<%= venta.telefono || '' %>" required>
-
-  <label for="documento">Documento:</label>
-  <input type="text" id="documento" name="documento" value="<%= venta.documento || '' %>" required >
-
-  <label for="correo">Correo:</label>
-  <input type="email" id="correo" name="correo" value="<%= venta.correo || '' %>" required >
-
-  <label for="total_pedido">Total Pedido:</label>
-  <input type="number" id="total_pedido" name="total_pedido" value="<%= venta.total_pedido || '' %>" required>
-
-  <!-- Campos para productos -->
-  <% venta.productos.forEach((producto, index)=> { %>
-    <label for="productos[<%= index %>][nombreProducto]">Nombre Producto:</label>
-    <input type="text" name="productos[<%= index %>][nombreProducto]" value="<%= producto.nombreProducto || '' %>" required
-      >
-
-    <label for="productos[<%= index %>][precioProducto]">Precio Producto:</label>
-    <input type="number" name="productos[<%= index %>][precioProducto]" value="<%= producto.precioProducto || '' %>" required>
-    <% }); %>
-
-      <!-- Campos para servicios -->
-      <% venta.servicios.forEach((servicio, index)=> { %>
-        <label for="servicios[<%= index %>][nombreServicio]">Nombre Servicio:</label>
-        <input type="text" name="servicios[<%= index %>][nombreServicio]" value="<%= servicio.nombreServicio || '' %>" required
-          >
-
-        <label for="servicios[<%= index %>][precioServicio]">Precio Servicio:</label>
-        <input type="number" name="servicios[<%= index %>][precioServicio]" value="<%= servicio.precioServicio || '' %>"
-          required>
-        <% }); %>
-
-          <button type="submit">Guardar Cambios</button>
-</form>
-
-<a href="/pelos">Volver a la lista de ventas</a>
+<!-- JavaScript de Bootstrap 5 (requiere Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-dZsr4I4WqK0GBsZtNvPrptJ5T2oHfnk6Zb5W1vI4kScy7g5U/7XPOBvVNhub6B86" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-+0r9FhDWT9fWG4oTpBqlt7LCxflA6lP4Fo+VgD2X+Mk5Cgg7KlTU1veEmn1j8N4P" crossorigin="anonymous"></script>
+</body>
+</html>
