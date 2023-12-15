@@ -1,34 +1,112 @@
 <!-- src/views/editarUsuario.ejs -->
-<form id="editarUsuario" action="/actualizarUsuario/<%= usuario._id %>" method="POST">
+<div class="container mt-4">
+  <form id="editarUsuario" action="/actualizarUsuario/<%= usuario._id %>" method="POST">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="rol" class="form-label">Rol:</label>
+          <select id="rol" name="rol" class="form-select" required>
+            <option value="cliente" <%= usuario.rol === 'cliente' ? 'selected' : '' %>>Cliente</option>
+            <option value="administrador" <%= usuario.rol === 'administrador' ? 'selected' : '' %>>Administrador</option>
+          </select>
+        </div>
 
-    <label for="rol">Rol:</label>
-    <select id="rol" name="rol" required>
-      <option value="cliente" <%= usuario.rol === 'cliente' ? 'selected' : '' %>>Cliente</option>
-      <option value="administrador" <%= usuario.rol === 'administrador' ? 'selected' : '' %>>Administrador</option>
-    </select>
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" class="form-control" value="<%= usuario.nombre || '' %>" required>
+        </div>
 
+        <div class="mb-3">
+          <label for="correo" class="form-label">Correo:</label>
+          <input type="email" id="correo" name="correo" class="form-control" value="<%= usuario.correo || '' %>" required>
+        </div>
 
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" value="<%= usuario.nombre || '' %>" required>
-  
-    <label for="correo">Correo:</label>
-    <input type="email" id="correo" name="correo" value="<%= usuario.correo || '' %>" required>
-  
-    <label for="telefono">Teléfono:</label>
-    <input type="text" id="telefono" name="telefono" value="<%= usuario.telefono || '' %>" required>
-  
-    <label for="documento">Documento:</label>
-    <input type="text" id="documento" name="documento" value="<%= usuario.documento || '' %>">
-  
-    <label for="estado_usuario">Estado de Usuario:</label>
-    <select id="estado_usuario" name="estado_usuario" required>
-      <option value="Activo" <%= usuario.estado_usuario === 'Activo' ? 'selected' : '' %>>Activo</option>
-      <option value="Inactivo" <%= usuario.estado_usuario === 'Inactivo' ? 'selected' : '' %>>Inactivo</option>
-    </select>
-  
-  
-    <!-- Aquí puedes agregar más campos según sea necesario -->
-  
-    <button type="submit">Guardar Cambios</button>
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono:</label>
+          <input type="text" id="telefono" name="telefono" class="form-control" value="<%= usuario.telefono || '' %>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="documento" class="form-label">Documento:</label>
+          <input type="text" id="documento" name="documento" class="form-control" value="<%= usuario.documento || '' %>">
+        </div>
+
+        <div class="mb-3">
+          <label for="estado_usuario" class="form-label">Estado de Usuario:</label>
+          <select id="estado_usuario" name="estado_usuario" class="form-select" required>
+            <option value="Activo" <%= usuario.estado_usuario === 'Activo' ? 'selected' : '' %>>Activo</option>
+            <option value="Inactivo" <%= usuario.estado_usuario === 'Inactivo' ? 'selected' : '' %>>Inactivo</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Puedes agregar más campos según sea necesario -->
+
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-primary me-3">Guardar Cambios</button>
+        <form action="/configuracion" method="get">
+          <button type="submit">Volver a la lista de usuarios</button>
+        </form>
+      </div>
+    </div>
   </form>
-  
+</div>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    /* Estilos para el encabezado */
+    h1 {
+      color: #333;
+    }
+    
+    /* Estilos para botones y selectores */
+    button, select {
+      padding: 8px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #fff;
+    }
+    
+    button:hover, select:hover {
+      background-color: #0056b3;
+    }
+    
+    /* Estilos para el modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Estilos para la tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>

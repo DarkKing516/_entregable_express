@@ -12,4 +12,53 @@
     <div>No hay permisos asignados</div>
   <% } %>
   <button type="submit">Guardar Permisos</button>
+  <form action="/configuracion" method="get">
+    <button type="submit">Volver a la lista de usuarios</button>
+  </form>
 </form>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  /* Estilos para el encabezado */
+  h1 {
+    color: #333;
+  }
+  
+  /* Estilos para formularios */
+  form {
+    margin-top: 20px;
+  }
+
+  /* Estilos para los elementos de formulario */
+  div {
+    margin-bottom: 10px;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 5px;
+  }
+
+  label {
+    color: #333;
+  }
+
+  /* Estilos para botones */
+  button {
+    padding: 8px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>

@@ -1,24 +1,31 @@
 // src/controllers/authController.js
 const usuarioModel = require('../models/usuarioModel');
 
-// const registrarUsuario = async (req, res) => {
-//   try {
-//     const nuevoUsuario = req.body;
+const registrarUsuario = async (req, res) => {
+  try {
+    const nuevoUsuario = req.body;
 
-//     // Asignar rol "cliente" y permisos asociados
-//     nuevoUsuario.rol = [{ nombre_rol: 'cliente' }];
-//     nuevoUsuario.permisos = [
-//       { nombre_permiso: 'ver_mi_perfil', estado_permiso: true },
-//       // Otros permisos asociados al rol "cliente"
-//     ];
+    // Verificar si se seleccionó un rol específico
+    if (!nuevoUsuario.rol) {
+      // Si no se seleccionó un rol, asignar automáticamente el rol "cliente"
+      nuevoUsuario.rol = 'cliente';
+    }
+    if (!nuevoUsuario.estado_usuario) {
+      nuevoUsuario.estado_usuario = 'Activo';
+    }
 
-//     const resultado = await usuarioModel.registrarUsuario(nuevoUsuario);
-//     res.redirect('/'); // Redirige al index después de un registro exitoso
-//   } catch (error) {
-//     console.error('Error al registrar usuario:', error);
-//     res.status(500).send('Error interno del servidor');
-//   }
-// };
+    // Asignar los permisos correspondientes al rol (puedes adaptar esta lógica según tus necesidades)
+    nuevoUsuario.permisos = obtenerPermisosSegunRol(nuevoUsuario.rol);
+
+    await usuarioModel.registrarUsuario(nuevoUsuario);
+
+    // Redirige directamente a index.ejs después del registro exitoso
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+    res.status(500).send(`Error interno del servidor: ${error.message}`);
+  }
+};
 
 const iniciarSesion = async (req, res) => {
   try {
@@ -43,4 +50,4 @@ const cerrarSesion = (req, res) => {
   res.redirect('/');
 };
 
-module.exports = {iniciarSesion, cerrarSesion };
+module.exports = {iniciarSesion, cerrarSesion, registrarUsuario };

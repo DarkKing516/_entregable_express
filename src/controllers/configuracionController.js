@@ -31,7 +31,7 @@ const getConfiguracionPage = async (req, res) => {
 };
 
 
-const registrarUsuario = async (req, res) => {
+const agregarUsuario = async (req, res) => {
   try {
     const nuevoUsuario = req.body;
 
@@ -50,7 +50,7 @@ const registrarUsuario = async (req, res) => {
     await usuarioModel.registrarUsuario(nuevoUsuario);
 
     // Redirige directamente a index.ejs después del registro exitoso
-    res.redirect('/');
+    res.redirect('/configuracion');
   } catch (error) {
     console.error('Error al registrar usuario:', error);
     res.status(500).send(`Error interno del servidor: ${error.message}`);
@@ -68,10 +68,10 @@ const actualizarUsuarios = async (req, res) => {
     const database = client.db('erikas_homemade');
     const usuariosCollection = database.collection('configuracion');
 
-    const usuarioId = req.params.id; // ID del usuario que se desea editar
-    const { nombre, correo, telefono, documento, estado_usuario } = req.body; // Datos actualizados del usuario desde el cuerpo de la solicitud
+    const usuarioId = req.params.id;
+    const { nombre, correo, telefono, documento, estado_usuario, rol } = req.body;
 
-    console.log('Datos recibidos para actualizar:', req.body);
+    const nuevosPermisos = obtenerPermisosSegunRol(rol);
 
     const result = await usuariosCollection.updateOne(
       { _id: new ObjectId(usuarioId) },
@@ -81,12 +81,12 @@ const actualizarUsuarios = async (req, res) => {
           correo,
           telefono,
           documento,
-          estado_usuario
+          estado_usuario,
+          rol,
+          permisos: nuevosPermisos, // Actualizar los permisos según el nuevo rol
         },
       }
     );
-
-    console.log('Resultado de la actualización:', result);
 
     if (result.matchedCount === 0) {
       console.log('El usuario no fue encontrado o no se actualizó');
@@ -273,6 +273,21 @@ const generarReportePDF = async (req, res) => {
         doc.fontSize(12).text(`Documento: ${usuario.documento}`);
         doc.fontSize(12).text(`Contraseña: ${'*'.repeat(usuario.contraseña.length)}`);
         doc.fontSize(12).text(`Estado: ${usuario.estado_usuario}`);
+        doc.fontSize(13).text(`Permisos:`);
+        // Ajustar la posición inicial de las columnas
+        let columnX1 = 65;
+        let columnX2 = 300;
+        let currentColumn = columnX1;
+
+        if (usuario.permisos && usuario.permisos.length > 0) {
+          usuario.permisos.forEach(permiso => {
+            // Alternar entre las dos columnas
+            doc.fontSize(10).text(`- ${permiso.nombre_permiso}`, currentColumn);
+            currentColumn = (currentColumn === columnX1) ? columnX2 : columnX1;
+          });
+        } else {
+          doc.fontSize(12).text(`No hay permisos asignados`);
+        }
         doc.moveDown();
         doc.moveDown();
         doc.moveDown();
@@ -304,7 +319,7 @@ const generarReportePDF = async (req, res) => {
 };
 
 
-  module.exports = { getConfiguracionPage, registrarUsuario, actualizarUsuarios, verPermisos, actualizarPermisos, eliminarUsuario, obtenerDatosUsuario, generarReportePDF };
+module.exports = { getConfiguracionPage, agregarUsuario, actualizarUsuarios, verPermisos, actualizarPermisos, eliminarUsuario, obtenerDatosUsuario, generarReportePDF };
 
 
 

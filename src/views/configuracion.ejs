@@ -11,26 +11,30 @@
       <span id="cerrarModal" class="cerrar">&times;</span>
       <h2>Agregar Usuario</h2>
 
-      <form method="POST" action="/signup">
+      <form method="POST" action="/agregarUsuario">
         <label for="rol">Rol:</label>
         <select id="rol" name="rol" required>
           <option value="" disabled selected>--Seleccione una opción--</option>
           <option value="cliente">Cliente</option>
           <option value="administrador">Administrador</option>
         </select>
+        <br><br>
         <input type="hidden" name="permisos">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
+        <br><br>
         <label for="correo">Correo:</label>
         <input type="email" id="correo" name="correo" required>
+        <br><br>
         <label for="telefono">Teléfono:</label>
         <input type="number" id="telefono" name="telefono" required>
+        <br><br>
         <label for="documento">Documento:</label>
         <input type="number" id="documento" name="documento" required>
+        <br><br>
         <label for="contraseña">Contraseña:</label>
         <input type="password" id="contraseña" name="contraseña" required>
-
-
+        <br><br>
         <button type="submit">Guardar Usuario</button>
       </form>
     </div>
@@ -78,18 +82,83 @@
             <%= '*' .repeat(usuario.contraseña.length) %>
           </td>
           <td>
-            <button><a href="/configuracion/<%= usuario._id %>">Ver permisos</a></button>
+            <form action="/configuracion/<%= usuario._id %>" method="get">
+              <button type="submit">Ver permisos</button>
+            </form>
           </td>
+          
           <td>
-            <button><a href="/editarUsuario/<%= usuario._id %>">Editar</a></button>
-            <button><a href="/eliminarUsuario/<%= usuario._id %>">Eliminar</a></button>
+            <form action="/editarUsuario/<%= usuario._id %>" method="get">
+              <button type="submit">Editar</button>
+            </form>
+            
+            <form id="eliminarUsuarioForm" action="/eliminarUsuario/<%= usuario._id %>" method="get">
+              <button type="button" onclick="confirmarEliminacion()">Eliminar</button>
+            </form>
           </td>
         </tr>
         <% }); %>
     </tbody>
   </table>
   <button onclick="generarReporteBtn()">Generar Reporte</button>
-
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    /* Estilos para el encabezado */
+    h1 {
+      color: #333;
+    }
+    
+    /* Estilos para botones y selectores */
+    button {
+      padding: 8px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #fff;
+    }
+    
+    button:hover{
+      background-color: #0056b3;
+    }
+    
+    /* Estilos para el modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Estilos para la tabla */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
   <script>
     // JavaScript para mostrar/ocultar el modal
 
@@ -99,6 +168,15 @@
 
     function generarReporteBtn() {
       window.location.href = '/ReporteUsuarios';
+    }
+    function confirmarEliminacion() {
+      // Mostrar una alerta de confirmación
+      var confirmacion = confirm("¿Estás seguro de que deseas eliminar este usuario?");
+  
+      // Si el usuario confirma, enviar el formulario
+      if (confirmacion) {
+        document.getElementById("eliminarUsuarioForm").submit();
+      }
     }
 
     function filtrarUsuarios() {
